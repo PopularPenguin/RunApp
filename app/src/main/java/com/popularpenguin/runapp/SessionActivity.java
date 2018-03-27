@@ -6,9 +6,12 @@ import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,7 +29,12 @@ import butterknife.ButterKnife;
 public class SessionActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
+    @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_location_test) TextView mLocationView;
+    @BindView(R.id.toolbar_session) Toolbar mToolbar;
+
+    // TODO: Just bind views and call methods in this activity, move logic and data OUT
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -38,6 +46,11 @@ public class SessionActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_session);
 
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setupAppBar();
 
         // TODO: Move GoogleApiClient and everything else to its own service class
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -53,7 +66,7 @@ public class SessionActivity extends AppCompatActivity implements
                     return;
                 }
 
-                for (Location location: locationResult.getLocations()) {
+                for (Location location : locationResult.getLocations()) {
                     String locationText = String.format(Locale.US,
                             "%f, %f",
                             location.getLatitude(),
@@ -106,5 +119,30 @@ public class SessionActivity extends AppCompatActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // TODO: Implement
+    }
+
+    private void setupAppBar() {
+        // TODO: Move this out of the activity
+        // Display text on app bar when it is totally collapsed
+        // https://stackoverflow.com/questions/31662416/show-collapsingtoolbarlayout-title-only-when-collapsed
+        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShowing = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = mAppBar.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    String appName = getResources().getString(R.string.app_name);
+                    mCollapsingToolbarLayout.setTitle(appName);
+                    isShowing = true;
+                } else if (isShowing) {
+                    mCollapsingToolbarLayout.setTitle(" ");
+                    isShowing = false;
+                }
+            }
+        });
     }
 }

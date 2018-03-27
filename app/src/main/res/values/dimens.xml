@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- General -->
+    <dimen name="app_bar_elevation">4dp</dimen>
+    <dimen name="recycler_elevation">2dp</dimen>
+
+    <dimen name="card_margin">4dp</dimen>
+    <dimen name="card_corner_radius">6dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+
+</resources>
