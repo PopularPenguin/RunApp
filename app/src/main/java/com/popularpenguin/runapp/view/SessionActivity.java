@@ -1,4 +1,4 @@
-package com.popularpenguin.runapp;
+package com.popularpenguin.runapp.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -20,6 +20,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.popularpenguin.runapp.R;
 
 import java.util.Locale;
 

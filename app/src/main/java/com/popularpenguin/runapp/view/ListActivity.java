@@ -1,4 +1,4 @@
-package com.popularpenguin.runapp;
+package com.popularpenguin.runapp.view;
 
 import android.Manifest;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
+
+import com.popularpenguin.runapp.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,9 +28,8 @@ public class ListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        launchMap.setOnClickListener(view -> {
-            startActivity(new Intent(this, SessionActivity.class));
-        });
+        launchMap.setOnClickListener(view ->
+                startActivity(new Intent(this, SessionActivity.class)));
 
 
     }
