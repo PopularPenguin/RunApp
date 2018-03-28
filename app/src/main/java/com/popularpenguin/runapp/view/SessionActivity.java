@@ -20,13 +20,14 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.popularpenguin.runapp.R;
 
 import java.util.Locale;
@@ -53,6 +54,8 @@ public class SessionActivity extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private GoogleMap mGoogleMap;
+    private Location mLocation;
+    private Marker mCurrentLocation;
     private boolean isMapReady = false;
 
     @Override
@@ -81,35 +84,16 @@ public class SessionActivity extends AppCompatActivity implements
                     return;
                 }
 
-                /*
-                for (Location location : locationResult.getLocations()) {
-                    String locationText = String.format(Locale.US,
-                            "%f, %f",
-                            location.getLatitude(),
-                            location.getLongitude());
+                mLocation =  locationResult.getLastLocation();
 
-                    mLocationView.setText(locationText);
-                } */
-
-                Location location =  locationResult.getLastLocation();
                 String locationText = String.format(Locale.US,
                         "%f, %f",
-                        location.getLatitude(),
-                        location.getLongitude());
+                        mLocation.getLatitude(),
+                        mLocation.getLongitude());
 
                 mLocationView.setText(locationText);
 
-                if (isMapReady) {
-                    CameraPosition position = new CameraPosition.Builder()
-                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                            .zoom(17f)
-                            .bearing(0f)
-                            .tilt(45f)
-                            .build();
-
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(position));
-                }
-
+                setMarker();
             }
         };
     }
@@ -164,6 +148,31 @@ public class SessionActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         isMapReady = true;
         mGoogleMap = googleMap;
+    }
+
+    // https://stackoverflow.com/questions/33739971/how-to-show-my-current-location-in-google-map-android-using-google-api-client
+    private void setMarker() {
+        if (!isMapReady) {
+            return;
+        }
+
+        if (mCurrentLocation != null) {
+            mCurrentLocation.remove();
+        }
+
+        LatLng latLng = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(latLng)
+                .title("Here I am!");
+        mCurrentLocation = mGoogleMap.addMarker(markerOptions);
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()))
+                .bearing(0f)
+                .tilt(45f)
+                .zoom(17f)
+                .build();
+        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private void setupAppBar() {
