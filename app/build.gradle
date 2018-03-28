@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.popularpenguin.runapp"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -16,6 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+        it.resValue 'string', 'API_KEY', MapsApiKey
+    }
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
@@ -24,11 +27,13 @@ android {
 
 ext {
     googlePlayVersion = '12.0.0'
-    supportLibVersion = '26.1.0'
+    supportLibVersion = '27.1.0'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Support libraries
     implementation "com.android.support:appcompat-v7:${supportLibVersion}"
     implementation "com.android.support:cardview-v7:${supportLibVersion}"
     implementation "com.android.support:design:${supportLibVersion}"
@@ -36,6 +41,7 @@ dependencies {
 
     // Google Play APIs
     implementation "com.google.android.gms:play-services-location:${googlePlayVersion}"
+    implementation "com.google.android.gms:play-services-maps:${googlePlayVersion}"
 
     // Butterknife
     implementation 'com.jakewharton:butterknife:8.8.1'

@@ -20,6 +20,13 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.popularpenguin.runapp.R;
 
 import java.util.Locale;
@@ -28,18 +35,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SessionActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        OnMapReadyCallback {
 
-    @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
-    @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @BindView(R.id.tv_location_test) TextView mLocationView;
-    @BindView(R.id.toolbar_session) Toolbar mToolbar;
+    @BindView(R.id.app_bar_session)
+    AppBarLayout mAppBar;
+    @BindView(R.id.collapsing_toolbar_session)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.tv_location_test)
+    TextView mLocationView;
+    @BindView(R.id.toolbar_session)
+    Toolbar mToolbar;
 
     // TODO: Just bind views and call methods in this activity, move logic and data OUT
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    private GoogleMap mGoogleMap;
+    private boolean isMapReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +81,7 @@ public class SessionActivity extends AppCompatActivity implements
                     return;
                 }
 
+                /*
                 for (Location location : locationResult.getLocations()) {
                     String locationText = String.format(Locale.US,
                             "%f, %f",
@@ -74,7 +89,27 @@ public class SessionActivity extends AppCompatActivity implements
                             location.getLongitude());
 
                     mLocationView.setText(locationText);
+                } */
+
+                Location location =  locationResult.getLastLocation();
+                String locationText = String.format(Locale.US,
+                        "%f, %f",
+                        location.getLatitude(),
+                        location.getLongitude());
+
+                mLocationView.setText(locationText);
+
+                if (isMapReady) {
+                    CameraPosition position = new CameraPosition.Builder()
+                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .zoom(17f)
+                            .bearing(0f)
+                            .tilt(45f)
+                            .build();
+
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(position));
                 }
+
             }
         };
     }
@@ -110,6 +145,9 @@ public class SessionActivity extends AppCompatActivity implements
 
         LocationServices.getFusedLocationProviderClient(this)
                 .requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -120,6 +158,12 @@ public class SessionActivity extends AppCompatActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // TODO: Implement
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        isMapReady = true;
+        mGoogleMap = googleMap;
     }
 
     private void setupAppBar() {
