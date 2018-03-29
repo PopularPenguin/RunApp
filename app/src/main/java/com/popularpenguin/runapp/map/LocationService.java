@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,14 +16,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.Marker;
 
-import java.util.Locale;
-
-public class LocationService implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private static final String TAG = LocationService.class.getSimpleName();
+class LocationService implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
@@ -33,19 +26,11 @@ public class LocationService implements
     private LocationCallback mLocationCallback;
     private Location mLocation;
 
-    private TextView mLocationTextView;
-
-    public LocationService(Context context) {
+    LocationService(Context context) {
         mContext = context;
 
         setClient();
-        setListener();
-    }
-
-    public void setLocationView(TextView textView) {
-        Log.i(TAG, "setLocationView()");
-
-        mLocationTextView = textView;
+        setLocationCallbackListener();
     }
 
     public void connect() {
@@ -58,7 +43,6 @@ public class LocationService implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.i(TAG, "LocationServices.onConnected()");
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(mContext,
                         Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -75,12 +59,12 @@ public class LocationService implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        // TODO: Implement
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        // TODO: Implement
     }
 
     private synchronized void setClient() {
@@ -91,12 +75,12 @@ public class LocationService implements
                 .build();
     }
 
-    private void setListener() {
+    private void setLocationCallbackListener() {
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 mLocation =  locationResult.getLastLocation();
-                setLocationText();
+                mOnLocationChangedListener.onLocationUpdate(mLocation);
             }
         };
     }
@@ -108,16 +92,19 @@ public class LocationService implements
                 .setFastestInterval(500);
     }
 
-    private void setLocationText() {
-        if (mLocation == null) {
-            return;
-        }
+    // Interfaces + Listener ///////////////////////////////////////////////////////////////////
+    public interface ConnectionStatus {
+        void start();
+        void stop();
+    }
 
-        String locationText = String.format(Locale.US,
-                "%f, %f",
-                mLocation.getLatitude(),
-                mLocation.getLongitude());
+    private OnLocationChangedListener mOnLocationChangedListener;
 
-        mLocationTextView.setText(locationText);
+    public void setOnLocationChangedListener(OnLocationChangedListener listener) {
+        mOnLocationChangedListener = listener;
+    }
+
+    public interface OnLocationChangedListener {
+        void onLocationUpdate(Location location);
     }
 }
