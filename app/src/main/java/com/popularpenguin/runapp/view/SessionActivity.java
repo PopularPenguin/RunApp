@@ -1,30 +1,32 @@
 package com.popularpenguin.runapp.view;
 
+import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
-import com.popularpenguin.runapp.map.RunMap;
+import com.popularpenguin.runapp.map.RunTracker;
+import com.popularpenguin.runapp.map.StopWatch;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SessionActivity extends AppCompatActivity {
+public class SessionActivity extends AppCompatActivity implements StopWatch.StopWatchListener {
 
-    @BindView(R.id.app_bar_session)
-    AppBarLayout mAppBar;
-    @BindView(R.id.collapsing_toolbar_session)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @BindView(R.id.tv_location_test)
-    TextView mLocationView;
-    @BindView(R.id.toolbar_session)
-    Toolbar mToolbar;
+    @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
+    @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.tv_location_test) TextView mLocationView;
+    @BindView(R.id.tv_stopwatch) TextView mTimerText;
+    //@BindView(R.id.run_timer) Chronometer mTimer;
+    @BindView(R.id.toolbar_session) Toolbar mToolbar;
 
-    private RunMap mRunMap;
+    private RunTracker mRunTracker;
+    private StopWatch mStopWatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +40,39 @@ public class SessionActivity extends AppCompatActivity {
 
         setupAppBar();
 
-        setupMap();
+        setupTracker();
+
+        mStopWatch = new StopWatch(0L);
+        mStopWatch.setStopWatchListener(this);
+
+       // mTimer.setBase(SystemClock.elapsedRealtime());
+       // mTimer.start();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        mRunMap.start();
+        mRunTracker.start();
+        mStopWatch.start();
     }
 
     @Override
     protected void onStop() {
-        mRunMap.stop();
+        mRunTracker.stop();
 
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void onUpdate(String time) {
+        mTimerText.setText(time);
     }
 
     private void setupAppBar() {
@@ -79,8 +99,8 @@ public class SessionActivity extends AppCompatActivity {
         });
     }
 
-    private void setupMap() {
-        mRunMap = new RunMap(this, R.id.map_fragment);
-        mRunMap.setLocationView(mLocationView); // TODO: This won't be needed later
+    private void setupTracker() {
+        mRunTracker = new RunTracker(this, R.id.map_fragment);
+        mRunTracker.setLocationView(mLocationView); // TODO: This won't be needed later
     }
 }

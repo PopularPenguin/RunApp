@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.map;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -10,10 +11,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public class RunMap implements LocationService.ConnectionStatus,
+public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
         MapService.OnReadyListener {
 
@@ -22,11 +26,12 @@ public class RunMap implements LocationService.ConnectionStatus,
 
     private GoogleMap mGoogleMap;
     private Location mLocation;
-    private Marker mCurrentLocation;
+    private Marker mCurrentLocationMarker;
+    private List<LatLng> mLocationList = new ArrayList<>();
 
     private TextView mLocationView;
 
-    public RunMap(AppCompatActivity activity, int resId) {
+    public RunTracker(AppCompatActivity activity, int resId) {
         mLocationService = new LocationService(activity);
         mLocationService.setOnLocationChangedListener(this);
 
@@ -38,7 +43,7 @@ public class RunMap implements LocationService.ConnectionStatus,
         mLocationView = view;
     }
 
-    // TODO: Move maybe?
+    // TODO: Move maybe? Delete later if not needed
     private String getLocationText() {
         if (mLocation == null) {
             return "---";
@@ -63,12 +68,19 @@ public class RunMap implements LocationService.ConnectionStatus,
     @Override
     public void onLocationUpdate(Location location) {
         mLocation = location;
+        mLocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
         if (mLocationView != null) {
             mLocationView.setText(getLocationText());
         }
 
+        if (mGoogleMap == null) {
+            return;
+        }
+
         updateMarkerPosition(location);
+        updatePolylines();
+        updateCamera(location);
     }
 
     @Override
@@ -76,29 +88,40 @@ public class RunMap implements LocationService.ConnectionStatus,
         mGoogleMap = map;
     }
 
-    // https://stackoverflow.com/questions/33739971/
-    // how-to-show-my-current-location-in-google-map-android-using-google-api-client
     private void updateMarkerPosition(Location location) {
-        if (mGoogleMap == null) {
-            return;
-        }
-
-        if (mCurrentLocation != null) {
-            mCurrentLocation.remove();
+        if (mCurrentLocationMarker != null) {
+            mCurrentLocationMarker.remove();
         }
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .title("Here I am!");
-        mCurrentLocation = mGoogleMap.addMarker(markerOptions);
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.runicon));
 
+        mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
+    }
+
+    // TODO: Move into a callback from the timer once the stopwatch is set up, ping every 2-3 seconds
+    private void updatePolylines() {
+        PolylineOptions polyline = new PolylineOptions()
+                .geodesic(true)
+                .add(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()))
+                .color(Color.BLACK)
+                .visible(true);
+
+        mGoogleMap.addPolyline(polyline);
+    }
+
+    private void updateCamera(Location location) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(location.getLatitude(), location.getLongitude()))
                 .bearing(0f)
                 .tilt(45f)
                 .zoom(17f)
                 .build();
+
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }
