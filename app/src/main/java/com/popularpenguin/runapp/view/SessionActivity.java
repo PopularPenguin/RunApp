@@ -17,7 +17,7 @@ import com.popularpenguin.runapp.map.StopWatch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SessionActivity extends AppCompatActivity implements StopWatch.StopWatchListener {
+public class SessionActivity extends AppCompatActivity {
 
     @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -27,7 +27,6 @@ public class SessionActivity extends AppCompatActivity implements StopWatch.Stop
     @BindView(R.id.toolbar_session) Toolbar mToolbar;
 
     private RunTracker mRunTracker;
-    private StopWatch mStopWatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +42,11 @@ public class SessionActivity extends AppCompatActivity implements StopWatch.Stop
 
         mRunTracker = new RunTracker(this, R.id.map_fragment);
         mRunTracker.setLocationView(mLocationView);
+        mRunTracker.setStopWatchView(mTimerText);
 
         if (savedInstanceState != null) {
             mRunTracker.setBundle(savedInstanceState);
         }
-
-        mStopWatch = new StopWatch(0L);
-        mStopWatch.setStopWatchListener(this);
 
        // mTimer.setBase(SystemClock.elapsedRealtime());
        // mTimer.start();
@@ -60,7 +57,6 @@ public class SessionActivity extends AppCompatActivity implements StopWatch.Stop
         super.onStart();
 
         mRunTracker.start();
-        mStopWatch.start();
     }
 
     @Override
@@ -80,11 +76,6 @@ public class SessionActivity extends AppCompatActivity implements StopWatch.Stop
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle(RunTracker.BUNDLE_KEY, mRunTracker.getBundle());
-    }
-
-    @Override
-    public void onUpdate(String time) {
-        mTimerText.setText(time);
     }
 
     private void setupAppBar() {

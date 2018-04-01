@@ -20,7 +20,8 @@ import java.util.Locale;
 
 public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
-        MapService.OnReadyListener {
+        MapService.OnReadyListener,
+        StopWatch.StopWatchListener {
 
     public static final String BUNDLE_KEY = "latlng";
     private static final String LATITUDE_KEY = "latitudes";
@@ -34,7 +35,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private Marker mCurrentLocationMarker;
     private List<LatLng> mLocationList = new ArrayList<>();
 
+    private StopWatch mStopWatch;
+
     private TextView mLocationView;
+    private TextView mStopWatchView;
 
     public RunTracker(AppCompatActivity activity, int resId) {
         mLocationService = new LocationService(activity);
@@ -42,6 +46,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
+
+        mStopWatch = new StopWatch(0L);
+        mStopWatch.setStopWatchListener(this);
     }
 
     /** Create a bundle to pass to the parent activity's onSaveInstanceState */
@@ -87,6 +94,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mLocationView = view;
     }
 
+    public void setStopWatchView(TextView view) {
+        mStopWatchView = view;
+    }
+
     // TODO: Move maybe? Delete later if not needed
     private String getLocationText() {
         if (mLocation == null) {
@@ -130,6 +141,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onMapReady(GoogleMap map) {
         mGoogleMap = map;
+        mStopWatch.start();
+    }
+
+    @Override
+    public void onUpdate(String time) {
+        mStopWatchView.setText(time);
     }
 
     private void updateMarkerPosition(Location location) {
