@@ -2,6 +2,7 @@ package com.popularpenguin.runapp.map;
 
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
@@ -21,6 +22,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
         MapService.OnReadyListener {
 
+    public static final String BUNDLE_KEY = "latlng";
+    private static final String LATITUDE_KEY = "latitudes";
+    private static final String LONGITUDE_KEY = "longitudes";
+
     private LocationService mLocationService;
     private MapService mMapService;
 
@@ -37,6 +42,45 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
+    }
+
+    /** Create a bundle to pass to the parent activity's onSaveInstanceState */
+    public Bundle getBundle() {
+        Bundle bundle = new Bundle();
+        ArrayList<String> latList = new ArrayList<>();
+        ArrayList<String> longList = new ArrayList<>();
+
+        for (LatLng latlng : mLocationList) {
+            String latitude = Double.toString(latlng.latitude);
+            String longitude = Double.toString(latlng.longitude);
+
+            latList.add(latitude);
+            longList.add(longitude);
+        }
+
+        bundle.putStringArrayList(LATITUDE_KEY, latList);
+        bundle.putStringArrayList(LONGITUDE_KEY, longList);
+
+        return bundle;
+    }
+
+    /** Extract data from the parent activity's saved instance state */
+    public void setBundle(Bundle bundle) {
+        Bundle locationBundle = bundle.getBundle(BUNDLE_KEY);
+
+        List<String> latList = locationBundle.getStringArrayList("latitudes");
+        List<String> longList = locationBundle.getStringArrayList("longitudes");
+
+        List<LatLng> latLngList = new ArrayList<>();
+
+        for (int i = 0; i < latList.size() && i < longList.size(); i++) {
+            Double latitude = Double.parseDouble(latList.get(i));
+            Double longitude = Double.parseDouble(longList.get(i));
+
+            latLngList.add(new LatLng(latitude, longitude));
+        }
+
+        mLocationList = latLngList;
     }
 
     public void setLocationView(TextView view) {
@@ -105,9 +149,15 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     // TODO: Move into a callback from the timer once the stopwatch is set up, ping every 2-3 seconds
     private void updatePolylines() {
+        if (mLocationList.size() < 2) {
+            return;
+        }
+
         PolylineOptions polyline = new PolylineOptions()
                 .geodesic(true)
-                .add(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()))
+                .addAll(mLocationList)
+                //.add(mLocationList.get(mLocationList.size() - 2))
+                //.add(mLocationList.get(mLocationList.size() - 1))
                 .color(Color.BLACK)
                 .visible(true);
 

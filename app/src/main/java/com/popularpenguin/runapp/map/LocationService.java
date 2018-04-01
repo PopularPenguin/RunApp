@@ -88,8 +88,8 @@ class LocationService implements GoogleApiClient.ConnectionCallbacks,
     private void setLocationRequest() {
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(500)
-                .setFastestInterval(500);
+                .setInterval(3000)
+                .setFastestInterval(3000);
     }
 
     // Interfaces + Listener ///////////////////////////////////////////////////////////////////

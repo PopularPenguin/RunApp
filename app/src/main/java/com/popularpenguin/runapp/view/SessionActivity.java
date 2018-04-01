@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.view;
 
+import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -40,7 +41,12 @@ public class SessionActivity extends AppCompatActivity implements StopWatch.Stop
 
         setupAppBar();
 
-        setupTracker();
+        mRunTracker = new RunTracker(this, R.id.map_fragment);
+        mRunTracker.setLocationView(mLocationView);
+
+        if (savedInstanceState != null) {
+            mRunTracker.setBundle(savedInstanceState);
+        }
 
         mStopWatch = new StopWatch(0L);
         mStopWatch.setStopWatchListener(this);
@@ -68,6 +74,12 @@ public class SessionActivity extends AppCompatActivity implements StopWatch.Stop
     protected void onDestroy() {
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(RunTracker.BUNDLE_KEY, mRunTracker.getBundle());
     }
 
     @Override
