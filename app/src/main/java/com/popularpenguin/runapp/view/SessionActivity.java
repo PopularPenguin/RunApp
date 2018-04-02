@@ -1,18 +1,14 @@
 package com.popularpenguin.runapp.view;
 
-import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.map.RunTracker;
-import com.popularpenguin.runapp.map.StopWatch;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +19,6 @@ public class SessionActivity extends AppCompatActivity {
     @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_location_test) TextView mLocationView;
     @BindView(R.id.tv_stopwatch) TextView mTimerText;
-    //@BindView(R.id.run_timer) Chronometer mTimer;
     @BindView(R.id.toolbar_session) Toolbar mToolbar;
 
     private RunTracker mRunTracker;
@@ -40,16 +35,11 @@ public class SessionActivity extends AppCompatActivity {
 
         setupAppBar();
 
-        mRunTracker = new RunTracker(this, R.id.map_fragment);
-        mRunTracker.setLocationView(mLocationView);
-        mRunTracker.setStopWatchView(mTimerText);
+        setupTracker();
 
         if (savedInstanceState != null) {
             mRunTracker.setBundle(savedInstanceState);
         }
-
-       // mTimer.setBase(SystemClock.elapsedRealtime());
-       // mTimer.start();
     }
 
     @Override
@@ -64,12 +54,6 @@ public class SessionActivity extends AppCompatActivity {
         mRunTracker.stop();
 
         super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
     }
 
     @Override
@@ -104,6 +88,7 @@ public class SessionActivity extends AppCompatActivity {
 
     private void setupTracker() {
         mRunTracker = new RunTracker(this, R.id.map_fragment);
-        mRunTracker.setLocationView(mLocationView); // TODO: This won't be needed later
+        mRunTracker.setLocationView(mLocationView);
+        mRunTracker.setStopWatchView(mTimerText);// TODO: This won't be needed later?
     }
 }

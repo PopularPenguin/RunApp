@@ -145,7 +145,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     @Override
-    public void onUpdate(String time) {
+    public void onStopWatchUpdate(String time) {
         mStopWatchView.setText(time);
     }
 
@@ -164,7 +164,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
     }
 
-    // TODO: Move into a callback from the timer once the stopwatch is set up, ping every 2-3 seconds
     private void updatePolylines() {
         if (mLocationList.size() < 2) {
             return;

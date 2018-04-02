@@ -20,6 +20,9 @@ import com.google.android.gms.location.LocationServices;
 class LocationService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private static final long UPDATE_INTERVAL = 2000L;
+    private static final long UPDATE_FASTEST_INTERVAL = 2000L;
+
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -88,8 +91,8 @@ class LocationService implements GoogleApiClient.ConnectionCallbacks,
     private void setLocationRequest() {
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(3000)
-                .setFastestInterval(3000);
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(UPDATE_FASTEST_INTERVAL);
     }
 
     // Interfaces + Listener ///////////////////////////////////////////////////////////////////

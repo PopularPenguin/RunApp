@@ -25,7 +25,7 @@ public class StopWatch {
 
             displayText = String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
 
-            listener.onUpdate(displayText);
+            listener.onStopWatchUpdate(displayText);
 
             handler.postDelayed(this, 0);
         }
@@ -68,6 +68,6 @@ public class StopWatch {
     }
 
     public interface StopWatchListener {
-        void onUpdate(String time);
+        void onStopWatchUpdate(String time);
     }
 }
