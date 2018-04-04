@@ -127,7 +127,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (!isStopWatchBound) {
             Intent intent = new Intent(mContext, StopWatchService.class);
             mContext.startService(intent);
-            mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            mContext.bindService(intent, mStopWatchServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
@@ -138,7 +138,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     public void destroy() {
         if (isStopWatchBound) {
-            mContext.unbindService(mServiceConnection);
+            mContext.unbindService(mStopWatchServiceConnection);
             isStopWatchBound = false;
         }
 
@@ -191,6 +191,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     private void updatePolylines() {
+        // TODO: Store the location list inside the LocationService (which runs as a service)
         if (mLocationList.size() < 2) {
             return;
         }
@@ -218,7 +219,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     /** Service connection for the stopwatch */
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    private ServiceConnection mStopWatchServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
