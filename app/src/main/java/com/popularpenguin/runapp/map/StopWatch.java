@@ -23,6 +23,9 @@ public class StopWatch {
             minutes = seconds / 60;
             hours = minutes / 60;
 
+            seconds %= 60; // reset the seconds field to 0 when passing 60 seconds
+            minutes %= 60; // reset the minutes field to 0 when passing 60 minutes
+
             displayText = String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
 
             listener.onStopWatchUpdate(displayText);
@@ -30,10 +33,6 @@ public class StopWatch {
             handler.postDelayed(this, 0);
         }
     };
-
-    public StopWatch(long endTime) {
-
-    }
 
     public void start() {
         startTime = SystemClock.uptimeMillis();
