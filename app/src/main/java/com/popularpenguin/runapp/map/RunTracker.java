@@ -47,7 +47,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
 
-        mStopWatch = new StopWatch(0L);
+        mStopWatch = new StopWatch();
         mStopWatch.setStopWatchListener(this);
     }
 
