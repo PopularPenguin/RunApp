@@ -13,4 +13,36 @@ public class Challenge {
         this.timeToComplete = timeToComplete;
         this.isCompleted = isCompleted;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getTimeToComplete() {
+        return timeToComplete;
+    }
+
+    public void setTimeToComplete(long timeToComplete) {
+        this.timeToComplete = timeToComplete;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
 }

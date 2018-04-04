@@ -5,12 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ChallengeViewHolder> {
@@ -30,7 +32,7 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
     @NonNull
     @Override
     public ChallengeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layout = R.layout.list_item; // TODO: Make a layout file
+        int layout = R.layout.list_item;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(layout, parent, false);
 
@@ -52,8 +54,8 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
     }
 
     class ChallengeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        // TODO: Bind Views here
+        @BindView(R.id.tv_item_name) TextView nameText;
+        @BindView(R.id.tv_item_description) TextView descriptionText;
 
         ChallengeViewHolder(View itemView) {
             super(itemView);
@@ -64,7 +66,8 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
         }
 
         void bind(@NonNull Challenge challenge) {
-
+            nameText.setText(challenge.getName());
+            descriptionText.setText(challenge.getDescription());
         }
 
         void clearAnimation() {
