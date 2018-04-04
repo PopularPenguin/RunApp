@@ -1,8 +1,13 @@
 package com.popularpenguin.runapp.map;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
@@ -21,11 +26,13 @@ import java.util.Locale;
 public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
         MapService.OnReadyListener,
-        StopWatch.StopWatchListener {
+        StopWatchService.StopWatchListener {
 
     public static final String BUNDLE_KEY = "latlng";
     private static final String LATITUDE_KEY = "latitudes";
     private static final String LONGITUDE_KEY = "longitudes";
+
+    private Context mContext;
 
     private LocationService mLocationService;
     private MapService mMapService;
@@ -35,7 +42,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private Marker mCurrentLocationMarker;
     private List<LatLng> mLocationList = new ArrayList<>();
 
-    private StopWatch mStopWatch;
+    private StopWatchService mStopWatchService;
+    private boolean isStopWatchBound = false;
 
     private TextView mLocationView;
     private TextView mStopWatchView;
@@ -47,8 +55,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
 
-        mStopWatch = new StopWatch();
-        mStopWatch.setStopWatchListener(this);
+        mStopWatchService = new StopWatchService();
+        mStopWatchService.setStopWatchListener(this);
+
+        mContext = activity;
     }
 
     /** Create a bundle to pass to the parent activity's onSaveInstanceState */
@@ -113,11 +123,27 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void start() {
         mLocationService.connect();
+
+        if (!isStopWatchBound) {
+            Intent intent = new Intent(mContext, StopWatchService.class);
+            mContext.startService(intent);
+            mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
     public void stop() {
         mLocationService.disconnect();
+    }
+
+    public void destroy() {
+        if (isStopWatchBound) {
+            mContext.unbindService(mServiceConnection);
+            isStopWatchBound = false;
+        }
+
+        Intent intent = new Intent(mContext, StopWatchService.class);
+        mContext.stopService(intent);
     }
 
     @Override
@@ -141,7 +167,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onMapReady(GoogleMap map) {
         mGoogleMap = map;
-        mStopWatch.start();
+        mStopWatchService.start();
     }
 
     @Override
@@ -190,4 +216,20 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
+
+    /** Service connection for the stopwatch */
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            StopWatchService.StopWatchBinder binder = (StopWatchService.StopWatchBinder) iBinder;
+            mStopWatchService = binder.getService();
+            isStopWatchBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isStopWatchBound = false;
+        }
+    };
 }

@@ -1,11 +1,21 @@
 package com.popularpenguin.runapp.map;
 
+import android.app.Service;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Binder;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 
 import java.util.Locale;
 
-public class StopWatch {
+public class StopWatchService extends Service {
+
+    private static final String TAG = StopWatchService.class.getSimpleName();
+
+    private IBinder mBinder = new StopWatchBinder();
 
     private long startTime, millisTime, timeBuffer, updateTime = 0L;
     private int hours, minutes, seconds, millis;
@@ -34,6 +44,35 @@ public class StopWatch {
         }
     };
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        handler.postDelayed(runnable, 0);
+
+        return mBinder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        handler.postDelayed(runnable, 0);
+
+        super.onRebind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        handler.removeCallbacks(runnable);
+
+        return true;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        start();
+
+        return START_STICKY;
+    }
+
     public void start() {
         startTime = SystemClock.uptimeMillis();
         handler.postDelayed(runnable, 0);
@@ -54,6 +93,12 @@ public class StopWatch {
         seconds = 0;
 
         displayText = "0:00:00";
+    }
+
+    public class StopWatchBinder extends Binder {
+        StopWatchService getService() {
+            return StopWatchService.this;
+        }
     }
 
     public String getDisplayText() {
