@@ -27,27 +27,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Make into a service
-public class LocationService implements GoogleApiClient.ConnectionCallbacks,
+public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private static final long UPDATE_INTERVAL = 2000L;
-    private static final long UPDATE_FASTEST_INTERVAL = 2000L;
+    private static final long UPDATE_INTERVAL = 20000L; // update every 20 seconds
+    private static final long UPDATE_FASTEST_INTERVAL = 2000L; // 2 seconds
 
-    private Context mContext;
+    private IBinder mBinder = new LocationBinder();
+
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private Location mLocation;
     private List<LatLng> mLocationList = new ArrayList<>();
-
-    LocationService(Context context) {
-        mContext = context;
-
-        setClient();
-        setLocationCallbackListener();
-    }
 
     public void connect() {
         mGoogleApiClient.connect();
@@ -61,10 +55,24 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
         return mLocationList;
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        setClient();
+        setLocationCallbackListener();
+
+        return START_STICKY;
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission(mContext,
+                ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
 
@@ -73,7 +81,7 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
 
         setLocationRequest();
 
-        LocationServices.getFusedLocationProviderClient(mContext)
+        LocationServices.getFusedLocationProviderClient(this)
                 .requestLocationUpdates(mLocationRequest, mLocationCallback, null);
     }
 
@@ -90,7 +98,7 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
     private synchronized void setClient() {
         Log.i(TAG, "setClient()");
 
-        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -113,6 +121,12 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL)
                 .setFastestInterval(UPDATE_FASTEST_INTERVAL);
+    }
+
+    public class LocationBinder extends Binder {
+        LocationService getService() {
+            return LocationService.this;
+        }
     }
 
     // Interfaces + Listener ///////////////////////////////////////////////////////////////////

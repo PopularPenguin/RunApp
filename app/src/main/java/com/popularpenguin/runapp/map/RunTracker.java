@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private Context mContext;
 
     private LocationService mLocationService;
+    private boolean isLocationBound = false;
+
     private MapService mMapService;
 
     private GoogleMap mGoogleMap;
@@ -49,13 +52,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private TextView mStopWatchView;
 
     public RunTracker(AppCompatActivity activity, int resId) {
-        mLocationService = new LocationService(activity);
-        mLocationService.setOnLocationChangedListener(this);
+        //mLocationService = new LocationService();
+        //mLocationService.setOnLocationChangedListener(this);
 
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
-
-        //mStopWatchService = new StopWatchService();
 
         mContext = activity;
     }
@@ -121,7 +122,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     @Override
     public void start() {
-        mLocationService.connect();
+        if (!isLocationBound) {
+            Intent intent = new Intent(mContext, LocationService.class);
+            mContext.startService(intent);
+            mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+
+        //mLocationService.connect();
 
         if (!isStopWatchBound) {
             Intent intent = new Intent(mContext, StopWatchService.class);
@@ -132,7 +139,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     @Override
     public void stop() {
-        mLocationService.disconnect();
+        //mLocationService.disconnect();
     }
 
     public void destroy() {
@@ -142,6 +149,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
 
         Intent intent = new Intent(mContext, StopWatchService.class);
+        mContext.stopService(intent);
+
+        if (isLocationBound) {
+            mContext.unbindService(mLocationServiceConnection);
+            isLocationBound = false;
+        }
+
+        intent = new Intent(mContext, LocationService.class);
         mContext.stopService(intent);
     }
 
@@ -216,9 +231,26 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    /** Service connection for location updates */
+    private ServiceConnection mLocationServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            LocationService.LocationBinder binder = (LocationService.LocationBinder) iBinder;
+            mLocationService = binder.getService();
+            mLocationService.connect();
+            mLocationService.setOnLocationChangedListener(RunTracker.this);
+            isLocationBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isLocationBound = false;
+            mLocationService.disconnect();
+        }
+    };
+
     /** Service connection for the stopwatch */
     private ServiceConnection mStopWatchServiceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             StopWatchService.StopWatchBinder binder = (StopWatchService.StopWatchBinder) iBinder;
