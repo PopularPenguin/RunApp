@@ -55,8 +55,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
 
-        mStopWatchService = new StopWatchService();
-        mStopWatchService.setStopWatchListener(this);
+        //mStopWatchService = new StopWatchService();
 
         mContext = activity;
     }
@@ -167,7 +166,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onMapReady(GoogleMap map) {
         mGoogleMap = map;
-        mStopWatchService.start();
     }
 
     @Override
@@ -225,6 +223,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             StopWatchService.StopWatchBinder binder = (StopWatchService.StopWatchBinder) iBinder;
             mStopWatchService = binder.getService();
+            mStopWatchService.setStopWatchListener(RunTracker.this);
             isStopWatchBound = true;
         }
 

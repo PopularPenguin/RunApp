@@ -38,7 +38,9 @@ public class StopWatchService extends Service {
 
             displayText = String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
 
-            listener.onStopWatchUpdate(displayText);
+            if (listener != null) {
+                listener.onStopWatchUpdate(displayText);
+            }
 
             handler.postDelayed(this, 0);
         }
@@ -99,10 +101,6 @@ public class StopWatchService extends Service {
         StopWatchService getService() {
             return StopWatchService.this;
         }
-    }
-
-    public String getDisplayText() {
-        return displayText;
     }
 
     private StopWatchListener listener;
