@@ -5,6 +5,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
@@ -19,6 +20,7 @@ public class SessionActivity extends AppCompatActivity {
     @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_location_test) TextView mLocationView;
     @BindView(R.id.tv_stopwatch) TextView mTimerText;
+    @BindView(R.id.btn_stopwatch) Button mTimerButton;
     @BindView(R.id.toolbar_session) Toolbar mToolbar;
 
     private RunTracker mRunTracker;
@@ -97,5 +99,6 @@ public class SessionActivity extends AppCompatActivity {
         mRunTracker = new RunTracker(this, R.id.map_fragment);
         mRunTracker.setLocationView(mLocationView);
         mRunTracker.setStopWatchView(mTimerText);// TODO: This won't be needed later?
+        mRunTracker.setButtonView(mTimerButton);
     }
 }

@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.popularpenguin.runapp.data.Challenge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private Context mContext;
 
+    private Challenge mChallenge;
+
     private LocationService mLocationService;
     private boolean isLocationBound = false;
 
@@ -49,6 +53,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private long mStartTime;
     private boolean isStopWatchBound = false;
 
+    private Button mButtonView;
     private TextView mLocationView;
     private TextView mStopWatchView;
 
@@ -57,6 +62,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mMapService.setOnReadyListener(this);
 
         mContext = activity;
+
+        // TODO: Challenge test code, remove later when challenge gets passed from ListActivity
+        mChallenge = new Challenge("Test Challenge",
+                "This is a test",
+                10000L,
+                false);
     }
 
     /** Create a bundle to pass to the parent activity's onSaveInstanceState */
@@ -76,7 +87,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         bundle.putStringArrayList(LATITUDE_KEY, latList);
         bundle.putStringArrayList(LONGITUDE_KEY, longList);
 
-        bundle.putLong(StopWatchService.START_TIME_EXTRA, mStopWatchService.getTime());
+        if (mStopWatchService != null) {
+            bundle.putLong(StopWatchService.START_TIME_EXTRA, mStopWatchService.getTime());
+        }
 
         return bundle;
     }
@@ -100,6 +113,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStartTime = locationBundle.getLong(StopWatchService.START_TIME_EXTRA, 0L);
 
         mLocationList = latLngList;
+    }
+
+    public void setButtonView(Button button) {
+        mButtonView = button;
+        button.setOnClickListener(view -> {
+            startLocationService();
+            startStopWatch();
+        });
     }
 
     public void setLocationView(TextView view) {
@@ -145,8 +166,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     @Override
     public void start() {
-        startLocationService();
-        startStopWatch();
+        if (mStartTime != 0) {
+            startLocationService();
+            startStopWatch();
+        }
     }
 
     @Override
@@ -184,6 +207,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onStopWatchUpdate(String time) {
         mStopWatchView.setText(time);
+
+        if (mStopWatchService.getTime() > mChallenge.getTimeToComplete()) {
+            mStopWatchView.setTextColor(Color.RED);
+        }
+        else if (mStopWatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
+            mStopWatchView.setTextColor(Color.YELLOW);
+        }
     }
 
     /** Starts the Location service */
@@ -222,7 +252,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     private void updatePolylines() {
-        // TODO: Store the location list inside the LocationService (which runs as a service)
         List<LatLng> list = mLocationService.getLocationList();
 
         if (list.size() < 2) {

@@ -10,4 +10,5 @@ public class Session {
     UUID uuid;
     long time;
     List<LatLng> route;
+    boolean isCompleted;
 }
