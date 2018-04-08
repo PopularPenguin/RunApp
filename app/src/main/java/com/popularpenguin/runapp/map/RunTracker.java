@@ -52,9 +52,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private TextView mStopWatchView;
 
     public RunTracker(AppCompatActivity activity, int resId) {
-        //mLocationService = new LocationService();
-        //mLocationService.setOnLocationChangedListener(this);
-
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
 
@@ -163,7 +160,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onLocationUpdate(Location location) {
         mLocation = location;
-        mLocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
         if (mLocationView != null) {
             mLocationView.setText(getLocationText());
@@ -205,13 +201,15 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private void updatePolylines() {
         // TODO: Store the location list inside the LocationService (which runs as a service)
-        if (mLocationList.size() < 2) {
+        List<LatLng> list = mLocationService.getLocationList();
+
+        if (list.size() < 2) {
             return;
         }
 
         PolylineOptions polyline = new PolylineOptions()
                 .geodesic(true)
-                .addAll(mLocationList)
+                .addAll(list)
                 //.add(mLocationList.get(mLocationList.size() - 2))
                 //.add(mLocationList.get(mLocationList.size() - 1))
                 .color(Color.BLACK)
