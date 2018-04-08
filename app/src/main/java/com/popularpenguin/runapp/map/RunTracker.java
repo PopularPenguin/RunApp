@@ -105,6 +105,26 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStopWatchView = view;
     }
 
+    /** Start the StopWatch service */
+    public void startStopWatch() {
+        if (!isStopWatchBound) {
+            Intent intent = new Intent(mContext, StopWatchService.class);
+            mContext.startService(intent);
+            mContext.bindService(intent, mStopWatchServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+    }
+
+    /** Stop the StopWatch service */
+    public void stopStopWatch() {
+        if (isStopWatchBound) {
+            mContext.unbindService(mStopWatchServiceConnection);
+            isStopWatchBound = false;
+        }
+
+        Intent intent = new Intent(mContext, StopWatchService.class);
+        mContext.stopService(intent);
+    }
+
     // TODO: Move maybe? Delete later if not needed
     private String getLocationText() {
         if (mLocation == null) {
@@ -119,42 +139,18 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     @Override
     public void start() {
-        if (!isLocationBound) {
-            Intent intent = new Intent(mContext, LocationService.class);
-            mContext.startService(intent);
-            mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
-        }
-
-        //mLocationService.connect();
-
-        if (!isStopWatchBound) {
-            Intent intent = new Intent(mContext, StopWatchService.class);
-            mContext.startService(intent);
-            mContext.bindService(intent, mStopWatchServiceConnection, Context.BIND_AUTO_CREATE);
-        }
+        startLocationService();
+        startStopWatch();
     }
 
     @Override
     public void stop() {
-        //mLocationService.disconnect();
+        // ...
     }
 
     public void destroy() {
-        if (isStopWatchBound) {
-            mContext.unbindService(mStopWatchServiceConnection);
-            isStopWatchBound = false;
-        }
-
-        Intent intent = new Intent(mContext, StopWatchService.class);
-        mContext.stopService(intent);
-
-        if (isLocationBound) {
-            mContext.unbindService(mLocationServiceConnection);
-            isLocationBound = false;
-        }
-
-        intent = new Intent(mContext, LocationService.class);
-        mContext.stopService(intent);
+        stopStopWatch();
+        stopLocationService();
     }
 
     @Override
@@ -182,6 +178,26 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onStopWatchUpdate(String time) {
         mStopWatchView.setText(time);
+    }
+
+    /** Starts the Location service */
+    private void startLocationService() {
+        if (!isLocationBound) {
+            Intent intent = new Intent(mContext, LocationService.class);
+            mContext.startService(intent);
+            mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+    }
+
+    /** Stops the Location service */
+    private void stopLocationService() {
+        if (isLocationBound) {
+            mContext.unbindService(mLocationServiceConnection);
+            isLocationBound = false;
+        }
+
+        Intent intent = new Intent(mContext, LocationService.class);
+        mContext.stopService(intent);
     }
 
     private void updateMarkerPosition(Location location) {

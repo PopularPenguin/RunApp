@@ -75,6 +75,10 @@ public class StopWatchService extends Service {
         return START_STICKY;
     }
 
+    public long getTime() {
+        return millisTime;
+    }
+
     public void start() {
         startTime = SystemClock.uptimeMillis();
         handler.postDelayed(runnable, 0);
