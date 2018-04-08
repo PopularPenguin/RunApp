@@ -46,6 +46,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private List<LatLng> mLocationList = new ArrayList<>();
 
     private StopWatchService mStopWatchService;
+    private long mStartTime;
     private boolean isStopWatchBound = false;
 
     private TextView mLocationView;
@@ -75,6 +76,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         bundle.putStringArrayList(LATITUDE_KEY, latList);
         bundle.putStringArrayList(LONGITUDE_KEY, longList);
 
+        bundle.putLong(StopWatchService.START_TIME_EXTRA, mStopWatchService.getTime());
+
         return bundle;
     }
 
@@ -94,6 +97,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
             latLngList.add(new LatLng(latitude, longitude));
         }
 
+        mStartTime = locationBundle.getLong(StopWatchService.START_TIME_EXTRA, 0L);
+
         mLocationList = latLngList;
     }
 
@@ -109,7 +114,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void startStopWatch() {
         if (!isStopWatchBound) {
             Intent intent = new Intent(mContext, StopWatchService.class);
-            intent.putExtra(StopWatchService.START_TIME_EXTRA, 5000L);
+            intent.putExtra(StopWatchService.START_TIME_EXTRA, mStartTime);
             mContext.startService(intent);
             mContext.bindService(intent, mStopWatchServiceConnection, Context.BIND_AUTO_CREATE);
         }

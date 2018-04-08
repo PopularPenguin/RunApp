@@ -79,7 +79,7 @@ public class StopWatchService extends Service {
     }
 
     public long getTime() {
-        return millisTime;
+        return updateTime;
     }
 
     public void start(long offset) {
