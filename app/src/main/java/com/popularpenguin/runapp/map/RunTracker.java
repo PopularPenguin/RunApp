@@ -109,6 +109,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void startStopWatch() {
         if (!isStopWatchBound) {
             Intent intent = new Intent(mContext, StopWatchService.class);
+            intent.putExtra(StopWatchService.START_TIME_EXTRA, 5000L);
             mContext.startService(intent);
             mContext.bindService(intent, mStopWatchServiceConnection, Context.BIND_AUTO_CREATE);
         }

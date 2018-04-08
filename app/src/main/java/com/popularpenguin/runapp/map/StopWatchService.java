@@ -15,6 +15,8 @@ public class StopWatchService extends Service {
 
     private static final String TAG = StopWatchService.class.getSimpleName();
 
+    public static final String START_TIME_EXTRA = "startTime";
+
     private IBinder mBinder = new StopWatchBinder();
 
     private long startTime, millisTime, timeBuffer, updateTime = 0L;
@@ -70,7 +72,8 @@ public class StopWatchService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        start();
+        long offset = intent.getLongExtra(START_TIME_EXTRA, 0L);
+        start(offset);
 
         return START_STICKY;
     }
@@ -79,8 +82,8 @@ public class StopWatchService extends Service {
         return millisTime;
     }
 
-    public void start() {
-        startTime = SystemClock.uptimeMillis();
+    public void start(long offset) {
+        startTime = SystemClock.uptimeMillis() - offset;
         handler.postDelayed(runnable, 0);
     }
 
