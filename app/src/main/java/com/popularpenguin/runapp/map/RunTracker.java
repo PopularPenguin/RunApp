@@ -31,7 +31,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         MapService.OnReadyListener,
         StopWatchService.StopWatchListener {
 
-    public static final String BUNDLE_KEY = "latlng";
+    public static final String CHALLENGE_BUNDLE_KEY = "challenge";
+    public static final String TRACKER_BUNDLE_KEY = "trackerData";
     private static final String LATITUDE_KEY = "latitudes";
     private static final String LONGITUDE_KEY = "longitudes";
 
@@ -61,13 +62,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
 
-        mContext = activity;
+        mChallenge = activity.getIntent().getParcelableExtra(CHALLENGE_BUNDLE_KEY);
 
-        // TODO: Challenge test code, remove later when challenge gets passed from ListActivity
-        mChallenge = new Challenge("Test Challenge",
-                "This is a test",
-                10000L,
-                false);
+        mContext = activity;
     }
 
     /** Create a bundle to pass to the parent activity's onSaveInstanceState */
@@ -96,7 +93,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     /** Extract data from the parent activity's saved instance state */
     public void setBundle(Bundle bundle) {
-        Bundle locationBundle = bundle.getBundle(BUNDLE_KEY);
+        Bundle locationBundle = bundle.getBundle(TRACKER_BUNDLE_KEY);
 
         List<String> latList = locationBundle.getStringArrayList("latitudes");
         List<String> longList = locationBundle.getStringArrayList("longitudes");

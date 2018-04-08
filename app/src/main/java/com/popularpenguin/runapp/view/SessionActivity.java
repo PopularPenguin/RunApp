@@ -68,7 +68,7 @@ public class SessionActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBundle(RunTracker.BUNDLE_KEY, mRunTracker.getBundle());
+        outState.putBundle(RunTracker.TRACKER_BUNDLE_KEY, mRunTracker.getBundle());
     }
 
     private void setupAppBar() {

@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
+import com.popularpenguin.runapp.map.RunTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class ListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler {
 
     @BindView(R.id.rv_list) RecyclerView mRecyclerView;
+
+    private List<Challenge> mChallengeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,7 @@ public class ListActivity extends AppCompatActivity implements
     private void setRecyclerView() {
         // TODO: Remove challenges here and make some real ones in a separate class
         List<Challenge> challengeList = new ArrayList<>();
-        challengeList.add(new Challenge("First",
+        challengeList.add(new Challenge("First Challenge",
                 "Run an 8 minute mile",
                 1000 * 60 * 8 /* 8 minutes */,
                 false));
@@ -84,8 +87,18 @@ public class ListActivity extends AppCompatActivity implements
                 "Run a 6 minute mile",
                 1000 * 60 * 6 /* 6 minutes */,
                 false));
+        challengeList.add(new Challenge("Test Challenge 1",
+                "Run a 10 second mile LOL",
+                1000 * 10,
+                false));
+        challengeList.add(new Challenge("Test Challenge 2",
+                "Run a 30 second mile!!!",
+                1000 * 30,
+                false));
 
-        ChallengeAdapter adapter = new ChallengeAdapter(challengeList, this);
+        mChallengeList = challengeList;
+
+        ChallengeAdapter adapter = new ChallengeAdapter(mChallengeList, this);
         mRecyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -95,6 +108,9 @@ public class ListActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(int position) {
-        startActivity(new Intent(this, SessionActivity.class));
+        Intent intent = new Intent(this, SessionActivity.class);
+        intent.putExtra(RunTracker.CHALLENGE_BUNDLE_KEY, mChallengeList.get(position));
+
+        startActivity(intent);
     }
 }
