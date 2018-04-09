@@ -2,7 +2,6 @@ package com.popularpenguin.runapp.map;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -11,9 +10,11 @@ import android.support.annotation.Nullable;
 
 import java.util.Locale;
 
-public class StopWatchService extends Service {
+/** Stopwatch to track time spent doing a challenge */
+// https://www.android-examples.com/android-create-stopwatch-example-tutorial-in-android-studio/
+public class StopwatchService extends Service {
 
-    private static final String TAG = StopWatchService.class.getSimpleName();
+    private static final String TAG = StopwatchService.class.getSimpleName();
 
     public static final String START_TIME_EXTRA = "startTime";
 
@@ -105,8 +106,8 @@ public class StopWatchService extends Service {
     }
 
     public class StopWatchBinder extends Binder {
-        StopWatchService getService() {
-            return StopWatchService.this;
+        StopwatchService getService() {
+            return StopwatchService.this;
         }
     }
 

@@ -32,7 +32,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private static final long UPDATE_INTERVAL = 20000L; // update every 20 seconds
+    private static final long UPDATE_INTERVAL = 2000L; // update every 20 seconds
     private static final long UPDATE_FASTEST_INTERVAL = 2000L; // 2 seconds
 
     private IBinder mBinder = new LocationBinder();

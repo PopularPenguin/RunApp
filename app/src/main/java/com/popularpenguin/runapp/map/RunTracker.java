@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -29,12 +29,15 @@ import java.util.Locale;
 public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
         MapService.OnReadyListener,
-        StopWatchService.StopWatchListener {
+        StopwatchService.StopWatchListener {
 
     public static final String CHALLENGE_BUNDLE_KEY = "challenge";
     public static final String TRACKER_BUNDLE_KEY = "trackerData";
+
     private static final String LATITUDE_KEY = "latitudes";
     private static final String LONGITUDE_KEY = "longitudes";
+
+    private static final String DISTANCE_KEY = "distance";
 
     private Context mContext;
 
@@ -49,13 +52,15 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private Location mLocation;
     private Marker mCurrentLocationMarker;
     private List<LatLng> mLocationList = new ArrayList<>();
+    private float mTotalDistance;
 
-    private StopWatchService mStopWatchService;
+    private StopwatchService mStopwatchService;
     private long mStartTime;
-    private boolean isStopWatchBound = false;
+    private boolean isStopwatchBound = false;
 
     private Button mButtonView;
     private TextView mLocationView;
+    private TextView mTotalDistanceView;
     private TextView mStopWatchView;
 
     public RunTracker(AppCompatActivity activity, int resId) {
@@ -67,7 +72,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mContext = activity;
     }
 
-    /** Create a bundle to pass to the parent activity's onSaveInstanceState */
+    /**
+     * Create a bundle to pass to the parent activity's onSaveInstanceState
+     */
     public Bundle getBundle() {
         Bundle bundle = new Bundle();
         ArrayList<String> latList = new ArrayList<>();
@@ -83,15 +90,18 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         bundle.putStringArrayList(LATITUDE_KEY, latList);
         bundle.putStringArrayList(LONGITUDE_KEY, longList);
+        bundle.putFloat(DISTANCE_KEY, mTotalDistance);
 
-        if (mStopWatchService != null) {
-            bundle.putLong(StopWatchService.START_TIME_EXTRA, mStopWatchService.getTime());
+        if (mStopwatchService != null) {
+            bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
         }
 
         return bundle;
     }
 
-    /** Extract data from the parent activity's saved instance state */
+    /**
+     * Extract data from the parent activity's saved instance state
+     */
     public void setBundle(Bundle bundle) {
         Bundle locationBundle = bundle.getBundle(TRACKER_BUNDLE_KEY);
 
@@ -107,11 +117,15 @@ public class RunTracker implements LocationService.ConnectionStatus,
             latLngList.add(new LatLng(latitude, longitude));
         }
 
-        mStartTime = locationBundle.getLong(StopWatchService.START_TIME_EXTRA, 0L);
+        mStartTime = locationBundle.getLong(StopwatchService.START_TIME_EXTRA, 0L);
+        mTotalDistance = locationBundle.getFloat(DISTANCE_KEY, 0f);
 
         mLocationList = latLngList;
     }
 
+    /**
+     * Set Button that starts the Stopwatch
+     */
     public void setButtonView(Button button) {
         mButtonView = button;
         button.setOnClickListener(view -> {
@@ -120,32 +134,49 @@ public class RunTracker implements LocationService.ConnectionStatus,
         });
     }
 
+    /**
+     * Set TextView representing the latitude/longitude display
+     */
     public void setLocationView(TextView view) {
         mLocationView = view;
     }
 
+    /**
+     * Set TextView representing the total distance
+     */
+    public void setDistanceView(TextView view) {
+        mTotalDistanceView = view;
+    }
+
+    /**
+     * Set TextView representing the stopwatch's time
+     */
     public void setStopWatchView(TextView view) {
         mStopWatchView = view;
     }
 
-    /** Start the StopWatch service */
-    public void startStopWatch() {
-        if (!isStopWatchBound) {
-            Intent intent = new Intent(mContext, StopWatchService.class);
-            intent.putExtra(StopWatchService.START_TIME_EXTRA, mStartTime);
+    /**
+     * Start the StopWatch service
+     */
+    private void startStopWatch() {
+        if (!isStopwatchBound) {
+            Intent intent = new Intent(mContext, StopwatchService.class);
+            intent.putExtra(StopwatchService.START_TIME_EXTRA, mStartTime);
             mContext.startService(intent);
-            mContext.bindService(intent, mStopWatchServiceConnection, Context.BIND_AUTO_CREATE);
+            mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
-    /** Stop the StopWatch service */
-    public void stopStopWatch() {
-        if (isStopWatchBound) {
-            mContext.unbindService(mStopWatchServiceConnection);
-            isStopWatchBound = false;
+    /**
+     * Stop the StopWatch service
+     */
+    private void stopStopWatch() {
+        if (isStopwatchBound) {
+            mContext.unbindService(mStopwatchServiceConnection);
+            isStopwatchBound = false;
         }
 
-        Intent intent = new Intent(mContext, StopWatchService.class);
+        Intent intent = new Intent(mContext, StopwatchService.class);
         mContext.stopService(intent);
     }
 
@@ -155,7 +186,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             return "---";
         }
 
-         return String.format(Locale.US,
+        return String.format(Locale.US,
                 "%f, %f",
                 mLocation.getLatitude(),
                 mLocation.getLongitude());
@@ -163,6 +194,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     @Override
     public void start() {
+        // only start services from this method if the stopwatch has been running (this should be
+        // called after a screen rotation)
         if (mStartTime != 0) {
             startLocationService();
             startStopWatch();
@@ -193,6 +226,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         updateMarkerPosition(location);
         updatePolylines();
+        updateDistance();
         updateCamera(location);
     }
 
@@ -205,15 +239,16 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void onStopWatchUpdate(String time) {
         mStopWatchView.setText(time);
 
-        if (mStopWatchService.getTime() > mChallenge.getTimeToComplete()) {
+        if (mStopwatchService.getTime() > mChallenge.getTimeToComplete()) {
             mStopWatchView.setTextColor(Color.RED);
-        }
-        else if (mStopWatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
+        } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
             mStopWatchView.setTextColor(Color.YELLOW);
         }
     }
 
-    /** Starts the Location service */
+    /**
+     * Starts the Location service
+     */
     private void startLocationService() {
         if (!isLocationBound) {
             Intent intent = new Intent(mContext, LocationService.class);
@@ -222,7 +257,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
     }
 
-    /** Stops the Location service */
+    /**
+     * Stops the Location service
+     */
     private void stopLocationService() {
         if (isLocationBound) {
             mContext.unbindService(mLocationServiceConnection);
@@ -243,7 +280,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .title("Here I am!");
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.runicon));
+        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.runicon));
 
         mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
     }
@@ -266,6 +303,28 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mGoogleMap.addPolyline(polyline);
     }
 
+    // TODO: Fix accuracy? Or just update more.. this needs to be tested
+    private void updateDistance() {
+        List<LatLng> list = mLocationService.getLocationList();
+
+        if (list.size() < 2) {
+            return;
+        }
+
+        LatLng startPoint = list.get(list.size() - 2);
+        LatLng endPoint = list.get(list.size() - 1);
+        double startLat = startPoint.latitude;
+        double startLong = startPoint.longitude;
+        double endLat = endPoint.latitude;
+        double endLong = endPoint.longitude;
+        float[] results = new float[2];
+
+        Location.distanceBetween(startLat, startLong, endLat, endLong, results);
+        mTotalDistance += results[0];
+
+        mTotalDistanceView.setText(String.format(Locale.US, "%.2f", mTotalDistance));
+    }
+
     private void updateCamera(Location location) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -277,7 +336,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    /** Service connection for location updates */
+    /**
+     * Service connection for location updates
+     */
     private ServiceConnection mLocationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -295,19 +356,21 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
     };
 
-    /** Service connection for the stopwatch */
-    private ServiceConnection mStopWatchServiceConnection = new ServiceConnection() {
+    /**
+     * Service connection for the stopwatch
+     */
+    private ServiceConnection mStopwatchServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            StopWatchService.StopWatchBinder binder = (StopWatchService.StopWatchBinder) iBinder;
-            mStopWatchService = binder.getService();
-            mStopWatchService.setStopWatchListener(RunTracker.this);
-            isStopWatchBound = true;
+            StopwatchService.StopWatchBinder binder = (StopwatchService.StopWatchBinder) iBinder;
+            mStopwatchService = binder.getService();
+            mStopwatchService.setStopWatchListener(RunTracker.this);
+            isStopwatchBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            isStopWatchBound = false;
+            isStopwatchBound = false;
         }
     };
 }

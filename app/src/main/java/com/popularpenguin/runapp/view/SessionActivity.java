@@ -19,6 +19,7 @@ public class SessionActivity extends AppCompatActivity {
     @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_location_test) TextView mLocationView;
+    @BindView(R.id.tv_distance) TextView mDistanceText;
     @BindView(R.id.tv_stopwatch) TextView mTimerText;
     @BindView(R.id.btn_stopwatch) Button mTimerButton;
     @BindView(R.id.toolbar_session) Toolbar mToolbar;
@@ -98,7 +99,8 @@ public class SessionActivity extends AppCompatActivity {
     private void setupTracker() {
         mRunTracker = new RunTracker(this, R.id.map_fragment);
         mRunTracker.setLocationView(mLocationView);
-        mRunTracker.setStopWatchView(mTimerText);// TODO: This won't be needed later?
+        mRunTracker.setDistanceView(mDistanceText);
+        mRunTracker.setStopWatchView(mTimerText);
         mRunTracker.setButtonView(mTimerButton);
     }
 }
