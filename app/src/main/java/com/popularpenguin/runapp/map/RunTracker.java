@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 
 import java.util.ArrayList;
@@ -62,6 +65,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private TextView mLocationView;
     private TextView mTotalDistanceView;
     private TextView mStopWatchView;
+
+    private MediaPlayer mMediaPlayer;
+    private boolean isAlarmPlayed = false;
 
     public RunTracker(AppCompatActivity activity, int resId) {
         mMapService = new MapService(activity.getFragmentManager(), resId);
@@ -241,9 +247,21 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         if (mStopwatchService.getTime() > mChallenge.getTimeToComplete()) {
             mStopWatchView.setTextColor(Color.RED);
+            if (!isAlarmPlayed) {
+                isAlarmPlayed = true;
+                playAlarm(R.raw.airhorn);
+            }
         } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
             mStopWatchView.setTextColor(Color.YELLOW);
         }
+    }
+
+    // TODO: Attribute horn sound from http://soundbible.com/1542-Air-Horn.html
+    private void playAlarm(int resId) {
+        mMediaPlayer = MediaPlayer.create(mContext, resId);
+        mMediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mMediaPlayer.setLooping(false);
+        mMediaPlayer.start();
     }
 
     /**
