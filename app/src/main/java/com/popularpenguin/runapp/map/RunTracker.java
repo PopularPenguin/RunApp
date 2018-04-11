@@ -330,7 +330,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 .target(new LatLng(location.getLatitude(), location.getLongitude()))
                 .bearing(0f)
                 .tilt(45f)
-                .zoom(17f)
+                .zoom(15f)
                 .build();
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

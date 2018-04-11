@@ -8,6 +8,4 @@
     android:scrollbars="vertical"
     tools:context="com.popularpenguin.runapp.view.ListActivity">
 
-
-
 </android.support.v7.widget.RecyclerView>

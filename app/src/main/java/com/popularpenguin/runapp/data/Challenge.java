@@ -5,11 +5,6 @@ import android.os.Parcelable;
 
 /** Describes the challenge */
 public class Challenge implements Parcelable {
-    public static final String NAME_KEY = "name";
-    public static final String DESCRIPTION_KEY = "description";
-    public static final String COMPLETION_TIME_KEY = "timeToComplete";
-    public static final String COMPLETED_KEY = "completed";
-
     private String name;
     private String description;
     private long timeToComplete;
