@@ -20,6 +20,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <provider android:authorities="com.popularpenguin.runapp"
+                  android:name="com.popularpenguin.runapp.data.DbProvider"
+                  android:exported="false"/>
         <service android:name=".map.LocationService"
                  android:exported="false"/>
         <service android:name=".map.StopwatchService"
