@@ -15,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.map.RunTracker;
@@ -29,6 +31,7 @@ public class ListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler {
 
     @BindView(R.id.rv_list) RecyclerView mRecyclerView;
+    @BindView(R.id.ad_view) AdView mAdView;
 
     private List<Challenge> mChallengeList;
 
@@ -40,6 +43,8 @@ public class ListActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         setRecyclerView();
+
+        setAdView();
     }
 
     // TODO: Move location permissions to own class or an abstract parent activity
@@ -104,6 +109,13 @@ public class ListActivity extends AppCompatActivity implements
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+    }
+
+    private void setAdView() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override
