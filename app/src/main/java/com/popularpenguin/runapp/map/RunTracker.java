@@ -10,6 +10,11 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcel;
+import android.os.PowerManager;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
@@ -69,6 +74,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private MediaPlayer mMediaPlayer;
     private boolean isAlarmPlayed = false;
 
+    private PowerManager.WakeLock mWakeLock;
+
     public RunTracker(AppCompatActivity activity, int resId) {
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
@@ -76,6 +83,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mChallenge = activity.getIntent().getParcelableExtra(CHALLENGE_BUNDLE_KEY);
 
         mContext = activity;
+
+        // get a wake lock to be able to run the tracker without the system destroying it
+        PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WL");
+        mWakeLock.acquire(mChallenge.getTimeToComplete());
     }
 
     /**
@@ -216,6 +228,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void destroy() {
         stopStopWatch();
         stopLocationService();
+
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+        }
     }
 
     @Override
@@ -262,6 +278,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mMediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mMediaPlayer.setLooping(false);
         mMediaPlayer.start();
+
+        Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(500L);
+
+        Snackbar.make(mStopWatchView, R.string.snackbar_challenge_failed, Snackbar.LENGTH_LONG)
+                .show();
     }
 
     /**
@@ -321,7 +343,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mGoogleMap.addPolyline(polyline);
     }
 
-    // TODO: Fix accuracy? Or just update more.. this needs to be tested
+    // TODO: Convert meters to miles
     private void updateDistance() {
         List<LatLng> list = mLocationService.getLocationList();
 
