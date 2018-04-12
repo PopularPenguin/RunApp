@@ -73,6 +73,7 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
     class ChallengeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.tv_item_name) TextView nameText;
         @BindView(R.id.tv_item_description) TextView descriptionText;
+        @BindView(R.id.tv_fastest_time) TextView timeText;
 
         ChallengeViewHolder(View itemView) {
             super(itemView);
@@ -85,6 +86,7 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
         void bind(@NonNull Challenge challenge) {
             nameText.setText(challenge.getName());
             descriptionText.setText(challenge.getDescription());
+            timeText.setText(challenge.getFastestTimeString());
         }
 
         void clearAnimation() {

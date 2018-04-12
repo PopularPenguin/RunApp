@@ -3,11 +3,14 @@ package com.popularpenguin.runapp.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Locale;
+
 /** Describes the challenge */
 public class Challenge implements Parcelable {
     private String name;
     private String description;
     private long timeToComplete;
+    private long fastestTime;
     private boolean isCompleted;
 
     public Challenge(String name, String description, long timeToComplete, boolean isCompleted) {
@@ -21,7 +24,23 @@ public class Challenge implements Parcelable {
         name = parcel.readString();
         description = parcel.readString();
         timeToComplete = parcel.readLong();
+        fastestTime = parcel.readLong();
         isCompleted = parcel.readInt() == 1;
+    }
+
+    public String getFastestTimeString() {
+        if (fastestTime == 0L) {
+            return "-:--:--";
+        }
+
+        long seconds = fastestTime / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+
+        seconds %= 60;
+        minutes %= 60;
+
+        return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
     }
 
     public String getName() {
@@ -48,6 +67,14 @@ public class Challenge implements Parcelable {
         this.timeToComplete = timeToComplete;
     }
 
+    public long getFastestTime() {
+        return fastestTime;
+    }
+
+    public void setFastestTime(long fastestTime) {
+        this.fastestTime = fastestTime;
+    }
+
     public boolean isCompleted() {
         return isCompleted;
     }
@@ -66,11 +93,11 @@ public class Challenge implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(description);
         parcel.writeLong(timeToComplete);
+        parcel.writeLong(fastestTime);
         parcel.writeInt(isCompleted ? 1: 0);
     }
 
     public static final Creator<Challenge> CREATOR = new Parcelable.Creator<Challenge>() {
-
         @Override
         public Challenge createFromParcel(Parcel parcel) {
             return new Challenge(parcel);
