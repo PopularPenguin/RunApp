@@ -8,6 +8,7 @@ import java.util.UUID;
 /** Data tracked into the session */
 public class Session {
     UUID uuid;
+    Challenge challenge;
     long time;
     List<LatLng> route;
     boolean isCompleted;

@@ -7,13 +7,19 @@ import java.util.Locale;
 
 /** Describes the challenge */
 public class Challenge implements Parcelable {
+    private long id;
     private String name;
     private String description;
     private long timeToComplete;
     private long fastestTime;
     private boolean isCompleted;
 
-    public Challenge(String name, String description, long timeToComplete, boolean isCompleted) {
+    public Challenge(long id,
+                     String name,
+                     String description,
+                     long timeToComplete,
+                     boolean isCompleted) {
+
         this.name = name;
         this.description = description;
         this.timeToComplete = timeToComplete;
@@ -21,6 +27,7 @@ public class Challenge implements Parcelable {
     }
 
     private Challenge(Parcel parcel) {
+        id = parcel.readLong();
         name = parcel.readString();
         description = parcel.readString();
         timeToComplete = parcel.readLong();
@@ -89,7 +96,8 @@ public class Challenge implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeString(description);
         parcel.writeLong(timeToComplete);

@@ -84,19 +84,23 @@ public class ListActivity extends AppCompatActivity implements
     private void setRecyclerView() {
         // TODO: Remove challenges here and make some real ones in a separate class
         List<Challenge> challengeList = new ArrayList<>();
-        challengeList.add(new Challenge("First Challenge",
+        challengeList.add(new Challenge(0L,
+                "First Challenge",
                 "Run an 8 minute mile",
                 1000 * 60 * 8 /* 8 minutes */,
                 false));
-        challengeList.add(new Challenge("Second Challenge",
+        challengeList.add(new Challenge(1L,
+                "Second Challenge",
                 "Run a 6 minute mile",
                 1000 * 60 * 6 /* 6 minutes */,
                 false));
-        challengeList.add(new Challenge("Test Challenge 1",
+        challengeList.add(new Challenge(2L,
+                "Test Challenge 1",
                 "Run a 10 second mile LOL",
                 1000 * 10,
                 false));
-        challengeList.add(new Challenge("Test Challenge 2",
+        challengeList.add(new Challenge(3L,
+                "Test Challenge 2",
                 "Run a 30 second mile!!!",
                 1000 * 30,
                 false));
