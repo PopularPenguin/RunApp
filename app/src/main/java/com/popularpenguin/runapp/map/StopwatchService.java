@@ -6,13 +6,15 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.JobIntentService;
 
 import java.util.Locale;
 
 /** Stopwatch to track time spent doing a challenge */
 // https://www.android-examples.com/android-create-stopwatch-example-tutorial-in-android-studio/
-public class StopwatchService extends Service {
+public class StopwatchService extends JobIntentService {
 
     private static final String TAG = StopwatchService.class.getSimpleName();
 
@@ -48,6 +50,11 @@ public class StopwatchService extends Service {
             handler.postDelayed(this, 0);
         }
     };
+
+    @Override
+    protected void onHandleWork(@NonNull Intent intent) {
+
+    }
 
     @Nullable
     @Override

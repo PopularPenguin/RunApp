@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.JobIntentService;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Make into a service
-public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
+public class LocationService extends JobIntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = LocationService.class.getSimpleName();
@@ -53,6 +54,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     public List<LatLng> getLocationList() {
         return mLocationList;
+    }
+
+    @Override
+    protected void onHandleWork(@NonNull Intent intent) {
+
     }
 
     @Nullable
