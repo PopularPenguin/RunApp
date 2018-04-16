@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <provider android:authorities="com.popularpenguin.runapp"
-                  android:name="com.popularpenguin.runapp.data.DbProvider"
+                  android:name="com.popularpenguin.runapp.data.RunProvider"
                   android:exported="false"/>
         <service android:name=".map.LocationService"
                  android:exported="false"/>

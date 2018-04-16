@@ -3,7 +3,7 @@ package com.popularpenguin.runapp.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class DbContract {
+public class RunContract {
     public static final String AUTHORITY = "com.popularpenguin.runapp";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -24,7 +24,7 @@ public class DbContract {
         public static final String COLUMN_IS_COMPLETED = "isCompleted";
     }
 
-    public static final class SessionEntry implements BaseColumns {
+    public static final class SessionsEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_SESSIONS)
                 .build();
@@ -32,7 +32,7 @@ public class DbContract {
         // the sessions table
         public static final String SESSION_TABLE_NAME = "sessionTable";
         public static final String COLUMN_CHALLENGE_ID = "challengeId";
-        // TODO: Entry for Lat/Lng list
+        public static final String COLUMN_PATH = "path";
         public static final String COLUMN_TIME = "time";
         public static final String COLUMN_IS_COMPLETED = "isCompleted";
     }

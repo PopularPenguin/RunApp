@@ -1,6 +1,5 @@
 package com.popularpenguin.runapp.map;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -16,7 +15,7 @@ import java.util.Locale;
 // https://www.android-examples.com/android-create-stopwatch-example-tutorial-in-android-studio/
 public class StopwatchService extends JobIntentService {
 
-    private static final String TAG = StopwatchService.class.getSimpleName();
+    public static final String TAG = StopwatchService.class.getSimpleName();
 
     public static final String START_TIME_EXTRA = "startTime";
 
@@ -53,12 +52,12 @@ public class StopwatchService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-
+        // TODO: Move onStartCommand code here?
     }
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(@NonNull Intent intent) {
         handler.postDelayed(runnable, 0);
 
         return mBinder;

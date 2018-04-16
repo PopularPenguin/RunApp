@@ -27,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Make into a service
 public class LocationService extends JobIntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -58,12 +57,12 @@ public class LocationService extends JobIntentService implements GoogleApiClient
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-
+        // TODO: Move onStartCommand code here?
     }
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(@NonNull Intent intent) {
         return mBinder;
     }
 
