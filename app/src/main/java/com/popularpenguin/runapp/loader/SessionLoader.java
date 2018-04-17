@@ -74,9 +74,11 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         cursor.moveToFirst();
 
         String name =
-                challengeCursor.getString(challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_NAME));
+                challengeCursor.getString(
+                        challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_NAME));
         String description =
-                challengeCursor.getString(challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_DESCRIPTION));
+                challengeCursor.getString(
+                        challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_DESCRIPTION));
         long timeToComplete =
                 challengeCursor.getLong(
                         challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_TIME_TO_COMPLETE));
