@@ -47,7 +47,7 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
             Challenge challenge = getChallenge(cursor);
             long time = cursor.getLong(cursor.getColumnIndex(SessionsEntry.COLUMN_TIME));
             List<LatLng> path = getPath(cursor);
-            boolean isCompleted = challenge.isCompleted();
+            boolean isCompleted = time <= challenge.getTimeToComplete();
 
             Session session = new Session(id, challenge, time, path, isCompleted);
             sessions.add(session);
