@@ -12,12 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.popularpenguin.runapp.R;
+import com.popularpenguin.runapp.adapter.ChallengeAdapter;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.map.RunTracker;
 
