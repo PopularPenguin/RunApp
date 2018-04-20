@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +22,7 @@ import com.google.android.gms.ads.AdView;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.adapter.ChallengeAdapter;
 import com.popularpenguin.runapp.data.Challenge;
+import com.popularpenguin.runapp.loader.ChallengeLoader;
 import com.popularpenguin.runapp.map.RunTracker;
 
 import java.util.ArrayList;
@@ -27,7 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ChallengeListActivity extends AppCompatActivity implements
-        ChallengeAdapter.ChallengeAdapterOnClickHandler {
+        ChallengeAdapter.ChallengeAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<List<Challenge>> {
 
     @BindView(R.id.rv_list) RecyclerView mRecyclerView;
     @BindView(R.id.ad_view) AdView mAdView;
@@ -41,7 +47,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        setRecyclerView();
+        getSupportLoaderManager().initLoader(0, null, this);
 
         setAdView();
     }
@@ -81,31 +87,6 @@ public class ChallengeListActivity extends AppCompatActivity implements
     }
 
     private void setRecyclerView() {
-        // TODO: Remove challenges here and make some real ones in a separate class
-        List<Challenge> challengeList = new ArrayList<>();
-        challengeList.add(new Challenge(0L,
-                "First Challenge",
-                "Run an 8 minute mile",
-                1000 * 60 * 8 /* 8 minutes */,
-                false));
-        challengeList.add(new Challenge(1L,
-                "Second Challenge",
-                "Run a 6 minute mile",
-                1000 * 60 * 6 /* 6 minutes */,
-                false));
-        challengeList.add(new Challenge(2L,
-                "Test Challenge 1",
-                "Run a 10 second mile LOL",
-                1000 * 10,
-                false));
-        challengeList.add(new Challenge(3L,
-                "Test Challenge 2",
-                "Run a 30 second mile!!!",
-                1000 * 30,
-                false));
-
-        mChallengeList = challengeList;
-
         ChallengeAdapter adapter = new ChallengeAdapter(mChallengeList, this);
         mRecyclerView.setAdapter(adapter);
 
@@ -127,5 +108,25 @@ public class ChallengeListActivity extends AppCompatActivity implements
         intent.putExtra(RunTracker.CHALLENGE_BUNDLE_KEY, mChallengeList.get(position));
 
         startActivity(intent);
+    }
+
+    @NonNull
+    @Override
+    public Loader<List<Challenge>> onCreateLoader(int id, @Nullable Bundle args) {
+        return new ChallengeLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<List<Challenge>> loader, List<Challenge> data) {
+        mChallengeList = data;
+
+        if (mChallengeList != null) {
+            setRecyclerView();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<List<Challenge>> loader) {
+        // Not implemented
     }
 }

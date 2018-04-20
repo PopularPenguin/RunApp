@@ -20,6 +20,7 @@ public class Challenge implements Parcelable {
                      long timeToComplete,
                      boolean isCompleted) {
 
+        this.id = id;
         this.name = name;
         this.description = description;
         this.timeToComplete = timeToComplete;
@@ -48,6 +49,14 @@ public class Challenge implements Parcelable {
         minutes %= 60;
 
         return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
