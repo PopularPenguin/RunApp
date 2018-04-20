@@ -5,7 +5,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import com.popularpenguin.runapp.map.RunTracker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SessionActivity extends AppCompatActivity {
+public class ChallengeActivity extends AppCompatActivity {
 
     @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -30,7 +29,7 @@ public class SessionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_session);
+        setContentView(R.layout.activity_challenge);
 
         ButterKnife.bind(this);
 

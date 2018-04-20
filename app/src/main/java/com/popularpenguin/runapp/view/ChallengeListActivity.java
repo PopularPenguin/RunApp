@@ -26,7 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListActivity extends AppCompatActivity implements
+public class ChallengeListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler {
 
     @BindView(R.id.rv_list) RecyclerView mRecyclerView;
@@ -37,7 +37,7 @@ public class ListActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_challenge_list);
 
         ButterKnife.bind(this);
 
@@ -123,7 +123,7 @@ public class ListActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(int position) {
-        Intent intent = new Intent(this, SessionActivity.class);
+        Intent intent = new Intent(this, ChallengeActivity.class);
         intent.putExtra(RunTracker.CHALLENGE_BUNDLE_KEY, mChallengeList.get(position));
 
         startActivity(intent);

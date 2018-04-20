@@ -35,7 +35,7 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
     @NonNull
     @Override
     public ChallengeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layout = R.layout.list_item;
+        int layout = R.layout.challenge_list_item;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(layout, parent, false);
 

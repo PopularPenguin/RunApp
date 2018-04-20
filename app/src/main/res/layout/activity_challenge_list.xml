@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        tools:context="com.popularpenguin.runapp.view.ListActivity"/>
+        tools:context="com.popularpenguin.runapp.view.ChallengeListActivity"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_view"

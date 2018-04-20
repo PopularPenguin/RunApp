@@ -89,6 +89,7 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         return new Challenge(id, name, description, timeToComplete, isCompleted);
     }
 
+    // TODO: Remember to store session latlng in this format "12.53-54.64,12.88-55.00"
     private List<LatLng> getPath(Cursor cursor) {
         String unparsed = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_PATH));
         String[] points = unparsed.split(",");
