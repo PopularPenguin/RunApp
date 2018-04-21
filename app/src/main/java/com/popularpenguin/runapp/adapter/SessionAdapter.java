@@ -10,54 +10,54 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
-import com.popularpenguin.runapp.data.Challenge;
+import com.popularpenguin.runapp.data.Session;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ChallengeViewHolder> {
+public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionViewHolder> {
 
-    public interface ChallengeAdapterOnClickHandler {
+    public interface SessionAdapterOnClickHandler {
         void onClick(int position);
     }
 
-    private final List<Challenge> mChallengeList;
-    private final ChallengeAdapterOnClickHandler mClickHandler;
+    private final List<Session> mSessionList;
+    private final SessionAdapterOnClickHandler mClickHandler;
     private int lastPosition = -1; // save the last view position for animations
 
-    public ChallengeAdapter(List<Challenge> challengeList, ChallengeAdapterOnClickHandler handler) {
-        mChallengeList = challengeList;
+    public SessionAdapter(List<Session> sessionList, SessionAdapterOnClickHandler handler) {
+        mSessionList = sessionList;
         mClickHandler = handler;
     }
 
     @NonNull
     @Override
-    public ChallengeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layout = R.layout.challenge_list_item;
+    public SessionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layout = R.layout.session_list_item;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(layout, parent, false);
 
-        return new ChallengeViewHolder(view);
+        return new SessionViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChallengeViewHolder holder, int position) {
-        Challenge challenge = mChallengeList.get(position);
+    public void onBindViewHolder(@NonNull SessionViewHolder holder, int position) {
+        Session session = mSessionList.get(position);
 
-        holder.bind(challenge);
+        holder.bind(session);
 
         setAnimation(holder.itemView, position);
     }
 
     @Override
     public int getItemCount() {
-        return mChallengeList.size();
+        return mSessionList.size();
     }
 
     @Override
-    public void onViewDetachedFromWindow(@NonNull ChallengeViewHolder holder) {
+    public void onViewDetachedFromWindow(@NonNull SessionViewHolder holder) {
         holder.clearAnimation();
     }
 
@@ -70,12 +70,13 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
         }
     }
 
-    class ChallengeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.tv_challenge_item_name) TextView nameText;
-        @BindView(R.id.tv_challenge_item_description) TextView descriptionText;
-        @BindView(R.id.tv_challenge_item_fastest_time) TextView timeText;
+    class SessionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.tv_session_item_name)
+        TextView nameText;
+        @BindView(R.id.tv_session_item_description) TextView descriptionText;
+        @BindView(R.id.tv_session_item_time) TextView timeText;
 
-        ChallengeViewHolder(View itemView) {
+        SessionViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -83,10 +84,10 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
             itemView.setOnClickListener(this);
         }
 
-        void bind(@NonNull Challenge challenge) {
-            nameText.setText(challenge.getName());
-            descriptionText.setText(challenge.getDescription());
-            timeText.setText(challenge.getFastestTimeString());
+        void bind(@NonNull Session session) {
+            nameText.setText(session.getChallenge().getName());
+            descriptionText.setText(session.getChallenge().getDescription());
+            timeText.setText(session.getTimeString());
         }
 
         void clearAnimation() {

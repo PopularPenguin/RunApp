@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tv_challenge_item_name"
+            android:id="@+id/tv_session_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/text_margin"
@@ -28,30 +28,30 @@
             tools:text="Name"/>
 
         <TextView
-            android:id="@+id/tv_challenge_item_description"
+            android:id="@+id/tv_session_item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/text_horizontal_margin"
             android:layout_marginTop="@dimen/text_margin"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_challenge_item_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_challenge_item_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_session_item_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_session_item_name"
             tools:text="Description"/>
 
         <TextView
-            android:id="@+id/tv_challenge_item_fastest_time_label"
+            android:id="@+id/tv_session_item_time_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fastest_time_label"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@+id/tv_challenge_item_fastest_time"
-            app:layout_constraintEnd_toEndOf="@+id/tv_challenge_item_fastest_time"
-            app:layout_constraintStart_toStartOf="@+id/tv_challenge_item_fastest_time"
+            app:layout_constraintBottom_toTopOf="@+id/tv_session_item_time"
+            app:layout_constraintEnd_toEndOf="@+id/tv_session_item_time"
+            app:layout_constraintStart_toStartOf="@+id/tv_session_item_time"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:id="@+id/tv_challenge_item_fastest_time"
+            android:id="@+id/tv_session_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/text_horizontal_margin"
@@ -60,10 +60,8 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_challenge_item_fastest_time_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_session_item_time_label"
             tools:text="0:25:25"/>
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
-
-

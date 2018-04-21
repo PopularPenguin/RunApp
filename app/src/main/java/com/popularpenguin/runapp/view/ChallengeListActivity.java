@@ -35,8 +35,8 @@ public class ChallengeListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Challenge>> {
 
-    @BindView(R.id.rv_list) RecyclerView mRecyclerView;
-    @BindView(R.id.ad_view) AdView mAdView;
+    @BindView(R.id.rv_challenge_list) RecyclerView mRecyclerView;
+    @BindView(R.id.ad_view_challenge_list) AdView mAdView;
 
     private List<Challenge> mChallengeList;
 
@@ -95,6 +95,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
         mRecyclerView.setHasFixedSize(true);
     }
 
+    // TODO: Load real ads after submitting project before uploading to Google Play
     private void setAdView() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -110,6 +111,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    // Loader Callbacks //////////////////////////////////////////////////////////////////////////
     @NonNull
     @Override
     public Loader<List<Challenge>> onCreateLoader(int id, @Nullable Bundle args) {
@@ -120,9 +122,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
     public void onLoadFinished(@NonNull Loader<List<Challenge>> loader, List<Challenge> data) {
         mChallengeList = data;
 
-        if (mChallengeList != null) {
-            setRecyclerView();
-        }
+        setRecyclerView();
     }
 
     @Override
