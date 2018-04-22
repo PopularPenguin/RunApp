@@ -32,8 +32,9 @@ public class RunContract {
         // the sessions table
         public static final String SESSION_TABLE_NAME = "sessionTable";
         public static final String COLUMN_CHALLENGE_ID = "challengeId";
-        public static final String COLUMN_PATH = "path";
+        public static final String COLUMN_DATE = "date";
         public static final String COLUMN_TIME = "time";
+        public static final String COLUMN_PATH = "path";
         public static final String COLUMN_IS_COMPLETED = "isCompleted";
     }
 }

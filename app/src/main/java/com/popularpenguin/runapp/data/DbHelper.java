@@ -5,8 +5,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -21,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String CREATE_CHALLENGES_TABLE = "CREATE TABLE " +
                 ChallengesEntry.CHALLENGE_TABLE_NAME + " (" +
-                ChallengesEntry._ID + " INTEGER PRIMARY KEY, " +
+                ChallengesEntry._ID + " INTEGER PRIMARY KEY UNIQUE, " +
                 ChallengesEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 ChallengesEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                 ChallengesEntry.COLUMN_TIME_TO_COMPLETE + " INTEGER NOT NULL, " +
@@ -33,7 +37,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 SessionsEntry.SESSION_TABLE_NAME + " (" +
                 SessionsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 SessionsEntry.COLUMN_CHALLENGE_ID + " INTEGER NOT NULL UNIQUE, " +
-                SessionsEntry.COLUMN_PATH + " TEXT NOT NULL, " +
+                SessionsEntry.COLUMN_DATE + " TEXT NOT NULL, " +
+                SessionsEntry.COLUMN_PATH + " TEXT, " +
                 SessionsEntry.COLUMN_TIME + " INTEGER NOT NULL, " +
                 SessionsEntry.COLUMN_IS_COMPLETED + " INTEGER NOT NULL" +
                 ");";
@@ -42,6 +47,8 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_SESSIONS_TABLE);
 
         addChallenges(db);
+        // TODO: Remove when sessions are able to be saved
+        addTestSessions(db);
     }
 
     @Override
@@ -85,6 +92,44 @@ public class DbHelper extends SQLiteOpenHelper {
             cv.put(ChallengesEntry.COLUMN_IS_COMPLETED, challenge.isCompleted());
 
             db.insert(ChallengesEntry.CHALLENGE_TABLE_NAME, null, cv);
+        }
+    }
+
+    // TODO: Test method, remove later
+    private void addTestSessions(SQLiteDatabase db) {
+        Session[] sessions = new Session[2];
+        sessions[0] = new Session(0L,
+                new Challenge(0L,
+                        "Challenge 1",
+                        "Run an 8 minute mile",
+                        1000 * 60 * 8,
+                        false),
+                "April 20, 2018",
+                1000 * 60 * 7,
+                new ArrayList<LatLng>(),
+                true
+                );
+        sessions[1] = new Session(1L,
+                new Challenge(1L,
+                        "Challenge 2",
+                        "Run a 6 minute mile",
+                        1000 * 60 * 6,
+                        false),
+                "April 19, 2018",
+                1000 * 60 * 7,
+                new ArrayList<LatLng>(),
+                false
+        );
+
+        for (Session session : sessions) {
+            ContentValues cv = new ContentValues();
+            cv.put(SessionsEntry.COLUMN_CHALLENGE_ID, session.getChallenge().getId());
+            cv.put(SessionsEntry.COLUMN_DATE, session.getDate());
+            cv.put(SessionsEntry.COLUMN_TIME, session.getTime());
+            cv.put(SessionsEntry.COLUMN_PATH, session.getPathString());
+            cv.put(SessionsEntry.COLUMN_IS_COMPLETED, session.isCompleted());
+
+            db.insert(SessionsEntry.SESSION_TABLE_NAME, null, cv);
         }
     }
 }

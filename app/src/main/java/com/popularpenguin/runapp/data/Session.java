@@ -84,6 +84,21 @@ public class Session {
         this.path = path;
     }
 
+    public String getPathString() {
+        if (path == null || path.size() == 0) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (LatLng latLng : path) {
+            sb.append(String.format(Locale.US, "%f,%f-", latLng.latitude, latLng.longitude));
+        }
+        // delete the last "-" to prevent parsing from trying to add another element after last
+        sb.deleteCharAt(sb.length() - 1);
+
+        return sb.toString();
+    }
+
     public boolean isCompleted() {
         return isCompleted;
     }
