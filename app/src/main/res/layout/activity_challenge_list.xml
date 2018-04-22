@@ -13,6 +13,15 @@
         android:scrollbars="vertical"
         tools:context="com.popularpenguin.runapp.view.ChallengeListActivity"/>
 
+    <Button
+        android:id="@+id/btn_launch_sessions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/launch_session_list"
+        android:layout_above="@+id/ad_view_challenge_list"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/text_margin"/>
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_view_challenge_list"
         android:layout_width="match_parent"

@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -36,6 +37,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<List<Challenge>> {
 
     @BindView(R.id.rv_challenge_list) RecyclerView mRecyclerView;
+    @BindView(R.id.btn_launch_sessions) Button mSessionButton;
     @BindView(R.id.ad_view_challenge_list) AdView mAdView;
 
     private List<Challenge> mChallengeList;
@@ -48,6 +50,11 @@ public class ChallengeListActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(0, null, this);
+
+        mSessionButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SessionListActivity.class);
+            startActivity(intent);
+        });
 
         setAdView();
     }

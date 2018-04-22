@@ -71,8 +71,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     }
 
     class SessionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.tv_session_item_name)
-        TextView nameText;
+        @BindView(R.id.tv_session_item_name) TextView nameText;
         @BindView(R.id.tv_session_item_description) TextView descriptionText;
         @BindView(R.id.tv_session_item_time) TextView timeText;
 

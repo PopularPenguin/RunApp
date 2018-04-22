@@ -7,6 +7,8 @@
     <string name="start_timer">Start</string>
     <string name="stop_timer">Stop</string>
 
+    <string name="launch_session_list">Recent Sessions</string>
+
     <string name="snackbar_challenge_failed">You have run out of time!</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>

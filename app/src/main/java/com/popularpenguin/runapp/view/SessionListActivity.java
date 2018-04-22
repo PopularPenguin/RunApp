@@ -27,7 +27,7 @@ public class SessionListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<List<Session>> {
 
     @BindView(R.id.rv_session_list) RecyclerView mRecyclerView;
-    @BindView(R.id.ad_view_session_list) AdView mAdview;
+    @BindView(R.id.ad_view_session_list) AdView mAdView;
 
     private List<Session> mSessionList;
 
@@ -57,7 +57,7 @@ public class SessionListActivity extends AppCompatActivity implements
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
-        mAdview.loadAd(adRequest);
+        mAdView.loadAd(adRequest);
     }
 
     @Override
