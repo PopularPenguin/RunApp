@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
+import com.popularpenguin.runapp.data.Session;
+import com.popularpenguin.runapp.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private MediaPlayer mMediaPlayer;
     private boolean isAlarmPlayed = false;
+    private boolean isGoalReached = false;
 
     private PowerManager.WakeLock mWakeLock;
 
@@ -87,7 +90,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         // get a wake lock to be able to run the tracker without the system destroying it
         PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WL");
-        mWakeLock.acquire(mChallenge.getTimeToComplete());
+        mWakeLock.acquire(mChallenge.getTimeToComplete()); // TODO: Change to an hour?
     }
 
     /**
@@ -149,6 +152,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
         button.setOnClickListener(view -> {
             startLocationService();
             startStopWatch();
+
+            // TODO: Once the button has been clicked, set button text to stop and then
+            // set a new onClickListener to stop the tracker and store the session?
+            if (isStopwatchBound) {
+                button.setText(mContext.getResources().getString(R.string.stop_timer));
+            }
         });
     }
 
@@ -226,12 +235,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     public void destroy() {
-        stopStopWatch();
-        stopLocationService();
-
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        }
+        finishRun(false);
     }
 
     @Override
@@ -261,15 +265,47 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void onStopWatchUpdate(String time) {
         mStopWatchView.setText(time);
 
-        if (mStopwatchService.getTime() > mChallenge.getTimeToComplete()) {
+        // TODO: Test this!!
+        if (mTotalDistance >= mChallenge.getTimeToComplete()) {
+            finishRun(true);
+        }
+
+        // check if the goal time has elapsed and the out-of-time alarm hasn't played yet
+        if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
             mStopWatchView.setTextColor(Color.RED);
-            if (!isAlarmPlayed) {
-                isAlarmPlayed = true;
-                playAlarm(R.raw.airhorn);
-            }
+            isAlarmPlayed = true;
+            playAlarm(R.raw.airhorn);
         } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
             mStopWatchView.setTextColor(Color.YELLOW);
         }
+
+        // challenge has failed and run is finally complete
+        if (isAlarmPlayed && mTotalDistance >= mChallenge.getTimeToComplete()) {
+            finishRun(false);
+        }
+    }
+
+    /**
+     * Finish the run by stopping services, releasing the wakelock, and storing the challenge in
+     * the database
+     */
+    private void finishRun(boolean isGoalReached) {
+        this.isGoalReached = isGoalReached;
+
+        stopStopWatch();
+        stopLocationService();
+
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+        }
+
+        Session session = new Session(mChallenge,
+                DataUtils.getCurrentDateString(),
+                mStopwatchService.getTime(),
+                mLocationList,
+                isGoalReached);
+
+        DataUtils.insertSession(mContext.getContentResolver(), session);
     }
 
     // TODO: Attribute horn sound from http://soundbible.com/1542-Air-Horn.html
@@ -318,8 +354,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         MarkerOptions markerOptions = new MarkerOptions()
-                .position(latLng)
-                .title("Here I am!");
+                .position(latLng);
         //.icon(BitmapDescriptorFactory.fromResource(R.drawable.runicon));
 
         mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
@@ -343,7 +378,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mGoogleMap.addPolyline(polyline);
     }
 
-    // TODO: Convert meters to miles
+    /** Updates the total distance run every time a polyline is updated */
     private void updateDistance() {
         List<LatLng> list = mLocationService.getLocationList();
 
@@ -362,7 +397,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Location.distanceBetween(startLat, startLong, endLat, endLong, results);
         mTotalDistance += results[0];
 
-        mTotalDistanceView.setText(String.format(Locale.US, "%.2f", mTotalDistance));
+        mTotalDistance = mTotalDistance * 3.2808399f / 5280f;
+
+        mTotalDistanceView.setText(String.format(Locale.US,
+                "%.2f %s",
+                mTotalDistance,
+                mContext.getResources().getString(R.string.run_units)));
     }
 
     private void updateCamera(Location location) {

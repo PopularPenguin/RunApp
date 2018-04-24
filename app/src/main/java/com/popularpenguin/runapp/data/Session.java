@@ -2,6 +2,7 @@ package com.popularpenguin.runapp.data;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,21 +12,19 @@ public class Session {
     private Challenge challenge;
     private String date;
     private long time;
-    private List<LatLng> path;
+    private String pathString;
     private boolean isCompleted;
 
-    public Session(long id,
-                   Challenge challenge,
+    public Session(Challenge challenge,
                    String date,
                    long time,
                    List<LatLng> path,
                    boolean isCompleted) {
 
-        this.id = id;
         this.challenge = challenge;
         this.date = date;
         this.time = time;
-        this.path = path;
+        this.pathString = getPathString(path);
         this.isCompleted = isCompleted;
     }
 
@@ -76,15 +75,36 @@ public class Session {
         this.time = time;
     }
 
-    public List<LatLng> getPath() {
-        return path;
+    public static List<LatLng> getPathLatLng(String pathString) {
+        if (pathString == null) {
+            return new ArrayList<>();
+        }
+
+        String[] points = pathString.split(",");
+        List<LatLng> locationList = new ArrayList<>();
+
+        for (String point : points) {
+            String[] latLngString = point.split("-");
+
+            double lat = Double.valueOf(latLngString[0]);
+            double lng = Double.valueOf(latLngString[1]);
+
+            LatLng latLng = new LatLng(lat, lng);
+            locationList.add(latLng);
+        }
+
+        return locationList;
+    }
+
+    public String getPath() {
+        return pathString;
     }
 
     public void setPath(List<LatLng> path) {
-        this.path = path;
+        this.pathString = getPathString(path);
     }
 
-    public String getPathString() {
+    public String getPathString(List<LatLng> path) {
         if (path == null || path.size() == 0) {
             return null;
         }

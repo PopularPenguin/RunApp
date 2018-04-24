@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
-    public static final String TAG = SessionLoader.class.getSimpleName();
+    private static final String TAG = SessionLoader.class.getSimpleName();
 
     public SessionLoader(Context context) {
         super(context);
@@ -46,7 +46,6 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         cursor.moveToFirst();
 
         do {
-            long id = cursor.getLong(cursor.getColumnIndex(SessionsEntry._ID));
             Challenge challenge = getChallenge(cursor);
             /*Challenge challenge = new Challenge(0, "Challenge", "Test",
                     1000 * 60 * 8, false); */
@@ -55,7 +54,7 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
             List<LatLng> path = getPath(cursor);
             boolean isCompleted = time <= challenge.getTimeToComplete();
 
-            Session session = new Session(id, challenge, date, time, path, isCompleted);
+            Session session = new Session(challenge, date, time, path, isCompleted);
             sessions.add(session);
         } while (cursor.moveToNext());
 
@@ -100,24 +99,11 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
     // TODO: Remember to store session latlng in this format "12.53-54.64,12.88-55.00"
     private List<LatLng> getPath(Cursor cursor) {
-        if (cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_PATH)) == null) {
-            return new ArrayList<LatLng>();
+        String pathString = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_PATH));
+        if (pathString == null) {
+            return new ArrayList<>();
         }
 
-        String unparsed = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_PATH));
-        String[] points = unparsed.split(",");
-        List<LatLng> locationList = new ArrayList<>();
-
-        for (String point : points) {
-            String[] latLngString = point.split("-");
-
-            double lat = Double.valueOf(latLngString[0]);
-            double lng = Double.valueOf(latLngString[1]);
-
-            LatLng latLng = new LatLng(lat, lng);
-            locationList.add(latLng);
-        }
-
-        return locationList;
+        return Session.getPathLatLng(pathString);
     }
 }
