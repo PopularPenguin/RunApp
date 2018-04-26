@@ -36,7 +36,7 @@ public class DbHelper extends SQLiteOpenHelper {
         final String CREATE_SESSIONS_TABLE = "CREATE TABLE " +
                 SessionsEntry.SESSION_TABLE_NAME + " (" +
                 SessionsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SessionsEntry.COLUMN_CHALLENGE_ID + " INTEGER NOT NULL UNIQUE, " +
+                SessionsEntry.COLUMN_CHALLENGE_ID + " INTEGER NOT NULL, " +
                 SessionsEntry.COLUMN_DATE + " TEXT NOT NULL, " +
                 SessionsEntry.COLUMN_PATH + " TEXT, " +
                 SessionsEntry.COLUMN_TIME + " INTEGER NOT NULL, " +
@@ -47,8 +47,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_SESSIONS_TABLE);
 
         addChallenges(db);
-        // TODO: Remove when sessions are able to be saved
-        addTestSessions(db);
     }
 
     @Override
@@ -92,42 +90,6 @@ public class DbHelper extends SQLiteOpenHelper {
             cv.put(ChallengesEntry.COLUMN_IS_COMPLETED, challenge.isCompleted());
 
             db.insert(ChallengesEntry.CHALLENGE_TABLE_NAME, null, cv);
-        }
-    }
-
-    // TODO: Test method, remove later
-    private void addTestSessions(SQLiteDatabase db) {
-        Session[] sessions = new Session[2];
-        sessions[0] = new Session(new Challenge(0L,
-                        "Challenge 1",
-                        "Run an 8 minute mile",
-                        1000 * 60 * 8,
-                        false),
-                "April 20, 2018",
-                1000 * 60 * 7,
-                new ArrayList<>(),
-                true
-                );
-        sessions[1] = new Session(new Challenge(1L,
-                        "Challenge 2",
-                        "Run a 6 minute mile",
-                        1000 * 60 * 6,
-                        false),
-                "April 19, 2018",
-                1000 * 60 * 7,
-                new ArrayList<>(),
-                false
-        );
-
-        for (Session session : sessions) {
-            ContentValues cv = new ContentValues();
-            cv.put(SessionsEntry.COLUMN_CHALLENGE_ID, session.getChallenge().getId());
-            cv.put(SessionsEntry.COLUMN_DATE, session.getDate());
-            cv.put(SessionsEntry.COLUMN_TIME, session.getTime());
-            cv.put(SessionsEntry.COLUMN_PATH, session.getPath());
-            cv.put(SessionsEntry.COLUMN_IS_COMPLETED, session.isCompleted());
-
-            db.insert(SessionsEntry.SESSION_TABLE_NAME, null, cv);
         }
     }
 }

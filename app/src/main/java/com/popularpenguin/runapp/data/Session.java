@@ -1,13 +1,18 @@
 package com.popularpenguin.runapp.data;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 /** Data tracked into the session */
 public class Session {
+    private static final String TAG = Session.class.getSimpleName();
+
     private long id;
     private Challenge challenge;
     private String date;
@@ -76,15 +81,24 @@ public class Session {
     }
 
     public static List<LatLng> getPathLatLng(String pathString) {
-        if (pathString == null) {
+        if (pathString == null || pathString.isEmpty()) {
             return new ArrayList<>();
         }
 
-        String[] points = pathString.split(",");
+        Log.d(TAG, "String pathString: " + pathString);
+
+        String[] points = pathString.split("!");
+
         List<LatLng> locationList = new ArrayList<>();
 
         for (String point : points) {
-            String[] latLngString = point.split("-");
+            String[] latLngString = point.split(",");
+
+            Log.d(TAG, "String point: " + point);
+
+            if (latLngString.length != 2) {
+                throw new RuntimeException("Invalid string format for a LatLng point");
+            }
 
             double lat = Double.valueOf(latLngString[0]);
             double lng = Double.valueOf(latLngString[1]);
@@ -111,7 +125,7 @@ public class Session {
 
         StringBuilder sb = new StringBuilder();
         for (LatLng latLng : path) {
-            sb.append(String.format(Locale.US, "%f,%f-", latLng.latitude, latLng.longitude));
+            sb.append(String.format(Locale.US, "%f,%f!", latLng.latitude, latLng.longitude));
         }
         // delete the last "-" to prevent parsing from trying to add another element after last
         sb.deleteCharAt(sb.length() - 1);

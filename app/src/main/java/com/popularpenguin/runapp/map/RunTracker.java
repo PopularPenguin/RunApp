@@ -41,6 +41,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         MapService.OnReadyListener,
         StopwatchService.StopWatchListener {
 
+    private static final String TAG = RunTracker.class.getSimpleName();
+
     public static final String CHALLENGE_BUNDLE_KEY = "challenge";
     public static final String TRACKER_BUNDLE_KEY = "trackerData";
 
@@ -275,6 +277,16 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mStopWatchView.setTextColor(Color.RED);
             isAlarmPlayed = true;
             playAlarm(R.raw.airhorn);
+
+            Session session = new Session(mChallenge,
+                    DataUtils.getCurrentDateString(),
+                    mStopwatchService.getTime(),
+                    mLocationList,
+                    isGoalReached);
+
+            Log.d(TAG, "Challenge id: " + mChallenge.getId());
+
+            DataUtils.insertSession(mContext.getContentResolver(), session);
         } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
             mStopWatchView.setTextColor(Color.YELLOW);
         }

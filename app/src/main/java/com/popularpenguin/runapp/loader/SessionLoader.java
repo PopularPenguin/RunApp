@@ -47,6 +47,9 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
         do {
             Challenge challenge = getChallenge(cursor);
+            Log.d(TAG, "id = " + challenge.getId() +
+                ", name = " + challenge.getName() +
+                ", desc = " + challenge.getDescription());
             /*Challenge challenge = new Challenge(0, "Challenge", "Test",
                     1000 * 60 * 8, false); */
             String date = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_DATE));
@@ -64,7 +67,7 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
     }
 
     private Challenge getChallenge(Cursor cursor) {
-        long id = cursor.getLong(cursor.getColumnIndex(ChallengesEntry._ID));
+        long id = cursor.getLong(cursor.getColumnIndex(SessionsEntry.COLUMN_CHALLENGE_ID));
         Log.d(TAG, "Challenge id: " + id);
         Cursor challengeCursor = getContext().getContentResolver()
                 .query(ChallengesEntry.CONTENT_URI,
