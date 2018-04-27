@@ -275,8 +275,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStopWatchView.setText(time);
 
         // TODO: Test this!!
-
-        if (mTotalDistance >= mChallenge.getTimeToComplete()) {
+        if (mTotalDistance >= mChallenge.getDistance()) {
             finishRun(true);
         }
 
@@ -285,26 +284,22 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mStopWatchView.setTextColor(Color.RED);
             isAlarmPlayed = true;
             playAlarm(R.raw.airhorn);
+
             finishRun(false);
-            stopStopWatch();
-            stopLocationService();
         } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66 &&
                 !isAlarmPlayed) {
 
             mStopWatchView.setTextColor(Color.YELLOW);
         }
-
-        // challenge has failed and run is finally complete
-        if (isAlarmPlayed && mTotalDistance >= mChallenge.getTimeToComplete()) {
-            // TODO: Remove?
-        }
     }
 
     /**
-     * Finish the run by stopping services, releasing the wakelock, and storing the challenge in
-     * the database
+     * Finish the run by stopping services and storing the challenge in the database
      */
     private void finishRun(boolean isGoalReached) {
+        stopStopWatch();
+        stopLocationService();
+
         this.isGoalReached = isGoalReached;
 
         Session session = new Session(mChallenge,
@@ -405,11 +400,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Location.distanceBetween(startLat, startLong, endLat, endLong, results);
         mTotalDistance += results[0];
 
-        mTotalDistance = mTotalDistance * 3.2808399f / 5280f;
+        mTotalDistance = mTotalDistance * 3.2808399f;
 
         mTotalDistanceView.setText(String.format(Locale.US,
                 "%.2f %s",
-                mTotalDistance,
+                mTotalDistance / 5280, // convert feet to miles
                 mContext.getResources().getString(R.string.run_units)));
     }
 
