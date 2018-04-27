@@ -237,7 +237,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     public void destroy() {
-        finishRun(false);
+        stopLocationService();
+        stopStopWatch();
+
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+        }
+
+        //finishRun(false);
     }
 
     @Override
@@ -268,32 +275,28 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStopWatchView.setText(time);
 
         // TODO: Test this!!
+        /*
         if (mTotalDistance >= mChallenge.getTimeToComplete()) {
             finishRun(true);
-        }
+        } */
 
         // check if the goal time has elapsed and the out-of-time alarm hasn't played yet
         if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
             mStopWatchView.setTextColor(Color.RED);
             isAlarmPlayed = true;
             playAlarm(R.raw.airhorn);
+            finishRun(false);
+            stopStopWatch();
+            stopLocationService();
+        } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66 &&
+                !isAlarmPlayed) {
 
-            Session session = new Session(mChallenge,
-                    DataUtils.getCurrentDateString(),
-                    mStopwatchService.getTime(),
-                    mLocationList,
-                    isGoalReached);
-
-            Log.d(TAG, "Challenge id: " + mChallenge.getId());
-
-            DataUtils.insertSession(mContext.getContentResolver(), session);
-        } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66) {
             mStopWatchView.setTextColor(Color.YELLOW);
         }
 
         // challenge has failed and run is finally complete
         if (isAlarmPlayed && mTotalDistance >= mChallenge.getTimeToComplete()) {
-            finishRun(false);
+            // TODO: Remove?
         }
     }
 
@@ -303,13 +306,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
      */
     private void finishRun(boolean isGoalReached) {
         this.isGoalReached = isGoalReached;
-
-        stopStopWatch();
-        stopLocationService();
-
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        }
 
         Session session = new Session(mChallenge,
                 DataUtils.getCurrentDateString(),

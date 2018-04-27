@@ -46,7 +46,7 @@ public class StopwatchService extends JobIntentService {
                 listener.onStopWatchUpdate(displayText);
             }
 
-            handler.postDelayed(this, 0);
+            handler.postDelayed(this, 100L);
         }
     };
 

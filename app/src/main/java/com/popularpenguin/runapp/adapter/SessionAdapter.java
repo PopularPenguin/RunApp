@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.adapter;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -87,6 +88,14 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
             nameText.setText(session.getChallenge().getName());
             descriptionText.setText(session.getChallenge().getDescription());
             timeText.setText(session.getTimeString());
+
+            // if the challenge failed, the time's color is red, else it is green
+            if (session.getTime() >= session.getChallenge().getTimeToComplete()) {
+                timeText.setTextColor(Color.RED);
+            }
+            else {
+                timeText.setTextColor(Color.GREEN);
+            }
         }
 
         void clearAnimation() {
