@@ -44,7 +44,7 @@ public class SessionListActivity extends AppCompatActivity implements
     }
 
     private void setRecyclerView() {
-        SessionAdapter adapter = new SessionAdapter(mSessionList, this);
+        SessionAdapter adapter = new SessionAdapter(mSessionList, getResources(),this);
         mRecyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
