@@ -275,10 +275,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStopWatchView.setText(time);
 
         // TODO: Test this!!
-        /*
+
         if (mTotalDistance >= mChallenge.getTimeToComplete()) {
             finishRun(true);
-        } */
+        }
 
         // check if the goal time has elapsed and the out-of-time alarm hasn't played yet
         if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() && !isAlarmPlayed) {

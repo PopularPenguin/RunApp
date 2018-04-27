@@ -10,6 +10,7 @@ public class Challenge implements Parcelable {
     private long id;
     private String name;
     private String description;
+    private long distance; // distance in feet
     private long timeToComplete;
     private long fastestTime;
     private boolean isCompleted;
@@ -17,12 +18,14 @@ public class Challenge implements Parcelable {
     public Challenge(long id,
                      String name,
                      String description,
+                     long distance,
                      long timeToComplete,
                      boolean isCompleted) {
 
         this.id = id;
         this.name = name;
         this.description = description;
+        this.distance = distance;
         this.timeToComplete = timeToComplete;
         this.isCompleted = isCompleted;
     }
@@ -31,6 +34,7 @@ public class Challenge implements Parcelable {
         id = parcel.readLong();
         name = parcel.readString();
         description = parcel.readString();
+        distance = parcel.readLong();
         timeToComplete = parcel.readLong();
         fastestTime = parcel.readLong();
         isCompleted = parcel.readInt() == 1;
@@ -75,6 +79,14 @@ public class Challenge implements Parcelable {
         this.description = description;
     }
 
+    public long getDistance() {
+        return distance;
+    }
+
+    public void setDistance(long distance) {
+        this.distance = distance;
+    }
+
     public long getTimeToComplete() {
         return timeToComplete;
     }
@@ -109,6 +121,7 @@ public class Challenge implements Parcelable {
         parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeString(description);
+        parcel.writeLong(distance);
         parcel.writeLong(timeToComplete);
         parcel.writeLong(fastestTime);
         parcel.writeInt(isCompleted ? 1: 0);

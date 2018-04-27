@@ -28,6 +28,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 ChallengesEntry._ID + " INTEGER PRIMARY KEY UNIQUE, " +
                 ChallengesEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 ChallengesEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
+                ChallengesEntry.COLUMN_DISTANCE + " INTEGER NOT NULL, " +
                 ChallengesEntry.COLUMN_TIME_TO_COMPLETE + " INTEGER NOT NULL, " +
                 ChallengesEntry.COLUMN_FASTEST_TIME + " INTEGER NOT NULL, " +
                 ChallengesEntry.COLUMN_IS_COMPLETED + " INTEGER NOT NULL" +
@@ -63,21 +64,25 @@ public class DbHelper extends SQLiteOpenHelper {
         challenges[0] = new Challenge(0L,
                 "Challenge 1",
                 "Run an 8 minute mile",
+                5280,
                 1000 * 60 * 8,
                 false);
         challenges[1] = new Challenge(1L,
                 "Challenge 2",
                 "Run a 6 minute mile",
+                5280,
                 1000 * 60 * 6,
                 false);
         challenges[2] = new Challenge(2L,
                 "Challenge 3",
                 "Run a 30 second mile",
+                5280,
                 1000 * 30,
                 false);
         challenges[3] = new Challenge(3L,
                 "Challenge 4",
                 "Run a 10 second mile",
+                5280,
                 1000 * 10,
                 false);
 
@@ -85,6 +90,7 @@ public class DbHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(ChallengesEntry.COLUMN_NAME, challenge.getName());
             cv.put(ChallengesEntry.COLUMN_DESCRIPTION, challenge.getDescription());
+            cv.put(ChallengesEntry.COLUMN_DISTANCE, challenge.getDistance());
             cv.put(ChallengesEntry.COLUMN_TIME_TO_COMPLETE, challenge.getTimeToComplete());
             cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, 0L);
             cv.put(ChallengesEntry.COLUMN_IS_COMPLETED, challenge.isCompleted());

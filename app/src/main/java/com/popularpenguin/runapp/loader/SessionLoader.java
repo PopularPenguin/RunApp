@@ -88,6 +88,9 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         String description =
                 challengeCursor.getString(
                         challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_DESCRIPTION));
+        long distance =
+                challengeCursor.getLong(
+                        challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_DISTANCE));
         long timeToComplete =
                 challengeCursor.getLong(
                         challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_TIME_TO_COMPLETE));
@@ -97,7 +100,7 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
         challengeCursor.close();
 
-        return new Challenge(id, name, description, timeToComplete, isCompleted);
+        return new Challenge(id, name, description, distance, timeToComplete, isCompleted);
     }
 
     // TODO: Remember to store session latlng in this format "12.53-54.64,12.88-55.00"

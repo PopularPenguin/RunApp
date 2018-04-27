@@ -19,6 +19,7 @@ public class RunContract {
         public static final String CHALLENGE_TABLE_NAME = "challengeTable";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_DISTANCE = "distance";
         public static final String COLUMN_TIME_TO_COMPLETE = "timeToComplete";
         public static final String COLUMN_FASTEST_TIME = "fastestTime";
         public static final String COLUMN_IS_COMPLETED = "isCompleted";
