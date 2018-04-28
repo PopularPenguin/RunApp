@@ -51,6 +51,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private static final String DISTANCE_KEY = "distance";
 
+    public static final float METERS_TO_FEET = 3.2808399f;
+    public static final float FEET_PER_MILE = 5280.0f;
+
     private Context mContext;
 
     private Challenge mChallenge;
@@ -297,6 +300,20 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Finish the run by stopping services and storing the challenge in the database
      */
     private void finishRun(boolean isGoalReached) {
+        // TODO: Remove after testing
+        /*
+        DataUtils.updateFastestTime(mContext.getContentResolver(),
+                mChallenge,
+                mStopwatchService.getTime()); */
+
+        // if there is a new fastest time, update the challenge in the database
+        if (isGoalReached) {
+            long time = mStopwatchService.getTime();
+            if (time < mChallenge.getFastestTime()) {
+                DataUtils.updateFastestTime(mContext.getContentResolver(), mChallenge, time);
+            }
+        }
+
         stopStopWatch();
         stopLocationService();
 
@@ -382,6 +399,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     /** Updates the total distance run every time a polyline is updated */
+    // TODO: Fix this so it doesn't exponentially update!!
     private void updateDistance() {
         List<LatLng> list = mLocationService.getLocationList();
 
@@ -400,11 +418,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Location.distanceBetween(startLat, startLong, endLat, endLong, results);
         mTotalDistance += results[0];
 
-        mTotalDistance = mTotalDistance * 3.2808399f;
+        mTotalDistance = mTotalDistance * METERS_TO_FEET;
 
         mTotalDistanceView.setText(String.format(Locale.US,
                 "%.2f %s",
-                mTotalDistance / 5280, // convert feet to miles
+                mTotalDistance / FEET_PER_MILE, // convert feet to miles
                 mContext.getResources().getString(R.string.run_units)));
     }
 

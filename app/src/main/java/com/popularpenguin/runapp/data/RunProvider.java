@@ -186,6 +186,31 @@ public class RunProvider extends ContentProvider {
                       @Nullable String selection,
                       @Nullable String[] selectionArgs) {
 
-        throw new UnsupportedOperationException("Update hasn't been implemented");
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+
+        switch (match) {
+            case CHALLENGES:
+                rowsUpdated = db.update(ChallengesEntry.CHALLENGE_TABLE_NAME,
+                        contentValues,
+                        selection,
+                        selectionArgs);
+
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid uri: " + uri);
+        }
+
+        // set notification if a row is updated
+        if (rowsUpdated > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
+        // TODO: Update this to update the fastest time for the challenge
+        // where id = challenge.getId()
     }
 }
