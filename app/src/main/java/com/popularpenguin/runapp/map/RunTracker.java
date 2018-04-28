@@ -416,9 +416,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         float[] results = new float[2];
 
         Location.distanceBetween(startLat, startLong, endLat, endLong, results);
-        mTotalDistance += results[0];
-
-        mTotalDistance = mTotalDistance * METERS_TO_FEET;
+        mTotalDistance += results[0] * METERS_TO_FEET;
 
         mTotalDistanceView.setText(String.format(Locale.US,
                 "%.2f %s",
