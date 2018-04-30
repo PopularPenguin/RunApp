@@ -322,8 +322,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Session session = new Session(mChallenge,
                 DataUtils.getCurrentDateString(),
                 mStopwatchService.getTime(),
-                mLocationList,
+                mLocationService.getLocationList(),
                 isGoalReached);
+
+        Log.d(TAG, "Location list size = " + mLocationService.getLocationList().size());
 
         DataUtils.insertSession(mContext.getContentResolver(), session);
     }

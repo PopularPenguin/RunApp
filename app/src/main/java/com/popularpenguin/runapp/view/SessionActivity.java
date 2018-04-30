@@ -6,6 +6,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -27,12 +28,15 @@ import butterknife.ButterKnife;
 public class SessionActivity extends AppCompatActivity implements
     MapService.OnReadyListener {
 
+    private static final String TAG = SessionActivity.class.getSimpleName();
+
     @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_session_description) TextView mDescriptionText;
     @BindView(R.id.tv_session_time) TextView mTimeText;
     @BindView(R.id.toolbar_session) Toolbar mToolbar;
 
+    private MapService mMapService;
     private GoogleMap mGoogleMap;
 
     @Override
@@ -41,6 +45,9 @@ public class SessionActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_session);
 
         ButterKnife.bind(this);
+
+        mMapService = new MapService(getFragmentManager(), R.id.map_session_fragment);
+        mMapService.setOnReadyListener(this);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -57,6 +64,7 @@ public class SessionActivity extends AppCompatActivity implements
         mGoogleMap = map;
 
         String latLng = getIntent().getStringExtra(Session.LAT_LNG_EXTRA);
+        Log.d(TAG, "LatLng: " + latLng);
         List<LatLng> path = Session.getPathLatLng(latLng);
         PolylineOptions polyline = new PolylineOptions()
                 .geodesic(true)
@@ -65,6 +73,10 @@ public class SessionActivity extends AppCompatActivity implements
                 .visible(true);
 
         mGoogleMap.addPolyline(polyline);
+
+        if (path.isEmpty()) {
+            return;
+        }
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(path.get(0).latitude, path.get(0).longitude))

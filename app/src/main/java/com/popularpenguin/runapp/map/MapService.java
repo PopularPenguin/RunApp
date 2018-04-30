@@ -11,7 +11,7 @@ public class MapService implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
 
-    MapService(@NonNull FragmentManager fragmentManager, int resId) {
+    public MapService(@NonNull FragmentManager fragmentManager, int resId) {
         MapFragment mapFragment = (MapFragment)
                 fragmentManager.findFragmentById(resId);
         mapFragment.getMapAsync(this);
@@ -20,7 +20,7 @@ public class MapService implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        mGoogleMap.getUiSettings().setAllGesturesEnabled(false);
+        //mGoogleMap.getUiSettings().setAllGesturesEnabled(false);
 
         mOnReadyListener.onMapReady(mGoogleMap);
     }

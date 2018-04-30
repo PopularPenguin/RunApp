@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
@@ -14,6 +15,7 @@ import java.util.Date;
 
 public class DataUtils {
 
+    private static final String TAG = DataUtils.class.getSimpleName();
     /**
      * Insert a session into the session table in the database
      * @param contentResolver app's content resolver
@@ -22,6 +24,8 @@ public class DataUtils {
      */
     public static Uri insertSession(@NonNull ContentResolver contentResolver,
                                     @NonNull Session session) {
+
+        Log.d(TAG, "Session LatLng: " + session.getPath());
 
         ContentValues cv = new ContentValues();
         cv.put(SessionsEntry.COLUMN_CHALLENGE_ID, session.getChallenge().getId());
