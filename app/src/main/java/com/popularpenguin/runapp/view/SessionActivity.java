@@ -3,6 +3,7 @@ package com.popularpenguin.runapp.view;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -30,11 +31,9 @@ public class SessionActivity extends AppCompatActivity implements
 
     private static final String TAG = SessionActivity.class.getSimpleName();
 
-    @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
-    @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_session_description) TextView mDescriptionText;
     @BindView(R.id.tv_session_time) TextView mTimeText;
-    @BindView(R.id.toolbar_session) Toolbar mToolbar;
+    @BindView(R.id.fab_session) FloatingActionButton mCenterMapFab;
 
     private MapService mMapService;
     private GoogleMap mGoogleMap;
@@ -49,12 +48,7 @@ public class SessionActivity extends AppCompatActivity implements
         mMapService = new MapService(getFragmentManager(), R.id.map_session_fragment);
         mMapService.setOnReadyListener(this);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        setupAppBar();
-
-        // TODO: Get the polylines from the session and plot them, add move views to display data
+        // TODO: add move views to display data
 
         setViews();
     }
@@ -78,39 +72,10 @@ public class SessionActivity extends AppCompatActivity implements
             return;
         }
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(path.get(0).latitude, path.get(0).longitude))
-                .bearing(0f)
-                .tilt(45f)
-                .zoom(15f)
-                .build();
+        // set the center map fab here
+        mCenterMapFab.setOnClickListener(view -> positionMapAtStart(path));
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-    }
-
-    private void setupAppBar() {
-        // Display text on app bar when it is totally collapsed
-        // https://stackoverflow.com/questions/31662416/show-collapsingtoolbarlayout-title-only-when-collapsed
-        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShowing = true;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = mAppBar.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    String appName = getResources().getString(R.string.app_name);
-                    mCollapsingToolbarLayout.setTitle(appName);
-                    isShowing = true;
-                } else if (isShowing) {
-                    mCollapsingToolbarLayout.setTitle(" ");
-                    isShowing = false;
-                }
-            }
-        });
+        positionMapAtStart(path);
     }
 
     private void setViews() {
@@ -121,5 +86,16 @@ public class SessionActivity extends AppCompatActivity implements
         String fastestTime = getIntent().getStringExtra(Session.FASTEST_TIME_EXTRA);
         String timeText = String.format(Locale.US, "%s / %s", time, fastestTime);
         mTimeText.setText(timeText);
+    }
+
+    private void positionMapAtStart(List<LatLng> path) {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(path.get(0).latitude, path.get(0).longitude))
+                .bearing(0f)
+                .tilt(45f)
+                .zoom(15f)
+                .build();
+
+        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }
