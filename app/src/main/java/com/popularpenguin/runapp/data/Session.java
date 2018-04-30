@@ -13,6 +13,10 @@ import java.util.Locale;
 public class Session {
     private static final String TAG = Session.class.getSimpleName();
 
+    public static final String DESCRIPTION_EXTRA = "session_description";
+    public static final String TIME_EXTRA = "session_time";
+    public static final String FASTEST_TIME_EXTRA = "session_fastest_time";
+
     private long id;
     private Challenge challenge;
     private String date;

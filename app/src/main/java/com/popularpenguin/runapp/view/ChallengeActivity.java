@@ -16,13 +16,13 @@ import butterknife.ButterKnife;
 
 public class ChallengeActivity extends AppCompatActivity {
 
-    @BindView(R.id.app_bar_session) AppBarLayout mAppBar;
-    @BindView(R.id.collapsing_toolbar_session) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.app_bar_challenge) AppBarLayout mAppBar;
+    @BindView(R.id.collapsing_toolbar_challenge) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_location_test) TextView mLocationView;
     @BindView(R.id.tv_distance) TextView mDistanceText;
     @BindView(R.id.tv_stopwatch) TextView mTimerText;
     @BindView(R.id.btn_stopwatch) Button mTimerButton;
-    @BindView(R.id.toolbar_session) Toolbar mToolbar;
+    @BindView(R.id.toolbar_challenge) Toolbar mToolbar;
 
     private RunTracker mRunTracker;
 
@@ -97,7 +97,7 @@ public class ChallengeActivity extends AppCompatActivity {
     }
 
     private void setupTracker() {
-        mRunTracker = new RunTracker(this, R.id.map_fragment);
+        mRunTracker = new RunTracker(this, R.id.map_challenge_fragment);
         mRunTracker.setLocationView(mLocationView);
         mRunTracker.setDistanceView(mDistanceText);
         mRunTracker.setStopWatchView(mTimerText);

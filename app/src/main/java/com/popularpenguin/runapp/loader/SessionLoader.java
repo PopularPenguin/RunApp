@@ -94,13 +94,23 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         long timeToComplete =
                 challengeCursor.getLong(
                         challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_TIME_TO_COMPLETE));
+        long fastestTime =
+                challengeCursor.getLong(
+                        challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_FASTEST_TIME));
         boolean isCompleted =
                 challengeCursor.getInt(
                         challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_IS_COMPLETED)) == 1;
 
         challengeCursor.close();
 
-        return new Challenge(id, name, description, distance, timeToComplete, isCompleted);
+        Challenge challenge =
+                new Challenge(id, name, description, distance, timeToComplete, isCompleted);
+
+        if (fastestTime != 0L) {
+            challenge.setFastestTime(fastestTime);
+        }
+
+        return challenge;
     }
 
     // TODO: Remember to store session latlng in this format "12.53-54.64,12.88-55.00"
