@@ -13,6 +13,7 @@ import java.util.Locale;
 public class Session {
     private static final String TAG = Session.class.getSimpleName();
 
+    public static final String LAT_LNG_EXTRA = "session_lat_lng";
     public static final String DESCRIPTION_EXTRA = "session_description";
     public static final String TIME_EXTRA = "session_time";
     public static final String FASTEST_TIME_EXTRA = "session_fastest_time";

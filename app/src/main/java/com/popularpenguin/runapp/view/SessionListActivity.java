@@ -67,6 +67,7 @@ public class SessionListActivity extends AppCompatActivity implements
 
         Intent intent = new Intent(this, SessionActivity.class);
         //intent.putExtra(SessionInfo.SESSION_BUNDLE_KEY, mSessionList.get(position));
+        intent.putExtra(Session.LAT_LNG_EXTRA, session.getPath());
         intent.putExtra(Session.DESCRIPTION_EXTRA, session.getChallenge().getDescription());
         intent.putExtra(Session.TIME_EXTRA, session.getTimeString());
         intent.putExtra(Session.FASTEST_TIME_EXTRA, session.getChallenge().getFastestTimeString());

@@ -7,7 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-class MapService implements OnMapReadyCallback {
+public class MapService implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
 
@@ -32,7 +32,7 @@ class MapService implements OnMapReadyCallback {
         mOnReadyListener = listener;
     }
 
-    interface OnReadyListener {
+    public interface OnReadyListener {
         void onMapReady(GoogleMap map);
     }
 }
