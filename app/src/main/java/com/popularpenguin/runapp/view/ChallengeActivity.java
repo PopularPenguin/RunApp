@@ -1,10 +1,8 @@
 package com.popularpenguin.runapp.view;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,13 +14,11 @@ import butterknife.ButterKnife;
 
 public class ChallengeActivity extends AppCompatActivity {
 
-    @BindView(R.id.app_bar_challenge) AppBarLayout mAppBar;
-    @BindView(R.id.collapsing_toolbar_challenge) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.tv_location_test) TextView mLocationView;
     @BindView(R.id.tv_distance) TextView mDistanceText;
     @BindView(R.id.tv_stopwatch) TextView mTimerText;
     @BindView(R.id.btn_stopwatch) Button mTimerButton;
-    @BindView(R.id.toolbar_challenge) Toolbar mToolbar;
+    @BindView(R.id.fab_challenge) FloatingActionButton mCenterMapFab;
 
     private RunTracker mRunTracker;
 
@@ -32,11 +28,6 @@ public class ChallengeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_challenge);
 
         ButterKnife.bind(this);
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        setupAppBar();
 
         setupTracker();
 
@@ -72,6 +63,8 @@ public class ChallengeActivity extends AppCompatActivity {
         outState.putBundle(RunTracker.TRACKER_BUNDLE_KEY, mRunTracker.getBundle());
     }
 
+    // TODO: Use this code inside ChallengeList / SessionList
+    /*
     private void setupAppBar() {
         // Display text on app bar when it is totally collapsed
         // https://stackoverflow.com/questions/31662416/show-collapsingtoolbarlayout-title-only-when-collapsed
@@ -94,7 +87,7 @@ public class ChallengeActivity extends AppCompatActivity {
                 }
             }
         });
-    }
+    } */
 
     private void setupTracker() {
         mRunTracker = new RunTracker(this, R.id.map_challenge_fragment);
@@ -102,5 +95,6 @@ public class ChallengeActivity extends AppCompatActivity {
         mRunTracker.setDistanceView(mDistanceText);
         mRunTracker.setStopWatchView(mTimerText);
         mRunTracker.setButtonView(mTimerButton);
+        mRunTracker.setFab(mCenterMapFab);
     }
 }

@@ -14,11 +14,13 @@ import android.os.Parcel;
 import android.os.PowerManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +37,9 @@ import com.popularpenguin.runapp.utils.DataUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
@@ -76,6 +81,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private TextView mLocationView;
     private TextView mTotalDistanceView;
     private TextView mStopWatchView;
+    private FloatingActionButton mCenterMapFab;
 
     private MediaPlayer mMediaPlayer;
     private boolean isAlarmPlayed = false;
@@ -103,10 +109,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public Bundle getBundle() {
         Bundle bundle = new Bundle();
 
-        String path = "";
-        if (mLocationService != null) {
-            path = Session.getPathString(mLocationService.getLocationList());
-        }
+        String path = Session.getPathString(mLocationList);
+
 
         bundle.putString(PATH_KEY, path);
         bundle.putFloat(DISTANCE_KEY, mTotalDistance);
@@ -114,6 +118,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         if (mStopwatchService != null) {
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
+        }
+        else {
+            bundle.putLong(StopwatchService.START_TIME_EXTRA, mChallenge.getTimeToComplete());
         }
 
         return bundle;
@@ -166,6 +173,39 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 button.setText(mContext.getResources().getString(R.string.stop_timer));
             }
         });
+    }
+
+    public void setFab(FloatingActionButton fab) {
+        mCenterMapFab = fab;
+        mCenterMapFab.setOnClickListener(view -> positionMapAtEnd());
+    }
+
+    private void positionMapAtEnd() {
+        if (mLocationList == null || mGoogleMap == null || mLocationList.isEmpty()) {
+            if (mLocationList == null) {
+                Log.d(TAG, "location list is null");
+            }
+            if (mGoogleMap == null) {
+                Log.d(TAG, "map is null");
+            }
+            if (mLocationList.isEmpty()) {
+                Log.d(TAG, "location list is empty");
+            }
+            return;
+        }
+
+        Log.d(TAG, "in positionMapAtEnd(). List size = " + mLocationList.size());
+
+        int position = mLocationList.size() - 1;
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(mLocationList.get(position).latitude,
+                        mLocationList.get(position).longitude))
+                .bearing(0f)
+                .tilt(45f)
+                .zoom(15f)
+                .build();
+
+        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     /**
@@ -255,6 +295,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     @Override
     public void onLocationUpdate(Location location) {
         mLocation = location;
+        mLocationList = mLocationService.getLocationList();
 
         if (mLocationView != null) {
             mLocationView.setText(getLocationText());
@@ -428,7 +469,16 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 mContext.getResources().getString(R.string.run_units)));
     }
 
+    /**
+     * Update the camera's position when the user moves
+     * @param location user's location
+     */
     private void updateCamera(Location location) {
+        // stop updating if the run is over
+        if (isAlarmPlayed) {
+            return;
+        }
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(location.getLatitude(), location.getLongitude()))
                 .bearing(0f)
