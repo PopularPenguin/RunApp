@@ -46,10 +46,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public static final String CHALLENGE_BUNDLE_KEY = "challenge";
     public static final String TRACKER_BUNDLE_KEY = "trackerData";
 
-    private static final String LATITUDE_KEY = "latitudes";
-    private static final String LONGITUDE_KEY = "longitudes";
-
+    private static final String PATH_KEY = "path";
     private static final String DISTANCE_KEY = "distance";
+    private static final String ALARM_KEY = "alarm";
 
     public static final float METERS_TO_FEET = 3.2808399f;
     public static final float FEET_PER_MILE = 5280.0f;
@@ -66,7 +65,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private GoogleMap mGoogleMap;
     private Location mLocation;
     private Marker mCurrentLocationMarker;
-    private List<LatLng> mLocationList = new ArrayList<>();
+    private List<LatLng> mLocationList;
     private float mTotalDistance;
 
     private StopwatchService mStopwatchService;
@@ -103,20 +102,15 @@ public class RunTracker implements LocationService.ConnectionStatus,
      */
     public Bundle getBundle() {
         Bundle bundle = new Bundle();
-        ArrayList<String> latList = new ArrayList<>();
-        ArrayList<String> longList = new ArrayList<>();
 
-        for (LatLng latlng : mLocationList) {
-            String latitude = Double.toString(latlng.latitude);
-            String longitude = Double.toString(latlng.longitude);
-
-            latList.add(latitude);
-            longList.add(longitude);
+        String path = "";
+        if (mLocationService != null) {
+            path = Session.getPathString(mLocationService.getLocationList());
         }
 
-        bundle.putStringArrayList(LATITUDE_KEY, latList);
-        bundle.putStringArrayList(LONGITUDE_KEY, longList);
+        bundle.putString(PATH_KEY, path);
         bundle.putFloat(DISTANCE_KEY, mTotalDistance);
+        bundle.putBoolean(ALARM_KEY, isAlarmPlayed);
 
         if (mStopwatchService != null) {
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
@@ -131,22 +125,16 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void setBundle(Bundle bundle) {
         Bundle locationBundle = bundle.getBundle(TRACKER_BUNDLE_KEY);
 
-        List<String> latList = locationBundle.getStringArrayList("latitudes");
-        List<String> longList = locationBundle.getStringArrayList("longitudes");
-
-        List<LatLng> latLngList = new ArrayList<>();
-
-        for (int i = 0; i < latList.size() && i < longList.size(); i++) {
-            Double latitude = Double.parseDouble(latList.get(i));
-            Double longitude = Double.parseDouble(longList.get(i));
-
-            latLngList.add(new LatLng(latitude, longitude));
-        }
-
+        String path = locationBundle.getString(PATH_KEY, "");
         mStartTime = locationBundle.getLong(StopwatchService.START_TIME_EXTRA, 0L);
         mTotalDistance = locationBundle.getFloat(DISTANCE_KEY, 0f);
+        isAlarmPlayed = locationBundle.getBoolean(ALARM_KEY, false);
 
-        mLocationList = latLngList;
+        mLocationList = Session.getPathLatLng(path);
+        Log.d(TAG, path);
+        if (mLocationService != null) {
+            mLocationService.setLocationList(mLocationList);
+        }
     }
 
     /**
@@ -191,7 +179,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Start the StopWatch service
      */
     private void startStopWatch() {
-        if (!isStopwatchBound) {
+        if (!isStopwatchBound && !isAlarmPlayed) {
             Intent intent = new Intent(mContext, StopwatchService.class);
             intent.putExtra(StopwatchService.START_TIME_EXTRA, mStartTime);
             mContext.startService(intent);
@@ -348,7 +336,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Starts the Location service
      */
     private void startLocationService() {
-        if (!isLocationBound) {
+        if (!isLocationBound && !isAlarmPlayed) {
             Intent intent = new Intent(mContext, LocationService.class);
             mContext.startService(intent);
             mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
@@ -401,7 +389,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     /** Updates the total distance run every time a polyline is updated */
-    // TODO: Fix this so it doesn't exponentially update!!
     private void updateDistance() {
         List<LatLng> list = mLocationService.getLocationList();
 
@@ -448,6 +435,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mLocationService.connect();
             mLocationService.setOnLocationChangedListener(RunTracker.this);
             isLocationBound = true;
+            if (mLocationList != null) {
+                mLocationService.setLocationList(mLocationList);
+            }
         }
 
         @Override

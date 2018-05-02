@@ -55,6 +55,10 @@ public class LocationService extends JobIntentService implements GoogleApiClient
         return mLocationList;
     }
 
+    public void setLocationList(List<LatLng> locationList) {
+        mLocationList = locationList;
+    }
+
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         // TODO: Move onStartCommand code here?

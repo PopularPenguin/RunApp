@@ -123,7 +123,7 @@ public class Session {
         this.pathString = getPathString(path);
     }
 
-    public String getPathString(List<LatLng> path) {
+    public static String getPathString(List<LatLng> path) {
         if (path == null || path.size() == 0) {
             return null;
         }
