@@ -12,6 +12,7 @@ import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 import com.popularpenguin.runapp.data.Session;
 
 import java.util.Date;
+import java.util.Locale;
 
 public class DataUtils {
 
@@ -59,5 +60,16 @@ public class DataUtils {
         Date date = new Date();
 
         return date.toString();
+    }
+
+    public static String getFormattedTime(long time) {
+        int seconds = (int) (time / 1000);
+        int minutes = seconds / 60;
+        int hours = minutes / 60;
+
+        seconds %= 60;
+        minutes %= 60;
+
+        return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
     }
 }

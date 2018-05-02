@@ -135,6 +135,20 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (mLocationService != null) {
             mLocationService.setLocationList(mLocationList);
         }
+
+        mTotalDistanceView.setText(String.format(Locale.US,
+                "%.2f %s",
+                mTotalDistance / FEET_PER_MILE, // convert feet to miles
+                mContext.getResources().getString(R.string.run_units)));
+
+        mStopWatchView.setText(DataUtils.getFormattedTime(mStartTime));
+
+        if (mStartTime >= mChallenge.getTimeToComplete()) {
+            mStopWatchView.setTextColor(Color.RED);
+        }
+        else if (mStartTime >= mChallenge.getTimeToComplete() * 0.66) {
+            mStopWatchView.setTextColor(Color.YELLOW);
+        }
     }
 
     /**
@@ -262,22 +276,29 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     @Override
-    public void onStopWatchUpdate(String time) {
-        mStopWatchView.setText(time);
+    public void onStopWatchUpdate(String timeString) {
+        mStopWatchView.setText(timeString);
 
-        // TODO: Test this!!
         if (mTotalDistance >= mChallenge.getDistance()) {
             finishRun(true);
         }
 
+        long time = mStopwatchService.getTime();
+        checkTime(time);
+    }
+
+    /**
+     * check if the goal time has elapsed and the out-of-time alarm hasn't played yet
+     * @param time the time from the stopwatch to check
+     */
+    private void checkTime(long time) {
         // check if the goal time has elapsed and the out-of-time alarm hasn't played yet
-        if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
+        if (time > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
             mStopWatchView.setTextColor(Color.RED);
             isAlarmPlayed = true;
             playAlarm(R.raw.airhorn);
-
             finishRun(false);
-        } else if (mStopwatchService.getTime() > mChallenge.getTimeToComplete() * 0.66 &&
+        } else if (time > mChallenge.getTimeToComplete() * 0.66 &&
                 !isAlarmPlayed) {
 
             mStopWatchView.setTextColor(Color.YELLOW);
@@ -288,12 +309,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Finish the run by stopping services and storing the challenge in the database
      */
     private void finishRun(boolean isGoalReached) {
-        // TODO: Remove after testing
-        /*
-        DataUtils.updateFastestTime(mContext.getContentResolver(),
-                mChallenge,
-                mStopwatchService.getTime()); */
-
         // if there is a new fastest time, update the challenge in the database
         if (isGoalReached) {
             long time = mStopwatchService.getTime();
