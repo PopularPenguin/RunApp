@@ -35,7 +35,6 @@ public class SessionActivity extends AppCompatActivity implements
     @BindView(R.id.tv_session_time) TextView mTimeText;
     @BindView(R.id.fab_session) FloatingActionButton mCenterMapFab;
 
-    private MapService mMapService;
     private GoogleMap mGoogleMap;
 
     @Override
@@ -45,10 +44,10 @@ public class SessionActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        mMapService = new MapService(getFragmentManager(), R.id.map_session_fragment);
-        mMapService.setOnReadyListener(this);
+        MapService mapService = new MapService(getFragmentManager(), R.id.map_session_fragment);
+        mapService.setOnReadyListener(this);
 
-        // TODO: add move views to display data
+        // TODO: add more views to display data
 
         setViews();
     }
