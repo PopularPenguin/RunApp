@@ -5,10 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -16,6 +19,8 @@ import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.adapter.SessionAdapter;
 import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.loader.SessionLoader;
+
+import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 
 import java.util.List;
 
@@ -73,6 +78,45 @@ public class SessionListActivity extends AppCompatActivity implements
         intent.putExtra(Session.FASTEST_TIME_EXTRA, session.getChallenge().getFastestTimeString());
 
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_session_list, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.action_delete_sessions:
+                // TODO: Make a dialog to confirm deletion
+                getContentResolver().delete(SessionsEntry.CONTENT_URI, null, null);
+
+                if (mRecyclerView != null) {
+                    mSessionList.clear();
+                    mRecyclerView.getAdapter().notifyDataSetChanged();
+                }
+
+                break;
+
+            case android.R.id.home:
+                super.onBackPressed();
+
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid menu id");
+        }
+
+        return true;
+    }
+
+    private void createDeleteDialog() {
+
     }
 
     // Loader Callbacks /////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme">
         <provider
             android:name=".data.RunProvider"
             android:authorities="com.popularpenguin.runapp"
@@ -52,9 +52,11 @@
             android:launchMode="singleTask"
             android:parentActivityName=".view.ChallengeListActivity">
         </activity>
-        <activity android:name=".view.SessionListActivity">
+        <activity android:name=".view.SessionListActivity"
+            android:parentActivityName=".view.ChallengeListActivity">
         </activity>
-        <activity android:name=".view.SessionActivity">
+        <activity android:name=".view.SessionActivity"
+            android:parentActivityName=".view.SessionListActivity">
         </activity>
     </application>
 

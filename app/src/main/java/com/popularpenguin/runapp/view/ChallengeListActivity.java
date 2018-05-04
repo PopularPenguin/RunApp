@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import com.google.android.gms.ads.AdRequest;
@@ -116,6 +118,30 @@ public class ChallengeListActivity extends AppCompatActivity implements
         intent.putExtra(RunTracker.CHALLENGE_BUNDLE_KEY, mChallengeList.get(position));
 
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_challenge_list, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.action_show_info:
+                // TODO: Make an intent for the About activity
+
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid menu id");
+        }
+
+        return true;
     }
 
     // Loader Callbacks //////////////////////////////////////////////////////////////////////////

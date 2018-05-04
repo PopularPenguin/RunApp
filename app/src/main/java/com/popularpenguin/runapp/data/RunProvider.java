@@ -160,6 +160,13 @@ public class RunProvider extends ContentProvider {
 
                 break;
 
+            case SESSIONS:
+                entriesDeleted = db.delete(SessionsEntry.SESSION_TABLE_NAME,
+                        null,
+                        null);
+
+                break;
+
             case SESSION_WITH_ID:
                 id = uri.getPathSegments().get(1);
                 entriesDeleted = db.delete(SessionsEntry.SESSION_TABLE_NAME,
