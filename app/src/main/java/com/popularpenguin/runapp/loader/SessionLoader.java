@@ -50,8 +50,7 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
             Log.d(TAG, "id = " + challenge.getId() +
                 ", name = " + challenge.getName() +
                 ", desc = " + challenge.getDescription());
-            /*Challenge challenge = new Challenge(0, "Challenge", "Test",
-                    1000 * 60 * 8, false); */
+
             long id = cursor.getLong(cursor.getColumnIndex(SessionsEntry._ID));
             String date = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_DATE));
             long time = cursor.getLong(cursor.getColumnIndex(SessionsEntry.COLUMN_TIME));

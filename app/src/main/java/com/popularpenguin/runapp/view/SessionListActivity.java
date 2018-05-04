@@ -77,14 +77,11 @@ public class SessionListActivity extends AppCompatActivity implements
                 int position = viewHolder.getAdapterPosition();
                 Session session = mSessionList.get(position);
 
-                Log.d(TAG, session.getChallenge().getName() + ":" + session.getId());
+                adapter.remove(position);
 
                 getContentResolver().delete(SessionsEntry.CONTENT_URI,
                         SessionsEntry._ID + "=" + String.valueOf(session.getId()),
                         null);
-
-                mSessionList.remove(position);
-                adapter.notifyDataSetChanged();
             }
         };
 
@@ -104,6 +101,8 @@ public class SessionListActivity extends AppCompatActivity implements
     public void onClick(int position) {
         // TODO: Implement SessionActivity and the Session Info class
         Session session = mSessionList.get(position);
+
+        Log.d(TAG, "Session id: " + session.getId());
 
         Intent intent = new Intent(this, SessionActivity.class);
         //intent.putExtra(SessionInfo.SESSION_BUNDLE_KEY, mSessionList.get(position));

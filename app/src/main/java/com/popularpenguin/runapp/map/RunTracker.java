@@ -335,14 +335,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private void checkTime(long time) {
         // check if the goal time has elapsed and the out-of-time alarm hasn't played yet
         if (time > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
-            mStopWatchView.setTextColor(Color.RED);
+            mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.red));
             isAlarmPlayed = true;
             playAlarm(R.raw.airhorn);
             finishRun(false);
         } else if (time > mChallenge.getTimeToComplete() * 0.66 &&
                 !isAlarmPlayed) {
 
-            mStopWatchView.setTextColor(Color.YELLOW);
+            mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.yellow));
         }
     }
 
@@ -355,6 +355,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             long time = mStopwatchService.getTime();
             if (time < mChallenge.getFastestTime()) {
                 DataUtils.updateFastestTime(mContext.getContentResolver(), mChallenge, time);
+                mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
         }
 

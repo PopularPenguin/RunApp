@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
+import com.popularpenguin.runapp.data.RunContract;
 import com.popularpenguin.runapp.data.Session;
 
 import java.util.List;
@@ -20,6 +22,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionViewHolder> {
+
+    private static final String TAG = SessionAdapter.class.getSimpleName();
 
     public interface SessionAdapterOnClickHandler {
         void onClick(int position);
@@ -61,6 +65,18 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     @Override
     public int getItemCount() {
         return mSessionList.size();
+    }
+
+    // TODO: Fix this
+    public void remove(int position) {
+        Session session = mSessionList.get(position);
+
+        Log.d(TAG, session.getChallenge().getName() + ":" + session.getId());
+
+        Log.d(TAG, "List size before: " + mSessionList.size());
+        mSessionList.remove(position);
+        notifyItemRemoved(position);
+        Log.d(TAG, "List size after: " + mSessionList.size());
     }
 
     @Override

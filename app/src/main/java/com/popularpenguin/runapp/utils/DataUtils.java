@@ -17,6 +17,9 @@ import java.util.Locale;
 public class DataUtils {
 
     private static final String TAG = DataUtils.class.getSimpleName();
+
+    private DataUtils() { } // this class shouldn't be instantiated
+
     /**
      * Insert a session into the session table in the database
      * @param contentResolver app's content resolver
@@ -49,6 +52,8 @@ public class DataUtils {
                                         long time) {
 
         String id = String.valueOf(challenge.getId());
+
+        Log.d(TAG, "Fastest time to update is: " + time);
 
         ContentValues cv = new ContentValues();
         cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, time);
