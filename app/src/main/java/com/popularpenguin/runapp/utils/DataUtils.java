@@ -48,7 +48,7 @@ public class DataUtils {
                                         @NonNull Challenge challenge,
                                         long time) {
 
-        String id = Long.toString(challenge.getId());
+        String id = String.valueOf(challenge.getId());
 
         ContentValues cv = new ContentValues();
         cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, time);

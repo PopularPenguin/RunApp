@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -30,6 +32,8 @@ import butterknife.ButterKnife;
 public class SessionListActivity extends AppCompatActivity implements
         SessionAdapter.SessionAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Session>> {
+
+    private static final String TAG = SessionListActivity.class.getSimpleName();
 
     @BindView(R.id.rv_session_list) RecyclerView mRecyclerView;
     @BindView(R.id.ad_view_session_list) AdView mAdView;
@@ -55,6 +59,37 @@ public class SessionListActivity extends AppCompatActivity implements
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+
+        ItemTouchHelper.SimpleCallback simpleCallback =
+                new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                Session session = mSessionList.get(position);
+
+                Log.d(TAG, session.getChallenge().getName() + ":" + session.getId());
+
+                getContentResolver().delete(SessionsEntry.CONTENT_URI,
+                        SessionsEntry._ID + "=" + String.valueOf(session.getId()),
+                        null);
+
+                mSessionList.remove(position);
+                adapter.notifyDataSetChanged();
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     // TODO: Load real ads after submitting project before uploading to Google Play
@@ -93,19 +128,11 @@ public class SessionListActivity extends AppCompatActivity implements
 
         switch (itemId) {
             case R.id.action_delete_sessions:
-                // TODO: Make a dialog to confirm deletion
-                getContentResolver().delete(SessionsEntry.CONTENT_URI, null, null);
-
-                if (mRecyclerView != null) {
-                    mSessionList.clear();
-                    mRecyclerView.getAdapter().notifyDataSetChanged();
-                }
-
+                createDeleteDialog();
                 break;
 
             case android.R.id.home:
                 super.onBackPressed();
-
                 break;
 
             default:
@@ -116,7 +143,19 @@ public class SessionListActivity extends AppCompatActivity implements
     }
 
     private void createDeleteDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.dialog_delete)
+                .setPositiveButton(R.string.dialog_delete_positive, (dialog, which) -> {
+                    getContentResolver().delete(SessionsEntry.CONTENT_URI, null, null);
 
+                    if (mRecyclerView != null) {
+                        mSessionList.clear();
+                        mRecyclerView.getAdapter().notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_delete_negative,
+                        (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     // Loader Callbacks /////////////////////////////////////////////////////////////////////////

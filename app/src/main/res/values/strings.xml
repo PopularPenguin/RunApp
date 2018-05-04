@@ -15,5 +15,9 @@
     <string name="menu_info">About</string>
     <string name="menu_delete_sessions">Delete All Sessions</string>
 
+    <string name="dialog_delete">Delete all sessions?</string>
+    <string name="dialog_delete_positive">Yes</string>
+    <string name="dialog_delete_negative">No</string>
+
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

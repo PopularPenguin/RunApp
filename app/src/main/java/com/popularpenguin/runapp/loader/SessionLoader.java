@@ -52,12 +52,14 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
                 ", desc = " + challenge.getDescription());
             /*Challenge challenge = new Challenge(0, "Challenge", "Test",
                     1000 * 60 * 8, false); */
+            long id = cursor.getLong(cursor.getColumnIndex(SessionsEntry._ID));
             String date = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_DATE));
             long time = cursor.getLong(cursor.getColumnIndex(SessionsEntry.COLUMN_TIME));
             List<LatLng> path = getPath(cursor);
             boolean isCompleted = time <= challenge.getTimeToComplete();
 
             Session session = new Session(challenge, date, time, path, isCompleted);
+            session.setId(id);
             sessions.add(session);
         } while (cursor.moveToNext());
 
@@ -113,7 +115,11 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         return challenge;
     }
 
-    // TODO: Remember to store session latlng in this format "12.53-54.64,12.88-55.00"
+    /**
+     * Get the user's run path as a list of coordinates
+     * @param cursor the cursor to extract the data from
+     * @return the list of LatLng coordinates
+     */
     private List<LatLng> getPath(Cursor cursor) {
         String pathString = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_PATH));
         if (pathString == null) {

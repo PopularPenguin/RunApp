@@ -153,7 +153,7 @@ public class RunProvider extends ContentProvider {
 
         switch (match) {
             case CHALLENGE_WITH_ID:
-                id = uri.getPathSegments().get(1);
+                id = uri.getLastPathSegment();
                 entriesDeleted = db.delete(ChallengesEntry.CHALLENGE_TABLE_NAME,
                         ChallengesEntry._ID + "=?",
                         new String[] { id });
@@ -162,13 +162,13 @@ public class RunProvider extends ContentProvider {
 
             case SESSIONS:
                 entriesDeleted = db.delete(SessionsEntry.SESSION_TABLE_NAME,
-                        null,
-                        null);
+                        selection,
+                        selectionArgs);
 
                 break;
 
             case SESSION_WITH_ID:
-                id = uri.getPathSegments().get(1);
+                id = uri.getLastPathSegment();
                 entriesDeleted = db.delete(SessionsEntry.SESSION_TABLE_NAME,
                         SessionsEntry._ID + "=?",
                         new String[] { id });
