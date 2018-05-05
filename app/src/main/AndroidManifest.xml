@@ -39,7 +39,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/API_KEY"/>
 
-        <activity android:name=".view.ChallengeListActivity">
+        <activity android:name=".view.ChallengeListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

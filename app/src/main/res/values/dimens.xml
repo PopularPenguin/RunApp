@@ -6,6 +6,7 @@
     <dimen name="app_bar_elevation">4dp</dimen>
     <dimen name="recycler_elevation">2dp</dimen>
     <dimen name="text_margin">8dp</dimen>
+    <dimen name="view_margin">8dp</dimen>
     <dimen name="text_horizontal_margin">16dp</dimen>
     <dimen name="text_description_size">22sp</dimen>
 

@@ -8,6 +8,8 @@ import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -38,6 +41,9 @@ public class ChallengeListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Challenge>> {
 
+    @BindView(R.id.app_bar_challenge_list) AppBarLayout mAppBar;
+    @BindView(R.id.collapsing_toolbar_challenge_list) CollapsingToolbarLayout mCollapsingToolbar;
+    @BindView(R.id.toolbar_challenge_list) Toolbar mToolbar;
     @BindView(R.id.rv_challenge_list) RecyclerView mRecyclerView;
     @BindView(R.id.btn_launch_sessions) Button mSessionButton;
     @BindView(R.id.ad_view_challenge_list) AdView mAdView;
@@ -50,6 +56,32 @@ public class ChallengeListActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_challenge_list);
 
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+
+        // Display text on app bar when it is totally collapsed
+        // https://stackoverflow.com/questions/31662416/show-collapsingtoolbarlayout-title-only-when-collapsed
+        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShowing = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = mAppBar.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    String appName = getResources().getString(R.string.app_name);
+                    mCollapsingToolbar.setTitle(appName);
+                    isShowing = true;
+                }
+                else if (isShowing) {
+                    mCollapsingToolbar.setTitle(" ");
+                    isShowing = false;
+                }
+            }
+        });
+
 
         getSupportLoaderManager().initLoader(0, null, this);
 
