@@ -39,7 +39,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/API_KEY"/>
 
-        <activity android:name=".view.ChallengeListActivity"
+        <activity
+            android:name=".view.ChallengeListActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -54,10 +55,13 @@
             android:launchMode="singleTask"
             android:parentActivityName=".view.ChallengeListActivity">
         </activity>
-        <activity android:name=".view.SessionListActivity"
-            android:parentActivityName=".view.ChallengeListActivity">
+        <activity
+            android:name=".view.SessionListActivity"
+            android:parentActivityName=".view.ChallengeListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".view.SessionActivity"
+        <activity
+            android:name=".view.SessionActivity"
             android:parentActivityName=".view.SessionListActivity">
         </activity>
     </application>
