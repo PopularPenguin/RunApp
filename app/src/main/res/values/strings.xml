@@ -19,5 +19,8 @@
     <string name="dialog_delete_positive">Yes</string>
     <string name="dialog_delete_negative">No</string>
 
+    <string name="notification_title">Run Challenge Tracker</string>
+    <string name="notification_body">The tracker is currently running</string>
+
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

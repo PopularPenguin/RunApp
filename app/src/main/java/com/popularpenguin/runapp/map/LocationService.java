@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.popularpenguin.runapp.notification.RunNotification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     private LocationCallback mLocationCallback;
     private Location mLocation;
     private List<LatLng> mLocationList = new ArrayList<>();
+    private RunNotification mRunNotification;
 
     public void connect() {
         mGoogleApiClient.connect();
@@ -88,6 +90,10 @@ public class LocationService extends JobIntentService implements GoogleApiClient
             return;
         }
 
+        // create and display a notification for the duration of this service
+        mRunNotification = new RunNotification(this);
+        mRunNotification.createNotification();
+
         setLocationRequest();
 
         LocationServices.getFusedLocationProviderClient(this)
@@ -102,6 +108,16 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // TODO: Implement
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // cancel the notification when the location service is destroyed
+        if (mRunNotification != null) {
+            mRunNotification.cancelNotification();
+        }
     }
 
     private synchronized void setClient() {
