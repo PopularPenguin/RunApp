@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -165,7 +166,12 @@ public class ChallengeListActivity extends AppCompatActivity implements
 
         switch (itemId) {
             case R.id.action_show_info:
-                // TODO: Make an intent for the About activity
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.dialog_about_title)
+                        .setMessage(R.string.dialog_about_body)
+                        .setPositiveButton(R.string.dialog_about_close, (dialog, which) ->
+                            dialog.dismiss())
+                        .show();
 
                 break;
 

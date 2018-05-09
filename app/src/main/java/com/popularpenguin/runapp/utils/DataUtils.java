@@ -11,6 +11,8 @@ import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 import com.popularpenguin.runapp.data.Session;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -18,12 +20,14 @@ public class DataUtils {
 
     private static final String TAG = DataUtils.class.getSimpleName();
 
-    private DataUtils() { } // this class shouldn't be instantiated
+    private DataUtils() {
+    } // this class shouldn't be instantiated
 
     /**
      * Insert a session into the session table in the database
+     *
      * @param contentResolver app's content resolver
-     * @param session the session to insert
+     * @param session         the session to insert
      * @return uri of the inserted session in the database
      */
     public static Uri insertSession(@NonNull ContentResolver contentResolver,
@@ -43,13 +47,14 @@ public class DataUtils {
 
     /**
      * Updates the fastest time for a challenge in the database
+     *
      * @param contentResolver the app's content resolver
-     * @param challenge an instance of the challenge
-     * @param time the time to set as fastest
+     * @param challenge       an instance of the challenge
+     * @param time            the time to set as fastest
      */
     public static void updateFastestTime(@NonNull ContentResolver contentResolver,
-                                        @NonNull Challenge challenge,
-                                        long time) {
+                                         @NonNull Challenge challenge,
+                                         long time) {
 
         String id = String.valueOf(challenge.getId());
 
@@ -58,15 +63,18 @@ public class DataUtils {
         ContentValues cv = new ContentValues();
         cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, time);
 
-        contentResolver.update(ChallengesEntry.CONTENT_URI, cv,"_id=?", new String[]{ id });
+        contentResolver.update(ChallengesEntry.CONTENT_URI, cv, "_id=?", new String[]{id});
     }
 
+    /** Get the current system time as a date */
     public static String getCurrentDateString() {
-        Date date = new Date();
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US);
 
-        return date.toString();
+        return formatter.format(date);
     }
 
+    /** Get formatted time for the list views */
     public static String getFormattedTime(long time) {
         int seconds = (int) (time / 1000);
         int minutes = seconds / 60;

@@ -20,29 +20,30 @@
             android:id="@+id/tv_session_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/text_margin"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
             android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_session_item_time_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_session_item_time_label"
             tools:text="Name"/>
 
         <TextView
             android:id="@+id/tv_session_item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/text_horizontal_margin"
-            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginStart="8dp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_session_item_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_session_item_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_session_item_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_session_item_time"
             tools:text="Description"/>
 
         <TextView
             android:id="@+id/tv_session_item_time_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/fastest_time_label"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/tv_session_item_time"

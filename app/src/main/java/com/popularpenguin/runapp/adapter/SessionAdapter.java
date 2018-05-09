@@ -17,6 +17,7 @@ import com.popularpenguin.runapp.data.RunContract;
 import com.popularpenguin.runapp.data.Session;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,7 +108,10 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         }
 
         void bind(@NonNull Session session) {
-            nameText.setText(session.getChallenge().getName());
+            String nameAndDate = String.format(Locale.US, "%s - %s",
+                    session.getChallenge().getName(),
+                    session.getDate());
+            nameText.setText(nameAndDate);
             descriptionText.setText(session.getChallenge().getDescription());
             timeText.setText(session.getTimeString());
 
