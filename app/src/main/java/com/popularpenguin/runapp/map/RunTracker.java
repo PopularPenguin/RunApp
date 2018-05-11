@@ -18,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,8 +110,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public Bundle getBundle() {
         Bundle bundle = new Bundle();
 
-        String path = Session.getPathString(mLocationList);
-
+        String path;
+        if (mLocationService != null) {
+            path = Session.getPathString(mLocationService.getLocationList());
+        }
+        else {
+            path = Session.getPathString(mLocationList);
+        }
 
         bundle.putString(PATH_KEY, path);
         bundle.putFloat(DISTANCE_KEY, mTotalDistance);
@@ -136,6 +142,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStartTime = locationBundle.getLong(StopwatchService.START_TIME_EXTRA, 0L);
         mTotalDistance = locationBundle.getFloat(DISTANCE_KEY, 0f);
         isAlarmPlayed = locationBundle.getBoolean(ALARM_KEY, false);
+
+        Log.d(TAG, "Location service is null?" + (mLocationService == null ? "true" : "false"));
 
         mLocationList = Session.getPathLatLng(path);
         Log.d(TAG, path);
@@ -167,11 +175,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
             startLocationService();
             startStopWatch();
 
-            // TODO: Once the button has been clicked, set button text to stop and then
-            // set a new onClickListener to stop the tracker and store the session?
-            if (isStopwatchBound) {
-                button.setText(mContext.getResources().getString(R.string.stop_timer));
-            }
+            // TODO: Once the button has been clicked, set button text to stop
+            mButtonView.setVisibility(View.GONE);
         });
     }
 
@@ -496,6 +501,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private ServiceConnection mLocationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            Log.d(TAG, "location service connected");
             LocationService.LocationBinder binder = (LocationService.LocationBinder) iBinder;
             mLocationService = binder.getService();
             mLocationService.connect();
