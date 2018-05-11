@@ -59,6 +59,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private static final String DISTANCE_KEY = "distance";
     private static final String ALARM_KEY = "alarm";
     private static final String GOAL_KEY = "isGoalReached";
+    private static final String BUTTON_KEY = "isButtonShown";
 
     public static final float FEET_PER_MILE = 5280.0f;
 
@@ -87,6 +88,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private TextView mTotalDistanceView;
     private TextView mStopWatchView;
     private FloatingActionButton mCenterMapFab;
+    private boolean isButtonShown = true;
 
     private MediaPlayer mMediaPlayer;
     private boolean isAlarmPlayed = false;
@@ -134,6 +136,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         bundle.putBoolean(ALARM_KEY, isAlarmPlayed);
         bundle.putBoolean(GOAL_KEY, isGoalReached);
+        bundle.putBoolean(BUTTON_KEY, isButtonShown);
 
         if (mStopwatchService != null) {
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
@@ -156,6 +159,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mTotalDistance = locationBundle.getFloat(DISTANCE_KEY, 0f);
         isAlarmPlayed = locationBundle.getBoolean(ALARM_KEY, false);
         isGoalReached = locationBundle.getBoolean(GOAL_KEY, false);
+        isButtonShown = locationBundle.getBoolean(BUTTON_KEY, true);
 
         Log.d(TAG, "Location service is null?" + (mLocationService == null ? "true" : "false"));
 
@@ -179,6 +183,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (isGoalReached) {
             createFinishDialog(R.string.dialog_challenge_complete);
         }
+
+        if (!isButtonShown) {
+            mButtonView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -186,12 +194,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
      */
     public void setButtonView(Button button) {
         mButtonView = button;
+
         button.setOnClickListener(view -> {
             startLocationService();
             startStopWatch();
 
             // TODO: Once the button has been clicked, set button text to stop
             mButtonView.setVisibility(View.GONE);
+            isButtonShown = false;
         });
     }
 
