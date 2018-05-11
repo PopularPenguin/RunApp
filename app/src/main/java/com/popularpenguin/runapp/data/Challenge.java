@@ -7,6 +7,10 @@ import java.util.Locale;
 
 /** Describes the challenge */
 public class Challenge implements Parcelable {
+
+    public static final String CHALLENGE_EXTRA = "challenge";
+    public static final String CHALLENGE_GOAL = "challengeGoalTime";
+
     private long id;
     private String name;
     private String description;

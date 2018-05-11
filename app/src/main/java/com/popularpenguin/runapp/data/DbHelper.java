@@ -60,7 +60,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private void addChallenges(SQLiteDatabase db) {
         // TODO: Add more challenges, change test challenges (like 10 seconds to run a mile)
-        Challenge[] challenges = new Challenge[5];
+        Challenge[] challenges = new Challenge[6];
         challenges[0] = new Challenge(0L,
                 "Challenge 1",
                 "Run an 8 minute mile",
@@ -89,7 +89,13 @@ public class DbHelper extends SQLiteOpenHelper {
                 "Challenge 5",
                 "Run 0.1 miles in 4 minutes",
                 5280 / 10,
-                1000 * 10 * 4,
+                1000 * 60 * 4,
+                false);
+        challenges[5] = new Challenge(5L,
+                "Challenge 6",
+                "Run 0.02 miles in 10 minutes",
+                5280 / 100,
+                1000 * 60 * 10,
                 false);
 
         for (Challenge challenge : challenges) {

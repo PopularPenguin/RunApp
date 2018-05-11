@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Binder;
 import android.os.Build;
@@ -23,6 +24,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.notification.RunNotification;
 
 import java.util.ArrayList;
@@ -33,8 +36,21 @@ public class LocationService extends JobIntentService implements GoogleApiClient
 
     private static final String TAG = LocationService.class.getSimpleName();
 
+    public static final float METERS_TO_FEET = 3.2808399f;
+
     private static final long UPDATE_INTERVAL = 2000L; // update every 20 seconds
     private static final long UPDATE_FASTEST_INTERVAL = 2000L; // 2 seconds
+
+    public static Intent getStartIntent(@NonNull Context context, @NonNull Challenge challenge) {
+        Intent intent = new Intent(context, LocationService.class);
+        intent.putExtra(Challenge.CHALLENGE_EXTRA, challenge);
+
+        return intent;
+    }
+
+    public static Intent getStopIntent(@NonNull Context context) {
+        return new Intent(context, LocationService.class);
+    }
 
     private IBinder mBinder = new LocationBinder();
 
@@ -44,6 +60,10 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     private Location mLocation;
     private List<LatLng> mLocationList = new ArrayList<>();
     private RunNotification mRunNotification;
+
+    private Challenge mChallenge;
+    private float mTotalDistance;
+    private boolean isFinished;
 
     public void connect() {
         mGoogleApiClient.connect();
@@ -76,6 +96,11 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     public int onStartCommand(Intent intent, int flags, int startId) {
         setClient();
         setLocationCallbackListener();
+
+        StopwatchService stopwatch = new StopwatchService();
+        stopwatch.start(0L);
+
+        mChallenge = intent.getParcelableExtra(Challenge.CHALLENGE_EXTRA);
 
         return START_STICKY;
     }
@@ -134,9 +159,16 @@ public class LocationService extends JobIntentService implements GoogleApiClient
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+                if (isFinished) {
+                    return;
+                }
                 mLocation =  locationResult.getLastLocation();
                 mLocationList.add(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
-                mOnLocationChangedListener.onLocationUpdate(mLocation);
+                if (mLocationList.size() >= 2) {
+                    PolylineOptions polyline = getPolyline();
+                    mOnLocationChangedListener.onLocationUpdate(mLocation, polyline);
+                    getDistance();
+                }
             }
         };
     }
@@ -146,6 +178,51 @@ public class LocationService extends JobIntentService implements GoogleApiClient
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL)
                 .setFastestInterval(UPDATE_FASTEST_INTERVAL);
+    }
+
+    private PolylineOptions getPolyline() {
+        return new PolylineOptions()
+                .geodesic(true)
+                .addAll(mLocationList)
+                //.add(mLocationList.get(mLocationList.size() - 2))
+                //.add(mLocationList.get(mLocationList.size() - 1))
+                .color(Color.BLACK)
+                .visible(true);
+    }
+
+    public float getDistance() {
+        if (mLocationList.size() < 2) {
+            return 0L;
+        }
+
+        LatLng startPoint = mLocationList.get(mLocationList.size() - 2);
+        LatLng endPoint = mLocationList.get(mLocationList.size() - 1);
+        double startLat = startPoint.latitude;
+        double startLong = startPoint.longitude;
+        double endLat = endPoint.latitude;
+        double endLong = endPoint.longitude;
+        float[] results = new float[2];
+
+        Location.distanceBetween(startLat, startLong, endLat, endLong, results);
+        mTotalDistance += results[0] * METERS_TO_FEET;
+
+        return mTotalDistance;
+    }
+
+    public boolean isGoalReached() {
+        Log.d(TAG, "distance is " + getDistance());
+
+        if (mChallenge == null) {
+            Log.d(TAG, "Challenge is null!");
+            return false;
+        }
+
+        Log.d(TAG, "is goal reached? " + (getDistance() >= mChallenge.getDistance()));
+        return getDistance() >= mChallenge.getDistance();
+    }
+
+    public void setFinished(boolean isFinished) {
+        this.isFinished = isFinished;
     }
 
     public class LocationBinder extends Binder {
@@ -167,6 +244,6 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     }
 
     public interface OnLocationChangedListener {
-        void onLocationUpdate(Location location);
+        void onLocationUpdate(Location location, PolylineOptions polyline);
     }
 }

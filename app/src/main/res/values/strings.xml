@@ -19,6 +19,8 @@
     <string name="dialog_about_body">Challenge yourself to beat your best run times!</string>
     <string name="dialog_about_close">Close</string>
 
+    <string name="dialog_challenge_complete">Congratulations! You have finished this challenge!</string>
+
     <string name="dialog_delete">Delete all sessions?</string>
     <string name="dialog_delete_positive">Yes</string>
     <string name="dialog_delete_negative">No</string>

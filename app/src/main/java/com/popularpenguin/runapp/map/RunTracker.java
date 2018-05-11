@@ -16,6 +16,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.utils.DataUtils;
+import com.popularpenguin.runapp.view.ChallengeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         MapService.OnReadyListener,
         StopwatchService.StopWatchListener {
 
+    // TODO: Update distance correctly on rotation
     private static final String TAG = RunTracker.class.getSimpleName();
 
     public static final String CHALLENGE_BUNDLE_KEY = "challenge";
@@ -55,10 +58,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private static final String PATH_KEY = "path";
     private static final String DISTANCE_KEY = "distance";
     private static final String ALARM_KEY = "alarm";
+    private static final String GOAL_KEY = "isGoalReached";
 
-    public static final float METERS_TO_FEET = 3.2808399f;
     public static final float FEET_PER_MILE = 5280.0f;
 
+    private ChallengeActivity mActivity;
     private Context mContext;
 
     private Challenge mChallenge;
@@ -96,6 +100,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         mChallenge = activity.getIntent().getParcelableExtra(CHALLENGE_BUNDLE_KEY);
 
+        mActivity = (ChallengeActivity) activity;
         mContext = activity;
 
         // get a wake lock to be able to run the tracker without the system destroying it
@@ -119,8 +124,16 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
 
         bundle.putString(PATH_KEY, path);
-        bundle.putFloat(DISTANCE_KEY, mTotalDistance);
+
+        if (mLocationService != null) {
+            bundle.putFloat(DISTANCE_KEY, mLocationService.getDistance());
+        }
+        else {
+            bundle.putFloat(DISTANCE_KEY, mTotalDistance);
+        }
+
         bundle.putBoolean(ALARM_KEY, isAlarmPlayed);
+        bundle.putBoolean(GOAL_KEY, isGoalReached);
 
         if (mStopwatchService != null) {
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
@@ -142,6 +155,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStartTime = locationBundle.getLong(StopwatchService.START_TIME_EXTRA, 0L);
         mTotalDistance = locationBundle.getFloat(DISTANCE_KEY, 0f);
         isAlarmPlayed = locationBundle.getBoolean(ALARM_KEY, false);
+        isGoalReached = locationBundle.getBoolean(GOAL_KEY, false);
 
         Log.d(TAG, "Location service is null?" + (mLocationService == null ? "true" : "false"));
 
@@ -151,10 +165,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mLocationService.setLocationList(mLocationList);
         }
 
-        mTotalDistanceView.setText(String.format(Locale.US,
-                "%.2f %s",
-                mTotalDistance / FEET_PER_MILE, // convert feet to miles
-                mContext.getResources().getString(R.string.run_units)));
+        updateDistance(mTotalDistance);
 
         mStopWatchView.setText(DataUtils.getFormattedTime(mStartTime));
 
@@ -163,6 +174,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
         else if (mStartTime >= mChallenge.getTimeToComplete() * 0.66) {
             mStopWatchView.setTextColor(Color.YELLOW);
+        }
+
+        if (isGoalReached) {
+            createFinishDialog(R.string.dialog_challenge_complete);
         }
     }
 
@@ -238,7 +253,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Start the StopWatch service
      */
     private void startStopWatch() {
-        if (!isStopwatchBound && !isAlarmPlayed) {
+        if (!isStopwatchBound && !isAlarmPlayed && !isGoalReached) {
             Intent intent = new Intent(mContext, StopwatchService.class);
             intent.putExtra(StopwatchService.START_TIME_EXTRA, mStartTime);
             mContext.startService(intent);
@@ -298,9 +313,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     @Override
-    public void onLocationUpdate(Location location) {
+    public void onLocationUpdate(Location location, PolylineOptions polyline) {
         mLocation = location;
         mLocationList = mLocationService.getLocationList();
+        mTotalDistance = mLocationService.getDistance();
 
         if (mLocationView != null) {
             mLocationView.setText(getLocationText());
@@ -311,8 +327,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
 
         updateMarkerPosition(location);
-        updatePolylines();
-        updateDistance();
+        updatePolylines(polyline);
+        updateDistance(mTotalDistance);
         updateCamera(location);
     }
 
@@ -326,7 +342,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStopWatchView.setText(timeString);
 
         if (mTotalDistance >= mChallenge.getDistance()) {
-            finishRun(true);
+            finishRun();
         }
 
         long time = mStopwatchService.getTime();
@@ -343,7 +359,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.red));
             isAlarmPlayed = true;
             playAlarm(R.raw.airhorn);
-            finishRun(false);
+            finishRun();
         } else if (time > mChallenge.getTimeToComplete() * 0.66 &&
                 !isAlarmPlayed) {
 
@@ -354,7 +370,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
     /**
      * Finish the run by stopping services and storing the challenge in the database
      */
-    private void finishRun(boolean isGoalReached) {
+    private void finishRun() {
+        if (isGoalReached) {
+            return;
+        }
+
+        mLocationService.setFinished(true); // tell the location service to stop updating
+        isGoalReached = mLocationService.isGoalReached();
+
         // if there is a new fastest time, update the challenge in the database
         if (isGoalReached) {
             long time = mStopwatchService.getTime();
@@ -362,12 +385,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 DataUtils.updateFastestTime(mContext.getContentResolver(), mChallenge, time);
                 mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
+
+            //Snackbar.make(mStopWatchView, "Challenge complete!", Snackbar.LENGTH_LONG).show();
+            createFinishDialog(R.string.dialog_challenge_complete);
         }
-
-        stopStopWatch();
-        stopLocationService();
-
-        this.isGoalReached = isGoalReached;
 
         Session session = new Session(mChallenge,
                 DataUtils.getCurrentDateString(),
@@ -375,9 +396,22 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 mLocationService.getLocationList(),
                 isGoalReached);
 
+        stopStopWatch();
+        stopLocationService();
+
         Log.d(TAG, "Location list size = " + mLocationService.getLocationList().size());
 
         DataUtils.insertSession(mContext.getContentResolver(), session);
+    }
+
+    private void createFinishDialog(int message) {
+        new AlertDialog.Builder(mContext)
+                .setMessage(message)
+                .setPositiveButton(R.string.dialog_about_close, (dialog, which) -> {
+                    mActivity.finish();
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     // TODO: Attribute horn sound from http://soundbible.com/1542-Air-Horn.html
@@ -398,8 +432,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Starts the Location service
      */
     private void startLocationService() {
-        if (!isLocationBound && !isAlarmPlayed) {
-            Intent intent = new Intent(mContext, LocationService.class);
+        if (!isLocationBound && !isAlarmPlayed  && !isGoalReached) {
+            Intent intent = LocationService.getStartIntent(mContext, mChallenge);
             mContext.startService(intent);
             mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
         }
@@ -414,7 +448,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             isLocationBound = false;
         }
 
-        Intent intent = new Intent(mContext, LocationService.class);
+        Intent intent = LocationService.getStopIntent(mContext);
         mContext.stopService(intent);
     }
 
@@ -432,46 +466,21 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
     }
 
-    private void updatePolylines() {
+    private void updatePolylines(PolylineOptions polyline) {
         List<LatLng> list = mLocationService.getLocationList();
 
         if (list.size() < 2) {
             return;
         }
-
-        PolylineOptions polyline = new PolylineOptions()
-                .geodesic(true)
-                .addAll(list)
-                //.add(mLocationList.get(mLocationList.size() - 2))
-                //.add(mLocationList.get(mLocationList.size() - 1))
-                .color(Color.BLACK)
-                .visible(true);
 
         mGoogleMap.addPolyline(polyline);
     }
 
     /** Updates the total distance run every time a polyline is updated */
-    private void updateDistance() {
-        List<LatLng> list = mLocationService.getLocationList();
-
-        if (list.size() < 2) {
-            return;
-        }
-
-        LatLng startPoint = list.get(list.size() - 2);
-        LatLng endPoint = list.get(list.size() - 1);
-        double startLat = startPoint.latitude;
-        double startLong = startPoint.longitude;
-        double endLat = endPoint.latitude;
-        double endLong = endPoint.longitude;
-        float[] results = new float[2];
-
-        Location.distanceBetween(startLat, startLong, endLat, endLong, results);
-        mTotalDistance += results[0] * METERS_TO_FEET;
-
+    private void updateDistance(float totalDistance) {
         mTotalDistanceView.setText(String.format(Locale.US,
                 "%.2f %s",
-                mTotalDistance / FEET_PER_MILE, // convert feet to miles
+                totalDistance / FEET_PER_MILE, // convert feet to miles
                 mContext.getResources().getString(R.string.run_units)));
     }
 
