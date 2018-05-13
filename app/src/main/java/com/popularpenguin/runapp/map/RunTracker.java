@@ -7,12 +7,9 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcel;
 import android.os.PowerManager;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,13 +32,10 @@ import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.utils.DataUtils;
 import com.popularpenguin.runapp.view.ChallengeActivity;
+import com.popularpenguin.runapp.widget.RunWidget;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
@@ -351,6 +344,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void onStopWatchUpdate(String timeString) {
         mStopWatchView.setText(timeString);
 
+        broadcastTime(timeString);
+
         if (mTotalDistance >= mChallenge.getDistance()) {
             finishRun();
         }
@@ -381,6 +376,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Finish the run by stopping services and storing the challenge in the database
      */
     private void finishRun() {
+        // TODO: Stop session from being stored twice on rotation
         if (isGoalReached) {
             return;
         }
@@ -528,6 +524,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
             isLocationBound = true;
             if (mLocationList != null) {
                 mLocationService.setLocationList(mLocationList);
+                Log.d(TAG, "distance so far: " + mLocationService.getDistance());
+                updateDistance(mLocationService.getDistance());
             }
         }
 
@@ -555,4 +553,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
             isStopwatchBound = false;
         }
     };
+
+    private void broadcastTime(String timeString) {
+        Intent intent = RunWidget.getIntent(timeString,
+                mStopwatchService.getTime(),
+                mChallenge.getTimeToComplete());
+
+        mContext.sendBroadcast(intent);
+    }
 }

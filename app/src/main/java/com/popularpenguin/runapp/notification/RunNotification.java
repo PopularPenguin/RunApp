@@ -63,6 +63,7 @@ public class RunNotification {
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT);
+        notificationChannel.setSound(null, null);
 
         mNotificationManager.createNotificationChannel(notificationChannel);
     }

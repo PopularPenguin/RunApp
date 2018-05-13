@@ -29,11 +29,7 @@ public class ChallengeActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        setupTracker();
-
-        if (savedInstanceState != null) {
-            mRunTracker.setBundle(savedInstanceState);
-        }
+        setupTracker(savedInstanceState);
     }
 
     @Override
@@ -63,12 +59,17 @@ public class ChallengeActivity extends AppCompatActivity {
         outState.putBundle(RunTracker.TRACKER_BUNDLE_KEY, mRunTracker.getBundle());
     }
 
-    private void setupTracker() {
+    private void setupTracker(Bundle bundle) {
         mRunTracker = new RunTracker(this, R.id.map_challenge_fragment);
+
         mRunTracker.setLocationView(mLocationView);
         mRunTracker.setDistanceView(mDistanceText);
         mRunTracker.setStopWatchView(mTimerText);
         mRunTracker.setButtonView(mTimerButton);
         mRunTracker.setFab(mCenterMapFab);
+
+        if (bundle != null) {
+            mRunTracker.setBundle(bundle);
+        }
     }
 }

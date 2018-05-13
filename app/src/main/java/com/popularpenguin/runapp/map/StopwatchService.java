@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.map;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -8,6 +9,8 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
+
+import com.popularpenguin.runapp.widget.RunWidget;
 
 import java.util.Locale;
 
