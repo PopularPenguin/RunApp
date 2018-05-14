@@ -14,7 +14,6 @@ public class RunWidget extends AppWidgetProvider {
 
     private static final String WIDGET_TIME_STRING_EXTRA = "widgetTimeStringExtra";
     private static final String WIDGET_TIME_EXTRA = "widgetTimeExtra";
-    private static final String WIDGET_GOAL_EXTRA = "widgetGoalExtra";
 
     private static String sTimerText; // the formatted time
     private static String sGoalText; // the formatted challenge goal time
@@ -25,9 +24,9 @@ public class RunWidget extends AppWidgetProvider {
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intent.putExtra(WIDGET_TIME_STRING_EXTRA, timeString);
         intent.putExtra(WIDGET_TIME_EXTRA, time);
-        intent.putExtra(WIDGET_GOAL_EXTRA, challengeGoalTime);
 
-        sGoalText = StopwatchService.getTimeString(sChallengeGoal);
+        sChallengeGoal = challengeGoalTime;
+        sGoalText = StopwatchService.getTimeString(challengeGoalTime);
 
         return intent;
     }
@@ -76,7 +75,6 @@ public class RunWidget extends AppWidgetProvider {
         if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(intent.getAction())) {
             sTimerText = intent.getStringExtra(WIDGET_TIME_STRING_EXTRA);
             sTime = intent.getLongExtra(WIDGET_TIME_EXTRA, 0L);
-            sChallengeGoal = intent.getLongExtra(WIDGET_GOAL_EXTRA, 1000L);
 
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             ComponentName provider = new ComponentName(context, RunWidget.class);
