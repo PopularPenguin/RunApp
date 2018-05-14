@@ -177,8 +177,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mStopWatchView.setTextColor(Color.YELLOW);
         }
 
-        if (isGoalReached) {
-            createFinishDialog(R.string.dialog_challenge_complete);
+        // redisplay finish dialog after a rotation
+        if (isSessionFinished) {
+            if (isGoalReached) {
+                createDialog(R.string.dialog_challenge_complete);
+            }
+            else {
+                createDialog(R.string.dialog_challenge_failed);
+            }
         }
 
         if (!isButtonShown) {
@@ -367,7 +373,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (time > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
             mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.red));
             isAlarmPlayed = true;
-            playAlarm(R.raw.airhorn);
+            playAlarm(R.raw.airhorn, R.string.snackbar_challenge_failed);
             finishRun();
         } else if (time > mChallenge.getTimeToComplete() * 0.66 &&
                 !isAlarmPlayed) {
@@ -396,7 +402,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
 
-            createFinishDialog(R.string.dialog_challenge_complete);
+            playAlarm(R.raw.applause, R.string.snackbar_challenge_success); // play win sound
+
+            createDialog(R.string.dialog_challenge_complete);
+        }
+        else {
+            createDialog(R.string.dialog_challenge_failed); // create a fail dialog
         }
 
         Session session = new Session(mChallenge,
@@ -415,7 +426,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         isSessionFinished = true;
     }
 
-    private void createFinishDialog(int message) {
+    private void createDialog(int message) {
         new AlertDialog.Builder(mContext)
                 .setMessage(message)
                 .setPositiveButton(R.string.dialog_about_close, (dialog, which) -> {
@@ -426,8 +437,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     // TODO: Attribute horn sound from http://soundbible.com/1542-Air-Horn.html
-    private void playAlarm(int resId) {
-        mMediaPlayer = MediaPlayer.create(mContext, resId);
+    // Attribute applause from http://soundbible.com/988-Applause.html
+    /**
+     * Plays a sound
+     * @param soundId resource id of sound
+     * @param messageId resource id of the message to display on the snackbar
+     */
+    private void playAlarm(int soundId, int messageId) {
+        mMediaPlayer = MediaPlayer.create(mContext, soundId);
         mMediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mMediaPlayer.setLooping(false);
         mMediaPlayer.start();
@@ -435,7 +452,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500L);
 
-        Snackbar.make(mStopWatchView, R.string.snackbar_challenge_failed, Snackbar.LENGTH_LONG)
+        Snackbar.make(mStopWatchView, messageId, Snackbar.LENGTH_LONG)
                 .show();
     }
 

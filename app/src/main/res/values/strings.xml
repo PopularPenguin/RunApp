@@ -10,6 +10,7 @@
 
     <string name="launch_session_list">Recent Sessions</string>
 
+    <string name="snackbar_challenge_success">You have completed the challenge! Great job!</string>
     <string name="snackbar_challenge_failed">You have run out of time!</string>
 
     <string name="menu_info">About</string>
@@ -20,6 +21,7 @@
     <string name="dialog_about_close">Close</string>
 
     <string name="dialog_challenge_complete">Congratulations! You have finished this challenge!</string>
+    <string name="dialog_challenge_failed">Try again! You\'ve get this!</string>
 
     <string name="dialog_delete">Delete all sessions?</string>
     <string name="dialog_delete_positive">Yes</string>
