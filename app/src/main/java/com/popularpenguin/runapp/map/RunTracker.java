@@ -103,7 +103,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         // get a wake lock to be able to run the tracker without the system destroying it
         PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WL");
-        mWakeLock.acquire(mChallenge.getTimeToComplete()); // TODO: Change to an hour?
+        mWakeLock.acquire(mChallenge.getTimeToComplete());
     }
 
     /**
@@ -196,7 +196,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             startLocationService();
             startStopWatch();
 
-            // TODO: Once the button has been clicked, set button text to stop
+            // Once the button has been clicked, remove it
             mButtonView.setVisibility(View.GONE);
             isButtonShown = false;
         });
@@ -215,7 +215,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             if (mGoogleMap == null) {
                 Log.d(TAG, "map is null");
             }
-            if (mLocationList.isEmpty()) {
+            if (mLocationList != null && mLocationList.isEmpty()) {
                 Log.d(TAG, "location list is empty");
             }
             return;
@@ -345,7 +345,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     }
 
     @Override
-    public void onStopWatchUpdate(String timeString) {
+    public void onStopwatchUpdate(String timeString) {
         mStopWatchView.setText(timeString);
 
         broadcastTime(timeString);
@@ -380,11 +380,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * Finish the run by stopping services and storing the challenge in the database
      */
     private void finishRun() {
-        // TODO: Stop session from being stored twice on rotation
-        /*
-        if (isGoalReached) {
+        if (isSessionFinished) {
             return;
-        } */
+        }
 
         mLocationService.setFinished(true); // tell the location service to stop updating
         isGoalReached = mLocationService.isGoalReached();
@@ -392,16 +390,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
         // if there is a new fastest time, update the challenge in the database
         if (isGoalReached) {
             long time = mStopwatchService.getTime();
-            if (time < mChallenge.getFastestTime()) {
+            long fastestTime = mChallenge.getFastestTime();
+            if (fastestTime == 0L || time < fastestTime) {
                 DataUtils.updateFastestTime(mContext.getContentResolver(), mChallenge, time);
                 mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
 
             createFinishDialog(R.string.dialog_challenge_complete);
-        }
-
-        if (isSessionFinished) {
-            return;
         }
 
         Session session = new Session(mChallenge,

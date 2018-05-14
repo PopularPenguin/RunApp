@@ -87,6 +87,12 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
             nameText.setText(challenge.getName());
             descriptionText.setText(challenge.getDescription());
             timeText.setText(challenge.getFastestTimeString());
+            if (challenge.getFastestTime() != 0L) {
+                int colorGreen = itemView.getContext()
+                        .getResources()
+                        .getColor(R.color.green);
+                timeText.setTextColor(colorGreen);
+            }
         }
 
         void clearAnimation() {

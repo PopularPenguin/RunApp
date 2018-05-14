@@ -1,6 +1,5 @@
 package com.popularpenguin.runapp.loader;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -8,7 +7,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.popularpenguin.runapp.data.Challenge;
-import com.popularpenguin.runapp.data.RunContract;
 import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 
 import java.util.ArrayList;

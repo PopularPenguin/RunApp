@@ -1,6 +1,5 @@
 package com.popularpenguin.runapp.map;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -9,8 +8,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
-
-import com.popularpenguin.runapp.widget.RunWidget;
 
 import java.util.Locale;
 
@@ -40,7 +37,7 @@ public class StopwatchService extends JobIntentService {
             displayText = getTimeString(updateTime);
 
             if (listener != null) {
-                listener.onStopWatchUpdate(displayText);
+                listener.onStopwatchUpdate(displayText);
             }
 
             handler.postDelayed(this, 100L);
@@ -133,6 +130,6 @@ public class StopwatchService extends JobIntentService {
     }
 
     public interface StopWatchListener {
-        void onStopWatchUpdate(String time);
+        void onStopwatchUpdate(String time);
     }
 }

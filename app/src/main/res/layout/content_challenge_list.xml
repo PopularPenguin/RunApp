@@ -28,10 +28,7 @@
 
     <Button
         android:id="@+id/btn_launch_sessions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/launch_session_list"
-        android:layout_margin="@dimen/view_margin"/>
+        style="@style/BaseWidget"
+        android:text="@string/launch_session_list"/>
 
 </LinearLayout>

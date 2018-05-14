@@ -25,10 +25,8 @@
 
     <Button
         android:id="@+id/btn_stopwatch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/BaseWidget"
         android:layout_gravity="center"
-        android:layout_margin="8dp"
         android:text="@string/start_timer"/>
 
 
@@ -41,38 +39,25 @@
 
         <TextView
             android:id="@+id/tv_location_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:textColor="@color/black"
+            style="@style/BaseWidget"
             tools:text="Location Lat/Long"/>
 
         <TextView
             android:id="@+id/tv_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:text="@string/distance_view"
-            android:textColor="@color/black"/>
+            style="@style/BaseWidget"
+            android:text="@string/distance_view"/>
 
         <TextView
             android:id="@+id/tv_stopwatch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:textColor="@color/black"
+            style="@style/BaseWidget"
             android:textSize="32sp"/>
 
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_challenge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="bottom|end"/>
+        style="@style/Fab"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_fab"/>
 
 </FrameLayout>
