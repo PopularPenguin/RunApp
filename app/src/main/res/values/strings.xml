@@ -21,7 +21,7 @@
     <string name="dialog_about_close">Close</string>
 
     <string name="dialog_challenge_complete">Congratulations! You have finished this challenge!</string>
-    <string name="dialog_challenge_failed">Try again! You\'ve get this!</string>
+    <string name="dialog_challenge_failed">Try again! You\'ve got this!</string>
 
     <string name="dialog_delete">Delete all sessions?</string>
     <string name="dialog_delete_positive">Yes</string>
