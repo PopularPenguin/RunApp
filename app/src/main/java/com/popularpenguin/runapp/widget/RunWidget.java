@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.popularpenguin.runapp.R;
+import com.popularpenguin.runapp.map.StopwatchService;
 
 public class RunWidget extends AppWidgetProvider {
 
@@ -16,6 +17,7 @@ public class RunWidget extends AppWidgetProvider {
     private static final String WIDGET_GOAL_EXTRA = "widgetGoalExtra";
 
     private static String sTimerText; // the formatted time
+    private static String sGoalText; // the formatted challenge goal time
     private static long sTime; // the current time
     private static long sChallengeGoal; // the time to stop at
 
@@ -25,10 +27,12 @@ public class RunWidget extends AppWidgetProvider {
         intent.putExtra(WIDGET_TIME_EXTRA, time);
         intent.putExtra(WIDGET_GOAL_EXTRA, challengeGoalTime);
 
+        sGoalText = StopwatchService.getTimeString(sChallengeGoal);
+
         return intent;
     }
 
-    static void updateAppWidget(Context context,
+    private static void updateAppWidget(Context context,
                                 AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -50,6 +54,8 @@ public class RunWidget extends AppWidgetProvider {
                 views.setTextColor(R.id.tv_widget_timer, colorYellow);
             }
         }
+
+        views.setTextViewText(R.id.tv_widget_goal, sGoalText);
 
         // update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

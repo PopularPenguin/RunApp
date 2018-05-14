@@ -1,16 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_widget_timer"
-        android:layout_width="wrap_content"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:textSize="@dimen/widget_timer_text_size"
-        android:textStyle="bold|italic"
-        android:contentDescription="@string/content_desc_widget_timer"/>
+        android:contentDescription="@string/content_desc_widget_timer"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/widget_current"
+            android:textColor="@color/black"
+            android:textSize="@dimen/widget_label_size"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/tv_widget_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/widget_default_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/widget_timer_text_size"
+            android:textStyle="bold|italic"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/widget_goal"
+            android:textColor="@color/black"
+            android:textSize="@dimen/widget_label_size"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/tv_widget_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/widget_default_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/widget_timer_text_size"
+            android:textStyle="bold|italic"/>
+
+    </LinearLayout>
 </FrameLayout>

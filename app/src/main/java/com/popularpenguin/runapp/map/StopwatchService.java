@@ -36,14 +36,8 @@ public class StopwatchService extends JobIntentService {
             millisTime = SystemClock.uptimeMillis() - startTime;
             updateTime = timeBuffer + millisTime;
             millis = (int) (updateTime % 1000);
-            seconds = (int) (updateTime / 1000);
-            minutes = seconds / 60;
-            hours = minutes / 60;
 
-            seconds %= 60; // reset the seconds field to 0 when passing 60 seconds
-            minutes %= 60; // reset the minutes field to 0 when passing 60 minutes
-
-            displayText = String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
+            displayText = getTimeString(updateTime);
 
             if (listener != null) {
                 listener.onStopWatchUpdate(displayText);
@@ -52,6 +46,18 @@ public class StopwatchService extends JobIntentService {
             handler.postDelayed(this, 100L);
         }
     };
+
+    public static String getTimeString(long time) {
+        int hours, minutes, seconds;
+        seconds = (int) (time / 1000);
+        minutes = seconds / 60;
+        hours = minutes / 60;
+
+        seconds %= 60;
+        minutes %= 60;
+
+        return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
+    }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {

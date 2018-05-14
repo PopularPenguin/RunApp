@@ -29,6 +29,8 @@
     <string name="notification_body">The tracker is currently running</string>
 
     <string name="widget_default_text">0:00:00</string>
+    <string name="widget_current">Current</string>
+    <string name="widget_goal">Goal</string>
 
     <string name="content_desc_widget_timer">Timer</string>
 
