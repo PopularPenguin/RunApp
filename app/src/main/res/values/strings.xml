@@ -15,7 +15,7 @@
     <string name="menu_info">About</string>
     <string name="menu_delete_sessions">Delete All Sessions</string>
 
-    <string name="dialog_about_title">Run Challenge Tracker</string>
+    <string name="dialog_about_title">Run Challenge Tracker v 0.9</string>
     <string name="dialog_about_body">Challenge yourself to beat your best run times!</string>
     <string name="dialog_about_close">Close</string>
 

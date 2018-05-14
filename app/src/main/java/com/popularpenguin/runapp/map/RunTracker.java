@@ -53,6 +53,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private static final String ALARM_KEY = "alarm";
     private static final String GOAL_KEY = "isGoalReached";
     private static final String BUTTON_KEY = "isButtonShown";
+    private static final String FINISHED_KEY = "isSessionFinished";
 
     public static final float FEET_PER_MILE = 5280.0f;
 
@@ -86,6 +87,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private MediaPlayer mMediaPlayer;
     private boolean isAlarmPlayed = false;
     private boolean isGoalReached = false;
+    private boolean isSessionFinished = false;
 
     private PowerManager.WakeLock mWakeLock;
 
@@ -130,6 +132,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         bundle.putBoolean(ALARM_KEY, isAlarmPlayed);
         bundle.putBoolean(GOAL_KEY, isGoalReached);
         bundle.putBoolean(BUTTON_KEY, isButtonShown);
+        bundle.putBoolean(FINISHED_KEY, isSessionFinished);
 
         if (mStopwatchService != null) {
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
@@ -153,6 +156,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         isAlarmPlayed = locationBundle.getBoolean(ALARM_KEY, false);
         isGoalReached = locationBundle.getBoolean(GOAL_KEY, false);
         isButtonShown = locationBundle.getBoolean(BUTTON_KEY, true);
+        isSessionFinished = locationBundle.getBoolean(FINISHED_KEY, false);
 
         Log.d(TAG, "Location service is null?" + (mLocationService == null ? "true" : "false"));
 
@@ -377,9 +381,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
      */
     private void finishRun() {
         // TODO: Stop session from being stored twice on rotation
+        /*
         if (isGoalReached) {
             return;
-        }
+        } */
 
         mLocationService.setFinished(true); // tell the location service to stop updating
         isGoalReached = mLocationService.isGoalReached();
@@ -392,8 +397,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
 
-            //Snackbar.make(mStopWatchView, "Challenge complete!", Snackbar.LENGTH_LONG).show();
             createFinishDialog(R.string.dialog_challenge_complete);
+        }
+
+        if (isSessionFinished) {
+            return;
         }
 
         Session session = new Session(mChallenge,
@@ -408,6 +416,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Log.d(TAG, "Location list size = " + mLocationService.getLocationList().size());
 
         DataUtils.insertSession(mContext.getContentResolver(), session);
+
+        isSessionFinished = true;
     }
 
     private void createFinishDialog(int message) {
