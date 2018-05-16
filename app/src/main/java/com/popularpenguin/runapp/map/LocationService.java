@@ -166,7 +166,7 @@ public class LocationService extends JobIntentService implements GoogleApiClient
                 if (mLocationList.size() >= 2) {
                     PolylineOptions polyline = getPolyline();
                     mOnLocationChangedListener.onLocationUpdate(mLocation, polyline);
-                    getDistance();
+                    updateDistance();
                 }
             }
         };
@@ -190,6 +190,10 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     }
 
     public float getDistance() {
+        return mTotalDistance;
+    }
+
+    public float updateDistance() {
         if (mLocationList.size() < 2) {
             return 0L;
         }

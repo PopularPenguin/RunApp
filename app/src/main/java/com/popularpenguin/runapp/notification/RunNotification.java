@@ -4,11 +4,15 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 
 import com.popularpenguin.runapp.R;
+import com.popularpenguin.runapp.data.Challenge;
+import com.popularpenguin.runapp.view.ChallengeActivity;
 
 // https://medium.com/exploring-android/exploring-android-o-notification-channels-94cd274f604c
 public class RunNotification {
@@ -43,10 +47,17 @@ public class RunNotification {
             builder = new Notification.Builder(mContext);
         }
 
+        Intent intent = new Intent(mContext, ChallengeActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+                0,
+                intent,
+                0);
+
         Notification notification = builder
                 .setContentTitle(resources.getString(R.string.notification_title))
                 .setContentText(resources.getString(R.string.notification_body))
                 .setSmallIcon(R.mipmap.ic_notification_round)
+                .setContentIntent(pendingIntent)
                 .build();
 
         mNotificationManager.notify(mNotificationId, notification);

@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -583,8 +582,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
      */
     private void broadcastTime(String timeString) {
         Intent intent = RunWidget.getIntent(timeString,
+                mLocationService.getDistance() / FEET_PER_MILE,
                 mStopwatchService.getTime(),
-                mChallenge.getTimeToComplete());
+                mChallenge);
 
         mContext.sendBroadcast(intent);
     }

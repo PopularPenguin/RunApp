@@ -16,6 +16,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:text="@string/widget_distance"
+            android:textColor="@color/black"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/tv_widget_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/widget_default_distance"
+            android:textColor="@color/black"
+            android:textSize="@dimen/widget_timer_text_size"
+            android:textStyle="bold|italic"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text="@string/widget_current"
             android:textColor="@color/black"
             android:textSize="@dimen/widget_label_size"
@@ -26,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/widget_default_text"
+            android:text="@string/widget_default_time"
             android:textColor="@color/black"
             android:textSize="@dimen/widget_timer_text_size"
             android:textStyle="bold|italic"/>
@@ -45,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/widget_default_text"
+            android:text="@string/widget_default_time"
             android:textColor="@color/black"
             android:textSize="@dimen/widget_timer_text_size"
             android:textStyle="bold|italic"/>
