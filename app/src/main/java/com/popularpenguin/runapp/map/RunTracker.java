@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -102,7 +103,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         // get a wake lock to be able to run the tracker without the system destroying it
         PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WL");
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "wakelock");
         mWakeLock.acquire(mChallenge.getTimeToComplete());
     }
 
@@ -576,6 +577,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
     };
 
+    /**
+     * Update the widget
+     * @param timeString the formatted time string from the stopwatch's listener
+     */
     private void broadcastTime(String timeString) {
         Intent intent = RunWidget.getIntent(timeString,
                 mStopwatchService.getTime(),
