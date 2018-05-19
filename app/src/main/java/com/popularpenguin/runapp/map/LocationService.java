@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.popularpenguin.runapp.data.Challenge;
@@ -177,6 +178,14 @@ public class LocationService extends JobIntentService implements GoogleApiClient
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL)
                 .setFastestInterval(UPDATE_FASTEST_INTERVAL);
+
+        LocationSettingsRequest request = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest)
+                .build();
+
+        LocationServices.getSettingsClient(this)
+                .checkLocationSettings(request);
+
     }
 
     private PolylineOptions getPolyline() {

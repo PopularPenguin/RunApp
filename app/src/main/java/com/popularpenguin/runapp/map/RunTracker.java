@@ -431,6 +431,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 .setMessage(message)
                 .setPositiveButton(R.string.dialog_about_close, (dialog, which) -> {
                     mActivity.finish();
+                    destroy();
                     dialog.dismiss();
                 })
                 .show();

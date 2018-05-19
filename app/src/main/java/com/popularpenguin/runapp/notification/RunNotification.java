@@ -47,6 +47,7 @@ public class RunNotification {
             builder = new Notification.Builder(mContext);
         }
 
+        // create the intent to relaunch the app when the notification is clicked
         Intent intent = new Intent(mContext, ChallengeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
                 0,

@@ -23,7 +23,6 @@ public class RunWidget extends AppWidgetProvider {
     private static String sTimerText; // the formatted time
     private static String sGoalTimeText; // the formatted challenge goal time
     private static long sTime; // the current time
-    private static float sChallengeGoalDistance; // distance to stop at
     private static long sChallengeGoalTime; // the time to stop at
 
     public static Intent getIntent(String timeString,
@@ -39,15 +38,14 @@ public class RunWidget extends AppWidgetProvider {
         sCurrentDistance = currentDistance;
         sChallengeGoalTime = challenge.getTimeToComplete();
         sCurrentDistance = currentDistance;
-        sChallengeGoalDistance = challenge.getDistance() * 3.2808399f / 5280f;
         sGoalTimeText = StopwatchService.getTimeString(sChallengeGoalTime);
 
         return intent;
     }
 
     private static void updateAppWidget(Context context,
-                                AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+                                        AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.run_widget);
 
@@ -60,14 +58,12 @@ public class RunWidget extends AppWidgetProvider {
         if (sTimerText == null) {
             String defaultTimerText = context.getString(R.string.widget_default_time);
             views.setTextViewText(R.id.tv_widget_timer, defaultTimerText);
-        }
-        else {
+        } else {
             views.setTextViewText(R.id.tv_widget_timer, sTimerText);
             if (sTime >= sChallengeGoalTime) {
                 int colorRed = context.getResources().getColor(R.color.red);
                 views.setTextColor(R.id.tv_widget_timer, colorRed);
-            }
-            else if (sTime >= sChallengeGoalTime * 0.66) {
+            } else if (sTime >= sChallengeGoalTime * 0.66) {
                 int colorYellow = context.getResources().getColor(R.color.yellow);
                 views.setTextColor(R.id.tv_widget_timer, colorYellow);
             }
@@ -77,6 +73,7 @@ public class RunWidget extends AppWidgetProvider {
 
         // update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+
     }
 
     @Override
