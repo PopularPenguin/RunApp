@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -18,10 +19,20 @@ public class StopwatchService extends JobIntentService {
     public static final String TAG = StopwatchService.class.getSimpleName();
 
     public static final String START_TIME_EXTRA = "startTime";
+    public static final String END_TIME_EXTRA = "endTime";
+
+    public static Intent getIntent(Context context, long startTime, long endTime) {
+        Intent intent = new Intent(context, StopwatchService.class);
+        intent.putExtra(START_TIME_EXTRA, startTime);
+        intent.putExtra(END_TIME_EXTRA, endTime);
+
+        return intent;
+    }
 
     private IBinder mBinder = new StopWatchBinder();
 
     private long startTime, millisTime, timeBuffer, updateTime = 0L;
+    private long endTime;
     private int hours, minutes, seconds, millis;
 
     private String displayText;
@@ -38,6 +49,10 @@ public class StopwatchService extends JobIntentService {
 
             if (listener != null) {
                 listener.onStopwatchUpdate(displayText);
+            }
+
+            if (updateTime > endTime + 10000L /* 10 seconds */) {
+                stop();
             }
 
             handler.postDelayed(this, 100L);
@@ -86,6 +101,8 @@ public class StopwatchService extends JobIntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         long offset = intent.getLongExtra(START_TIME_EXTRA, 0L);
+        endTime = intent.getLongExtra(END_TIME_EXTRA, 1000L);
+
         start(offset);
 
         return START_STICKY;
@@ -103,6 +120,11 @@ public class StopwatchService extends JobIntentService {
     public void pause() {
         timeBuffer += millisTime;
         handler.removeCallbacks(runnable);
+    }
+
+    public void stop() {
+        handler.removeCallbacks(runnable);
+        stopSelf();
     }
 
     public void reset() {
