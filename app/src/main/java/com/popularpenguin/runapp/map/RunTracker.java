@@ -1,5 +1,7 @@
 package com.popularpenguin.runapp.map;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -89,8 +92,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private boolean isGoalReached = false;
     private boolean isSessionFinished = false;
 
-    private PowerManager.WakeLock mWakeLock;
-
     public RunTracker(AppCompatActivity activity, int resId) {
         mMapService = new MapService(activity.getFragmentManager(), resId);
         mMapService.setOnReadyListener(this);
@@ -99,11 +100,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         mActivity = (ChallengeActivity) activity;
         mContext = activity;
-
-        // get a wake lock to be able to run the tracker without the system destroying it
-        PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "wakelock");
-        mWakeLock.acquire(mChallenge.getTimeToComplete());
     }
 
     /**
@@ -165,6 +161,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (mLocationService != null) {
             mLocationService.setLocationList(mLocationList);
         }
+
 
         updateDistance(mTotalDistance);
 
@@ -270,8 +267,33 @@ public class RunTracker implements LocationService.ConnectionStatus,
             Intent intent = StopwatchService.getIntent(mContext,
                     mStartTime,
                     mChallenge.getTimeToComplete());
+
+            /*
+            JobScheduler scheduler =
+                    (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            ComponentName stopwatchService = new ComponentName(mContext, StopwatchService.class);
+            JobInfo jobInfo = new JobInfo.Builder(0, stopwatchService)
+                    .setMinimumLatency(0L)
+                    .setPeriodic(100L)
+                    .build();
+
+            scheduler.schedule(jobInfo);
+            StopwatchService.enqueueWork(mContext,
+                    StopwatchService.class,
+                    0,
+                    intent); */
             mContext.startService(intent);
             mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
+
+            /*
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mContext.startService(intent);
+                mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
+            }
+            else {
+                mContext.startService(intent);
+                mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
+            } */
         }
     }
 
@@ -319,10 +341,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
         stopLocationService();
         stopStopWatch();
 
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
-        }
-
         //finishRun(false);
     }
 
@@ -331,6 +349,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mLocation = location;
         mLocationList = mLocationService.getLocationList();
         mTotalDistance = mLocationService.getDistance();
+        Log.d(TAG, "Distance is " + mTotalDistance);
 
         if (mLocationView != null) {
             mLocationView.setText(getLocationText());
@@ -464,7 +483,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private void startLocationService() {
         if (!isLocationBound && !isAlarmPlayed  && !isGoalReached) {
             Intent intent = LocationService.getStartIntent(mContext, mChallenge);
-            mContext.startService(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mContext.startService(intent);
+            }
+            else {
+                mContext.startService(intent);
+            }
+            //mContext.startService(intent);
             mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
@@ -547,7 +572,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mLocationService.setOnLocationChangedListener(RunTracker.this);
             isLocationBound = true;
             if (mLocationList != null) {
+                // TODO: Do I really need to do all this?
                 mLocationService.setLocationList(mLocationList);
+                mLocationService.recalculateDistance();
                 Log.d(TAG, "distance so far: " + mLocationService.getDistance());
                 updateDistance(mLocationService.getDistance());
             }

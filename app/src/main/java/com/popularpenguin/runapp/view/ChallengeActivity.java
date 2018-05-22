@@ -3,6 +3,7 @@ package com.popularpenguin.runapp.view;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -29,7 +30,12 @@ public class ChallengeActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        // set the views on the run tracker
         setupTracker(savedInstanceState);
+
+        // prevent the screen from dimming for just this activity, as the location service won't
+        // update frequently in the background
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override

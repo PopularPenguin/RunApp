@@ -35,9 +35,11 @@
 
         <service
             android:name=".map.LocationService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
         <service
             android:name=".map.StopwatchService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
         <meta-data

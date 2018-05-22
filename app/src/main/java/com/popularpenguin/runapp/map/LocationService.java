@@ -1,6 +1,7 @@
 package com.popularpenguin.runapp.map;
 
 import android.Manifest;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,14 +32,14 @@ import com.popularpenguin.runapp.notification.RunNotification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationService extends JobIntentService implements GoogleApiClient.ConnectionCallbacks,
+public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = LocationService.class.getSimpleName();
 
     public static final float METERS_TO_FEET = 3.2808399f;
 
-    private static final long UPDATE_INTERVAL = 2000L; // update every 20 seconds
+    private static final long UPDATE_INTERVAL = 2000L; // update every 2 seconds
     private static final long UPDATE_FASTEST_INTERVAL = 2000L; // 2 seconds
 
     public static Intent getStartIntent(@NonNull Context context, @NonNull Challenge challenge) {
@@ -65,6 +66,10 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     private float mTotalDistance;
     private boolean isFinished;
 
+    public LocationService() {
+        super(LocationService.class.getSimpleName());
+    }
+
     public void connect() {
         mGoogleApiClient.connect();
     }
@@ -82,27 +87,18 @@ public class LocationService extends JobIntentService implements GoogleApiClient
     }
 
     @Override
-    protected void onHandleWork(@NonNull Intent intent) {
+    protected void onHandleIntent(@NonNull Intent intent) {
         // TODO: Move onStartCommand code here?
+        setClient();
+        setLocationCallbackListener();
+
+        mChallenge = intent.getParcelableExtra(Challenge.CHALLENGE_EXTRA);
     }
 
     @Nullable
     @Override
     public IBinder onBind(@NonNull Intent intent) {
         return mBinder;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        setClient();
-        setLocationCallbackListener();
-
-        StopwatchService stopwatch = new StopwatchService();
-        stopwatch.start(0L);
-
-        mChallenge = intent.getParcelableExtra(Challenge.CHALLENGE_EXTRA);
-
-        return START_STICKY;
     }
 
     @Override
@@ -164,7 +160,7 @@ public class LocationService extends JobIntentService implements GoogleApiClient
                 }
                 mLocation =  locationResult.getLastLocation();
                 mLocationList.add(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
-                if (mLocationList.size() >= 2) {
+                if (mLocationList.size() >= 2 && mTotalDistance < mChallenge.getDistance()) {
                     PolylineOptions polyline = getPolyline();
                     mOnLocationChangedListener.onLocationUpdate(mLocation, polyline);
                     updateDistance();
@@ -202,6 +198,10 @@ public class LocationService extends JobIntentService implements GoogleApiClient
         return mTotalDistance;
     }
 
+    public void setDistance(float totalDistance) {
+        mTotalDistance = totalDistance;
+    }
+
     public float updateDistance() {
         if (mLocationList.size() < 2) {
             return 0L;
@@ -219,6 +219,30 @@ public class LocationService extends JobIntentService implements GoogleApiClient
         mTotalDistance += results[0] * METERS_TO_FEET;
 
         return mTotalDistance;
+    }
+
+    public float recalculateDistance() {
+        if (mLocationList.size() < 2) {
+            return 0L;
+        }
+
+        float distance = 0f;
+        for (int i = 0; i < mLocationList.size() - 1; i++) {
+            LatLng startPoint = mLocationList.get(i);
+            LatLng endPoint = mLocationList.get(i + 1);
+            double startLat = startPoint.latitude;
+            double startLong = startPoint.longitude;
+            double endLat = endPoint.latitude;
+            double endLong = endPoint.longitude;
+            float[] results = new float[2];
+
+            Location.distanceBetween(startLat, startLong, endLat, endLong, results);
+            distance += results[0] * METERS_TO_FEET;
+        }
+
+        mTotalDistance = distance;
+
+        return distance;
     }
 
     public boolean isGoalReached() {

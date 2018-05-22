@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.map;
 
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -9,12 +10,13 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
+import android.util.Log;
 
 import java.util.Locale;
 
 /** Stopwatch to track time spent doing a challenge */
 // https://www.android-examples.com/android-create-stopwatch-example-tutorial-in-android-studio/
-public class StopwatchService extends JobIntentService {
+public class StopwatchService extends IntentService {
 
     public static final String TAG = StopwatchService.class.getSimpleName();
 
@@ -51,6 +53,7 @@ public class StopwatchService extends JobIntentService {
                 listener.onStopwatchUpdate(displayText);
             }
 
+
             if (updateTime > endTime + 10000L /* 10 seconds */) {
                 stop();
             }
@@ -71,14 +74,22 @@ public class StopwatchService extends JobIntentService {
         return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
     }
 
+    public StopwatchService() {
+        super(TAG);
+    }
+
     @Override
-    protected void onHandleWork(@NonNull Intent intent) {
-        // TODO: Move onStartCommand code here?
+    protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "onHandleWork()");
+        long offset = intent.getLongExtra(START_TIME_EXTRA, 0L);
+        endTime = intent.getLongExtra(END_TIME_EXTRA, 1000L);
+
+        start(offset);
     }
 
     @Nullable
     @Override
-    public IBinder onBind(@NonNull Intent intent) {
+    public IBinder onBind(Intent intent) {
         handler.postDelayed(runnable, 0);
 
         return mBinder;
@@ -96,16 +107,6 @@ public class StopwatchService extends JobIntentService {
         handler.removeCallbacks(runnable);
 
         return true;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        long offset = intent.getLongExtra(START_TIME_EXTRA, 0L);
-        endTime = intent.getLongExtra(END_TIME_EXTRA, 1000L);
-
-        start(offset);
-
-        return START_STICKY;
     }
 
     public long getTime() {
