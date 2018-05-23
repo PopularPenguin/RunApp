@@ -207,6 +207,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     public void setFab(FloatingActionButton fab) {
         mCenterMapFab = fab;
+        mCenterMapFab.setVisibility(View.INVISIBLE);
         mCenterMapFab.setOnClickListener(view -> positionMapAtEnd());
     }
 
@@ -350,8 +351,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void onStopwatchUpdate(String timeString) {
         mStopWatchView.setText(timeString);
 
-        broadcastTime(timeString);
-
         if (mTotalDistance >= mChallenge.getDistance()) {
             finishRun();
         }
@@ -386,6 +385,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
             return;
         }
 
+        mCenterMapFab.setVisibility(View.VISIBLE);
+
         mLocationService.setFinished(true); // tell the location service to stop updating
         isGoalReached = mLocationService.isGoalReached();
 
@@ -418,6 +419,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Log.d(TAG, "Location list size = " + mLocationService.getLocationList().size());
 
         DataUtils.insertSession(mContext.getContentResolver(), session);
+
+        // update the widget now
+        broadcastSession(session.getTime(), session.getChallenge());
 
         isSessionFinished = true;
     }
@@ -583,13 +587,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     /**
      * Update the widget
-     * @param timeString the formatted time string from the stopwatch's listener
+     * @param time the current session's time
+     * @param challenge the current session's challenge
      */
-    private void broadcastTime(String timeString) {
-        Intent intent = RunWidget.getIntent(timeString,
-                mLocationService.getDistance() / FEET_PER_MILE,
-                mStopwatchService.getTime(),
-                mChallenge);
+    private void broadcastSession(long time, Challenge challenge) {
+        Intent intent = RunWidget.getIntent(time, challenge);
 
         mContext.sendBroadcast(intent);
     }
