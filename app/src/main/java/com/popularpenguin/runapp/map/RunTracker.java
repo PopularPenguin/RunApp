@@ -268,32 +268,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
                     mStartTime,
                     mChallenge.getTimeToComplete());
 
-            /*
-            JobScheduler scheduler =
-                    (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            ComponentName stopwatchService = new ComponentName(mContext, StopwatchService.class);
-            JobInfo jobInfo = new JobInfo.Builder(0, stopwatchService)
-                    .setMinimumLatency(0L)
-                    .setPeriodic(100L)
-                    .build();
-
-            scheduler.schedule(jobInfo);
-            StopwatchService.enqueueWork(mContext,
-                    StopwatchService.class,
-                    0,
-                    intent); */
             mContext.startService(intent);
             mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
-
-            /*
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                mContext.startService(intent);
-                mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
-            }
-            else {
-                mContext.startService(intent);
-                mContext.bindService(intent, mStopwatchServiceConnection, Context.BIND_AUTO_CREATE);
-            } */
         }
     }
 

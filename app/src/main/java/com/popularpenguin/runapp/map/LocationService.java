@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.JobIntentService;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -88,7 +87,6 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     @Override
     protected void onHandleIntent(@NonNull Intent intent) {
-        // TODO: Move onStartCommand code here?
         setClient();
         setLocationCallbackListener();
 
