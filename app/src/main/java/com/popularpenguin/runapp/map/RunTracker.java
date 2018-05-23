@@ -1,7 +1,5 @@
 package com.popularpenguin.runapp.map;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -161,7 +158,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (mLocationService != null) {
             mLocationService.setLocationList(mLocationList);
         }
-
 
         updateDistance(mTotalDistance);
 
@@ -353,6 +349,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         if (mTotalDistance >= mChallenge.getDistance()) {
             finishRun();
+
+            return;
         }
 
         long time = mStopwatchService.getTime();
@@ -552,7 +550,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mLocationService.setOnLocationChangedListener(RunTracker.this);
             isLocationBound = true;
             if (mLocationList != null) {
-                // TODO: Do I really need to do all this?
                 mLocationService.setLocationList(mLocationList);
                 mLocationService.recalculateDistance();
                 Log.d(TAG, "distance so far: " + mLocationService.getDistance());

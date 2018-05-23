@@ -158,7 +158,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
                 }
                 mLocation =  locationResult.getLastLocation();
                 mLocationList.add(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
-                if (mLocationList.size() >= 2 && mTotalDistance < mChallenge.getDistance()) {
+                if (mLocationList.size() >= 2) {
                     PolylineOptions polyline = getPolyline();
                     mOnLocationChangedListener.onLocationUpdate(mLocation, polyline);
                     updateDistance();
