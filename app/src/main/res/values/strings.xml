@@ -4,11 +4,17 @@
     <string name="fastest_time_label">Fastest Time:</string>
     <string name="run_units">miles</string>
 
-    <string name="distance_view">0.0</string>
+    <string name="distance_view">0.0 miles</string>
     <string name="start_timer">Start</string>
     <string name="stop_timer">Stop</string>
 
     <string name="launch_session_list">Recent Sessions</string>
+
+    <string name="list_challenge_header">Pick a challenge:</string>
+    <string name="list_session_header">Pick a session:</string>
+
+    <string name="session_marker_start">Start</string>
+    <string name="session_marker_end">End</string>
 
     <string name="snackbar_challenge_success">You have completed the challenge! Great job!</string>
     <string name="snackbar_challenge_failed">You have run out of time!</string>

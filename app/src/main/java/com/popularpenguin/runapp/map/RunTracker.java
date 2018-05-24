@@ -78,7 +78,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private boolean isStopwatchBound = false;
 
     private Button mButtonView;
-    private TextView mLocationView;
+    private TextView mDescriptionView;
     private TextView mTotalDistanceView;
     private TextView mStopWatchView;
     private FloatingActionButton mCenterMapFab;
@@ -183,6 +183,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (!isButtonShown) {
             mButtonView.setVisibility(View.GONE);
         }
+
+        mDescriptionView.setText(mChallenge.getDescription());
     }
 
     /**
@@ -238,8 +240,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
     /**
      * Set TextView representing the latitude/longitude display
      */
-    public void setLocationView(TextView view) {
-        mLocationView = view;
+    public void setDescriptionView(TextView view) {
+        mDescriptionView = view;
+        mDescriptionView.setText(mChallenge.getDescription());
     }
 
     /**
@@ -283,18 +286,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mContext.stopService(intent);
     }
 
-    // TODO: Move maybe? Delete later if not needed
-    private String getLocationText() {
-        if (mLocation == null) {
-            return "---";
-        }
-
-        return String.format(Locale.US,
-                "%f, %f",
-                mLocation.getLatitude(),
-                mLocation.getLongitude());
-    }
-
     @Override
     public void start() {
         // only start services from this method if the stopwatch has been running (this should be
@@ -323,10 +314,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mLocationList = mLocationService.getLocationList();
         mTotalDistance = mLocationService.getDistance();
         Log.d(TAG, "Distance is " + mTotalDistance);
-
-        if (mLocationView != null) {
-            mLocationView.setText(getLocationText());
-        }
 
         if (mGoogleMap == null) {
             return;

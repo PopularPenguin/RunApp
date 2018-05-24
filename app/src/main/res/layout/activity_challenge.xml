@@ -29,8 +29,6 @@
         android:layout_gravity="center"
         android:text="@string/start_timer"/>
 
-
-    <!-- TODO: Temporary widgets, add something cool here -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,19 +36,22 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_location_test"
+            android:id="@+id/tv_challenge_description"
             style="@style/BaseWidget"
-            tools:text="Location Lat/Long"/>
+            android:textSize="@dimen/text_description_size"
+            tools:text="Challenge Description"/>
 
         <TextView
             android:id="@+id/tv_distance"
             style="@style/BaseWidget"
-            android:text="@string/distance_view"/>
+            android:text="@string/distance_view"
+            android:textSize="@dimen/text_distance_size"/>
 
         <TextView
             android:id="@+id/tv_stopwatch"
             style="@style/BaseWidget"
-            android:textSize="32sp"
+            android:textSize="@dimen/stopwatch_size"
+            android:textStyle="bold"
             tools:text="0:08:30"/>
 
     </LinearLayout>

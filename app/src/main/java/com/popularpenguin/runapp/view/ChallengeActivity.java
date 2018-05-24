@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 
 public class ChallengeActivity extends AppCompatActivity {
 
-    @BindView(R.id.tv_location_test) TextView mLocationView;
+    @BindView(R.id.tv_challenge_description) TextView mDescriptionText;
     @BindView(R.id.tv_distance) TextView mDistanceText;
     @BindView(R.id.tv_stopwatch) TextView mTimerText;
     @BindView(R.id.btn_stopwatch) Button mTimerButton;
@@ -68,7 +68,7 @@ public class ChallengeActivity extends AppCompatActivity {
     private void setupTracker(Bundle bundle) {
         mRunTracker = new RunTracker(this, R.id.map_challenge_fragment);
 
-        mRunTracker.setLocationView(mLocationView);
+        mRunTracker.setDescriptionView(mDescriptionText);
         mRunTracker.setDistanceView(mDistanceText);
         mRunTracker.setStopWatchView(mTimerText);
         mRunTracker.setButtonView(mTimerButton);

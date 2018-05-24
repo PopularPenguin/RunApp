@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Session;
@@ -57,19 +58,14 @@ public class SessionActivity extends AppCompatActivity implements
         mGoogleMap = map;
 
         String latLng = getIntent().getStringExtra(Session.LAT_LNG_EXTRA);
-        Log.d(TAG, "LatLng: " + latLng);
         List<LatLng> path = Session.getPathLatLng(latLng);
-        PolylineOptions polyline = new PolylineOptions()
-                .geodesic(true)
-                .addAll(path)
-                .color(Color.BLACK)
-                .visible(true);
 
-        mGoogleMap.addPolyline(polyline);
-
-        if (path.isEmpty()) {
+        if (path.size() < 2) {
             return;
         }
+
+        addMarkers(path);
+        addPolyLines(path);
 
         // set the center map fab here
         mCenterMapFab.setOnClickListener(view -> positionMapAtStart(path));
@@ -87,6 +83,40 @@ public class SessionActivity extends AppCompatActivity implements
         mTimeText.setText(timeText);
     }
 
+    /**
+     * Add markers to the map to show the start and end points of the run
+     * @param path the path of the run
+     */
+    private void addMarkers(List<LatLng> path) {
+        MarkerOptions startMarker = new MarkerOptions()
+                .title(getString(R.string.session_marker_start))
+                .position(path.get(0));
+        MarkerOptions endMarker = new MarkerOptions()
+                .title(getString(R.string.session_marker_end))
+                .position(path.get(path.size() - 1));
+
+        mGoogleMap.addMarker(startMarker);
+        mGoogleMap.addMarker(endMarker);
+    }
+
+    /**
+     * Add the run's path to the map
+     * @param path the path of the run
+     */
+    private void addPolyLines(List<LatLng> path) {
+        PolylineOptions polyline = new PolylineOptions()
+                .geodesic(true)
+                .addAll(path)
+                .color(Color.BLACK)
+                .visible(true);
+
+        mGoogleMap.addPolyline(polyline);
+    }
+
+    /**
+     * Fab onClick() positions the map at the start of the run's path
+     * @param path the path of the run
+     */
     private void positionMapAtStart(List<LatLng> path) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(path.get(0).latitude, path.get(0).longitude))

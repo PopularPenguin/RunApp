@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/session_list_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_session_list"
@@ -34,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="Pick a session:"
+                    android:text="@string/list_session_header"
                     android:textSize="40sp"
                     android:textColor="@color/white"/>
 
