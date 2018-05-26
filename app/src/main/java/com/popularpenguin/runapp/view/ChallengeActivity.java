@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.view;
 
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -76,6 +77,12 @@ public class ChallengeActivity extends AppCompatActivity {
 
         if (bundle != null) {
             mRunTracker.setBundle(bundle);
+        }
+
+        // don't need to keep the screen on after the session is complete since location services
+        // isn't running anymore
+        if (mRunTracker.isFinished()) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
 }

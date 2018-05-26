@@ -1,60 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.popularpenguin.runapp.view.ChallengeActivity">
+    android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/map_challenge_fragment"
-        android:name="com.google.android.gms.maps.MapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_collapseMode="parallax"
-        app:layout_collapseParallaxMultiplier="0.5"/>
+        tools:context="com.popularpenguin.runapp.view.ChallengeActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_challenge"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        <fragment
+            android:id="@+id/map_challenge_fragment"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="0.5"/>
 
-    <Button
-        android:id="@+id/btn_stopwatch"
-        style="@style/BaseWidget"
-        android:layout_gravity="center"
-        android:text="@string/start_timer"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_challenge_description"
+        <Button
+            android:id="@+id/btn_stopwatch"
             style="@style/BaseWidget"
-            android:textSize="@dimen/text_description_size"
-            tools:text="Challenge Description"/>
+            android:layout_gravity="center"
+            android:text="@string/start_timer"/>
 
-        <TextView
-            android:id="@+id/tv_distance"
-            style="@style/BaseWidget"
-            android:text="@string/distance_view"
-            android:textSize="@dimen/text_distance_size"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_stopwatch"
-            style="@style/BaseWidget"
-            android:textSize="@dimen/stopwatch_size"
-            android:textStyle="bold"
-            tools:text="0:08:30"/>
+            <TextView
+                android:id="@+id/tv_challenge_description"
+                style="@style/BaseWidget"
+                android:textSize="@dimen/text_description_size"
+                tools:text="Challenge Description"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_distance"
+                style="@style/BaseWidget"
+                android:text="@string/distance_view"
+                android:textSize="@dimen/text_distance_size"/>
+
+            <TextView
+                android:id="@+id/tv_stopwatch"
+                style="@style/BaseWidget"
+                android:textSize="@dimen/stopwatch_size"
+                android:textStyle="bold"
+                tools:text="0:08:30"/>
+
+        </LinearLayout>
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_challenge"
@@ -62,4 +60,4 @@
         android:layout_gravity="bottom|end"
         android:src="@drawable/ic_fab"/>
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

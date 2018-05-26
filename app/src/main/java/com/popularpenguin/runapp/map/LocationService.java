@@ -86,7 +86,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     }
 
     @Override
-    protected void onHandleIntent(@NonNull Intent intent) {
+    protected void onHandleIntent(Intent intent) {
         setClient();
         setLocationCallbackListener();
 
@@ -156,7 +156,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
                 if (isFinished) {
                     return;
                 }
-                mLocation =  locationResult.getLastLocation();
+                mLocation = locationResult.getLastLocation();
                 mLocationList.add(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
                 if (mLocationList.size() >= 2) {
                     PolylineOptions polyline = getPolyline();
@@ -185,9 +185,9 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     private PolylineOptions getPolyline() {
         return new PolylineOptions()
                 .geodesic(true)
-                .addAll(mLocationList)
-                //.add(mLocationList.get(mLocationList.size() - 2))
-                //.add(mLocationList.get(mLocationList.size() - 1))
+                //.addAll(mLocationList)
+                .add(mLocationList.get(mLocationList.size() - 2))
+                .add(mLocationList.get(mLocationList.size() - 1))
                 .color(Color.BLACK)
                 .visible(true);
     }

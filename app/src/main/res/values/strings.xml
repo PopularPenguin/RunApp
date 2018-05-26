@@ -18,6 +18,7 @@
 
     <string name="snackbar_challenge_success">You have completed the challenge! Great job!</string>
     <string name="snackbar_challenge_failed">You have run out of time!</string>
+    <string name="snackbar_dismiss">Dismiss</string>
 
     <string name="menu_info">About</string>
     <string name="menu_delete_sessions">Delete All Sessions</string>

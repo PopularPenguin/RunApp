@@ -17,20 +17,24 @@ import java.util.Locale;
 
 public class RunWidget extends AppWidgetProvider {
 
+    private static final String WIDGET_GOAL_REACHED = "widgetGoalReached";
     private static final String WIDGET_DISTANCE_EXTRA = "widgetDistanceExtra";
     private static final String WIDGET_CURRENT_TIME_EXTRA = "widgetCurrentTimeExtra";
     private static final String WIDGET_FASTEST_TIME_EXTRA = "widgetFastestTimeExtra";
 
-    private static long sCurrentDistance; // distance ran total
+    private static boolean sGoalReached; // has the distance goal been met?
+    private static long sCurrentDistance; // challenge distance total
     private static long sCurrentTime; // the session's time
     private static long sFastestTime; // the challenge's fastest time
 
-    public static Intent getIntent(long time, Challenge challenge) {
+    public static Intent getIntent(boolean goalReached, long time, Challenge challenge) {
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(WIDGET_GOAL_REACHED, goalReached);
         intent.putExtra(WIDGET_DISTANCE_EXTRA, challenge.getDistance());
         intent.putExtra(WIDGET_CURRENT_TIME_EXTRA, time);
         intent.putExtra(WIDGET_FASTEST_TIME_EXTRA, challenge.getFastestTime());
 
+        sGoalReached = goalReached;
         sCurrentDistance = challenge.getDistance();
         sCurrentTime = time;
         sFastestTime = challenge.getFastestTime();
@@ -44,11 +48,20 @@ public class RunWidget extends AppWidgetProvider {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.run_widget);
 
+        int colorGreen = context.getResources().getColor(R.color.green);
+        int colorRed = context.getResources().getColor(R.color.red);
+
         // set the widget's current distance run
         if (sCurrentDistance == 0) {
             String defaultText = context.getString(R.string.widget_default_distance);
 
             views.setTextViewText(R.id.tv_widget_distance, defaultText);
+        }
+        else if (!sGoalReached) {
+            String challengeFailed = "Try again!";
+
+            views.setTextViewText(R.id.tv_widget_distance, challengeFailed);
+            views.setTextColor(R.id.tv_widget_distance, colorRed);
         }
         else {
             String distanceUnits = context.getResources().getString(R.string.run_units);
@@ -58,15 +71,24 @@ public class RunWidget extends AppWidgetProvider {
                             "%.2f %s",
                             sCurrentDistance / 5280f,
                             distanceUnits));
+            views.setTextColor(R.id.tv_widget_distance, colorGreen);
         }
 
         // set the current session's time
         String currentTimeString = StopwatchService.getTimeString(sCurrentTime);
         views.setTextViewText(R.id.tv_widget_current_time, currentTimeString);
 
+        if (sGoalReached) {
+            views.setTextColor(R.id.tv_widget_current_time, colorGreen);
+        }
+        else {
+            views.setTextColor(R.id.tv_widget_current_time, colorRed);
+        }
+
         // set the fastest time's text
         String fastestTimeString = StopwatchService.getTimeString(sFastestTime);
         views.setTextViewText(R.id.tv_widget_fastest_time, fastestTimeString);
+        views.setTextColor(R.id.tv_widget_fastest_time, colorGreen);
 
         // update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

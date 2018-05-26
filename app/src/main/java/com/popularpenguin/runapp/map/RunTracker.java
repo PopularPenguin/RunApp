@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -54,6 +55,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private static final String GOAL_KEY = "isGoalReached";
     private static final String BUTTON_KEY = "isButtonShown";
     private static final String FINISHED_KEY = "isSessionFinished";
+    private static final String SNACKBAR_KEY = "isSnackbarShowing";
 
     public static final float FEET_PER_MILE = 5280.0f;
 
@@ -68,7 +70,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private MapService mMapService;
 
     private GoogleMap mGoogleMap;
-    private Location mLocation;
     private Marker mCurrentLocationMarker;
     private List<LatLng> mLocationList;
     private float mTotalDistance;
@@ -88,6 +89,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private boolean isAlarmPlayed = false;
     private boolean isGoalReached = false;
     private boolean isSessionFinished = false;
+    private boolean isSnackbarShowing = false;
 
     public RunTracker(AppCompatActivity activity, int resId) {
         mMapService = new MapService(activity.getFragmentManager(), resId);
@@ -126,6 +128,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         bundle.putBoolean(GOAL_KEY, isGoalReached);
         bundle.putBoolean(BUTTON_KEY, isButtonShown);
         bundle.putBoolean(FINISHED_KEY, isSessionFinished);
+        bundle.putBoolean(SNACKBAR_KEY, isSnackbarShowing);
 
         if (mStopwatchService != null) {
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
@@ -149,6 +152,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         isAlarmPlayed = locationBundle.getBoolean(ALARM_KEY, false);
         isGoalReached = locationBundle.getBoolean(GOAL_KEY, false);
         isButtonShown = locationBundle.getBoolean(BUTTON_KEY, true);
+        isSnackbarShowing = locationBundle.getBoolean(SNACKBAR_KEY, false);
         isSessionFinished = locationBundle.getBoolean(FINISHED_KEY, false);
 
         Log.d(TAG, "Location service is null?" + (mLocationService == null ? "true" : "false"));
@@ -170,21 +174,24 @@ public class RunTracker implements LocationService.ConnectionStatus,
             mStopWatchView.setTextColor(Color.YELLOW);
         }
 
-        // redisplay finish dialog after a rotation
-        if (isSessionFinished) {
-            if (isGoalReached) {
-                createDialog(R.string.dialog_challenge_complete);
-            }
-            else {
-                createDialog(R.string.dialog_challenge_failed);
-            }
+        // redisplay snackbar (if showing) after a rotation
+        if (isSnackbarShowing) {
+            showSnackbar();
         }
 
         if (!isButtonShown) {
             mButtonView.setVisibility(View.GONE);
         }
 
+        if (isSessionFinished) {
+            mCenterMapFab.setVisibility(View.VISIBLE);
+        }
+
         mDescriptionView.setText(mChallenge.getDescription());
+    }
+
+    public boolean isFinished() {
+        return isSessionFinished;
     }
 
     /**
@@ -310,7 +317,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     @Override
     public void onLocationUpdate(Location location, PolylineOptions polyline) {
-        mLocation = location;
         mLocationList = mLocationService.getLocationList();
         mTotalDistance = mLocationService.getDistance();
         Log.d(TAG, "Distance is " + mTotalDistance);
@@ -385,12 +391,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
             }
 
             playAlarm(R.raw.applause, R.string.snackbar_challenge_success); // play win sound
+        }
 
-            createDialog(R.string.dialog_challenge_complete);
-        }
-        else {
-            createDialog(R.string.dialog_challenge_failed); // create a fail dialog
-        }
 
         Session session = new Session(mChallenge,
                 DataUtils.getCurrentDateString(),
@@ -406,20 +408,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         DataUtils.insertSession(mContext.getContentResolver(), session);
 
         // update the widget now
-        broadcastSession(session.getTime(), session.getChallenge());
+        broadcastSession(isGoalReached, session.getTime(), session.getChallenge());
 
         isSessionFinished = true;
-    }
-
-    private void createDialog(int message) {
-        new AlertDialog.Builder(mContext)
-                .setMessage(message)
-                .setPositiveButton(R.string.dialog_about_close, (dialog, which) -> {
-                    mActivity.finish();
-                    destroy();
-                    dialog.dismiss();
-                })
-                .show();
     }
 
     // TODO: Attribute horn sound from http://soundbible.com/1542-Air-Horn.html
@@ -438,7 +429,17 @@ public class RunTracker implements LocationService.ConnectionStatus,
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500L);
 
-        Snackbar.make(mStopWatchView, messageId, Snackbar.LENGTH_LONG)
+        showSnackbar();
+    }
+
+    private void showSnackbar() {
+        int messageId = isGoalReached ? R.string.snackbar_challenge_success :
+                R.string.snackbar_challenge_failed;
+
+        isSnackbarShowing = true;
+
+        Snackbar.make(mStopWatchView, messageId, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.snackbar_dismiss, view -> isSnackbarShowing = false)
                 .show();
     }
 
@@ -571,12 +572,12 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     /**
      * Update the widget
+     * @param isGoalReached Has the challenge been successfully completed?
      * @param time the current session's time
      * @param challenge the current session's challenge
      */
-    private void broadcastSession(long time, Challenge challenge) {
-        Intent intent = RunWidget.getIntent(time, challenge);
-
+    private void broadcastSession(boolean isGoalReached, long time, Challenge challenge) {
+        Intent intent = RunWidget.getIntent(isGoalReached, time, challenge);
         mContext.sendBroadcast(intent);
     }
 }
