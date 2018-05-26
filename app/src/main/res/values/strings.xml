@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RunApp</string>
+    <string name="app_name">RunTracker Challenge</string>
 
     <string name="fastest_time_label">Fastest Time:</string>
     <string name="run_units">miles</string>
@@ -43,6 +43,8 @@
     <string name="widget_current">Session Time</string>
     <string name="widget_goal">Fastest Time</string>
 
+    <string name="content_desc_challenge_list_img">Choose a challenge</string>
+    <string name="content_desc_session_list_img">Choose a session</string>
     <string name="content_desc_widget_timer">Timer</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>

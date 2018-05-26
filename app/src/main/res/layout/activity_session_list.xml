@@ -30,7 +30,13 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.5">
 
-                <!-- TODO: Insert an ImageView here and make FrameLayout height = wrap_content -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/session"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/content_desc_session_list_img"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
