@@ -113,7 +113,6 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
                 default:
                     throw new IllegalArgumentException("Invalid challenge rating");
             }
-
         }
 
         @Override

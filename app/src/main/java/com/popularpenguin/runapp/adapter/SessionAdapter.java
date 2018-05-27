@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
+import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.RunContract;
 import com.popularpenguin.runapp.data.Session;
 
@@ -108,7 +109,10 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         }
 
         void bind(@NonNull Session session) {
-            String nameAndDate = String.format(Locale.US, "%s - %s",
+            int challengeColor = getChallengeColor(session.getChallenge());
+            itemView.getRootView().setBackgroundColor(challengeColor);
+
+            String nameAndDate = String.format(Locale.US, "%s -\n%s",
                     session.getChallenge().getName(),
                     session.getDate());
             nameText.setText(nameAndDate);
@@ -126,6 +130,24 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
 
         void clearAnimation() {
             itemView.clearAnimation();
+        }
+
+        int getChallengeColor(@NonNull Challenge challenge) {
+            Resources resources = itemView.getResources();
+
+            switch (challenge.getChallengeRating()) {
+                case Challenge.EASY:
+                    return resources.getColor(R.color.pastelBlue);
+
+                case Challenge.MEDIUM:
+                    return resources.getColor(R.color.cream);
+
+                case Challenge.HARD:
+                    return resources.getColor(R.color.lavaRed);
+
+                default:
+                    throw new IllegalArgumentException("Invalid challenge rating");
+            }
         }
 
         @Override
