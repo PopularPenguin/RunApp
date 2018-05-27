@@ -46,7 +46,6 @@ public class ChallengeListActivity extends AppCompatActivity implements
     @BindView(R.id.collapsing_toolbar_challenge_list) CollapsingToolbarLayout mCollapsingToolbar;
     @BindView(R.id.toolbar_challenge_list) Toolbar mToolbar;
     @BindView(R.id.rv_challenge_list) RecyclerView mRecyclerView;
-    @BindView(R.id.btn_launch_sessions) Button mSessionButton;
     @BindView(R.id.ad_view_challenge_list) AdView mAdView;
 
     private List<Challenge> mChallengeList;
@@ -86,11 +85,6 @@ public class ChallengeListActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(0, null, this);
 
-        mSessionButton.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SessionListActivity.class);
-            startActivity(intent);
-        });
-
         setAdView();
     }
 
@@ -100,11 +94,10 @@ public class ChallengeListActivity extends AppCompatActivity implements
         super.onResume();
 
         checkIfGpsEnabled();
+        checkPermissions();
     }
 
     private void checkIfGpsEnabled() {
-        checkPermissions();
-
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -165,6 +158,12 @@ public class ChallengeListActivity extends AppCompatActivity implements
         int itemId = item.getItemId();
 
         switch (itemId) {
+            case R.id.action_launch_session_list:
+                Intent intent = new Intent(this, SessionListActivity.class);
+                startActivity(intent);
+
+                break;
+
             case R.id.action_show_info:
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.dialog_about_title)

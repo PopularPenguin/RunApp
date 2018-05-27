@@ -26,9 +26,4 @@
         android:scrollbars="vertical"
         tools:context="com.popularpenguin.runapp.view.ChallengeListActivity"/>
 
-    <Button
-        android:id="@+id/btn_launch_sessions"
-        style="@style/BaseWidget"
-        android:text="@string/launch_session_list"/>
-
 </LinearLayout>
