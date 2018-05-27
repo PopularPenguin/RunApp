@@ -17,6 +17,7 @@
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginTop="16dp"
             android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Name"/>
@@ -28,6 +29,7 @@
             android:layout_marginBottom="@dimen/text_horizontal_margin"
             android:layout_marginTop="@dimen/text_margin"
             android:textColor="@color/black"
+            android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_challenge_item_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_challenge_item_name"
@@ -39,6 +41,7 @@
             android:layout_height="wrap_content"
             android:text="@string/fastest_time_label"
             android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tv_challenge_item_fastest_time"
             app:layout_constraintEnd_toEndOf="@+id/tv_challenge_item_fastest_time"
             app:layout_constraintStart_toStartOf="@+id/tv_challenge_item_fastest_time"

@@ -52,13 +52,16 @@ public class ChallengeLoader extends AsyncTaskLoader<List<Challenge>> {
                     cursor.getLong(cursor.getColumnIndex(ChallengesEntry.COLUMN_FASTEST_TIME));
             boolean isCompleted =
                     cursor.getInt(cursor.getColumnIndex(ChallengesEntry.COLUMN_IS_COMPLETED)) == 1;
+            int challengeRating =
+                    cursor.getInt(cursor.getColumnIndex(ChallengesEntry.COLUMN_CHALLENGE_RATING));
 
             Challenge challenge = new Challenge(id,
                     name,
                     description,
                     distance,
                     timeToComplete,
-                    isCompleted);
+                    isCompleted,
+                    challengeRating);
             challenge.setFastestTime(fastestTime);
             challenges.add(challenge);
 

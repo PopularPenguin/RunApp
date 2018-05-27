@@ -101,11 +101,14 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         boolean isCompleted =
                 challengeCursor.getInt(
                         challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_IS_COMPLETED)) == 1;
+        int challengeRating =
+                challengeCursor.getInt(
+                        challengeCursor.getColumnIndex(ChallengesEntry.COLUMN_CHALLENGE_RATING));
 
         challengeCursor.close();
 
         Challenge challenge =
-                new Challenge(id, name, description, distance, timeToComplete, isCompleted);
+                new Challenge(id, name, description, distance, timeToComplete, isCompleted, challengeRating);
 
         if (fastestTime != 0L) {
             challenge.setFastestTime(fastestTime);

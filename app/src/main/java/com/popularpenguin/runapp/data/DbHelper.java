@@ -37,7 +37,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 ChallengesEntry.COLUMN_DISTANCE + " INTEGER NOT NULL, " +
                 ChallengesEntry.COLUMN_TIME_TO_COMPLETE + " INTEGER NOT NULL, " +
                 ChallengesEntry.COLUMN_FASTEST_TIME + " INTEGER NOT NULL, " +
-                ChallengesEntry.COLUMN_IS_COMPLETED + " INTEGER NOT NULL" +
+                ChallengesEntry.COLUMN_IS_COMPLETED + " INTEGER NOT NULL, " +
+                ChallengesEntry.COLUMN_CHALLENGE_RATING + " INTEGER NOT NULL" +
                 ");";
 
         final String CREATE_SESSIONS_TABLE = "CREATE TABLE " +
@@ -79,205 +80,238 @@ public class DbHelper extends SQLiteOpenHelper {
                 resources.getString(R.string.d_12_minute_mile),
                 one,
                 1000 * 60 * 12,
-                false);
+                false,
+                Challenge.EASY);
         challenges[1] = new Challenge(1L,
                 resources.getString(R.string.n_11_minute_mile),
                 resources.getString(R.string.d_11_minute_mile),
                 one,
                 1000 * 60 * 11,
-                false);
+                false,
+                Challenge.EASY);
         challenges[2] = new Challenge(2L,
                 resources.getString(R.string.n_10_minute_mile),
                 resources.getString(R.string.d_10_minute_mile),
                 one,
                 1000 * 60 * 10,
-                false);
+                false,
+                Challenge.EASY);
         challenges[3] = new Challenge(3L,
                 resources.getString(R.string.n_9_minute_mile),
                 resources.getString(R.string.d_9_minute_mile),
                 one,
                 1000 * 60 * 9,
-                false);
+                false,
+                Challenge.EASY);
         challenges[4] = new Challenge(4L,
                 resources.getString(R.string.n_8_minute_mile),
                 resources.getString(R.string.d_8_minute_mile),
                 one,
                 1000 * 60 * 8,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[5] = new Challenge(5L,
                 resources.getString(R.string.n_7_minute_mile),
                 resources.getString(R.string.d_7_minute_mile),
                 one,
                 1000 * 60 * 7,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[6] = new Challenge(6L,
                 resources.getString(R.string.n_6_minute_mile),
                 resources.getString(R.string.d_6_minute_mile),
                 one,
                 1000 * 60 * 6,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[7] = new Challenge(7L,
                 resources.getString(R.string.n_5_minute_mile),
                 resources.getString(R.string.d_5_minute_mile),
                 one,
                 1000 * 60 * 5,
-                false);
+                false,
+                Challenge.HARD);
         challenges[8] = new Challenge(8L,
                 resources.getString(R.string.n_4_minute_mile),
                 resources.getString(R.string.d_4_minute_mile),
                 one,
                 1000 * 60 * 4,
-                false);
+                false,
+                Challenge.HARD);
         // half mile challenges
         challenges[9] = new Challenge(9L,
                 resources.getString(R.string.n_6_minute_half),
                 resources.getString(R.string.d_6_minute_half),
                 half,
                 1000 * 60 * 6,
-                false);
+                false,
+                Challenge.EASY);
         challenges[10] = new Challenge(10L,
                 resources.getString(R.string.n_5_minute_half),
                 resources.getString(R.string.d_5_minute_half),
                 half,
                 1000 * 60 * 5,
-                false);
+                false,
+                Challenge.EASY);
         challenges[11] = new Challenge(11L,
                 resources.getString(R.string.n_4_minute_half),
                 resources.getString(R.string.d_4_minute_half),
                 half,
                 1000 * 60 * 4,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[12] = new Challenge(12L,
                 resources.getString(R.string.n_3_minute_half),
                 resources.getString(R.string.d_3_minute_half),
                 half,
                 1000 * 60 * 3,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[13] = new Challenge(13L,
                 resources.getString(R.string.n_2_minute_half),
                 resources.getString(R.string.d_2_minute_half),
                 half,
                 1000 * 60 * 2,
-                false);
+                false,
+                Challenge.HARD);
         // quarter mile challenges
         challenges[14] = new Challenge(14L,
                 resources.getString(R.string.n_3_minute_quarter),
                 resources.getString(R.string.d_3_minute_quarter),
                 quarter,
                 1000 * 60 * 3,
-                false);
+                false,
+                Challenge.EASY);
         challenges[15] = new Challenge(15L,
                 resources.getString(R.string.n_2_minute_quarter),
                 resources.getString(R.string.d_2_minute_quarter),
                 quarter,
                 1000 * 60 * 2,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[16] = new Challenge(16L,
                 resources.getString(R.string.n_1_minute_quarter),
                 resources.getString(R.string.d_1_minute_quarter),
                 quarter,
                 1000 * 60,
-                false);
+                false,
+                Challenge.HARD);
         // two mile challenges
         challenges[17] = new Challenge(17L,
                 resources.getString(R.string.n_24_minute_two),
                 resources.getString(R.string.d_24_minute_two),
                 two,
                 1000 * 60 * 24,
-                false);
+                false,
+                Challenge.EASY);
         challenges[18] = new Challenge(18L,
                 resources.getString(R.string.n_22_minute_two),
                 resources.getString(R.string.d_22_minute_two),
                 two,
                 1000 * 60 * 22,
-                false);
+                false,
+                Challenge.EASY);
         challenges[19] = new Challenge(19L,
                 resources.getString(R.string.n_20_minute_two),
                 resources.getString(R.string.d_20_minute_two),
                 two,
                 1000 * 60 * 20,
-                false);
+                false,
+                Challenge.EASY);
         challenges[20] = new Challenge(20L,
                 resources.getString(R.string.n_18_minute_two),
                 resources.getString(R.string.d_18_minute_two),
                 two,
                 1000 * 60 * 18,
-                false);
+                false,
+                Challenge.EASY);
         challenges[21] = new Challenge(21L,
                 resources.getString(R.string.n_16_minute_two),
                 resources.getString(R.string.d_16_minute_two),
                 two,
                 1000 * 60 * 16,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[22] = new Challenge(22L,
                 resources.getString(R.string.n_14_minute_two),
                 resources.getString(R.string.d_14_minute_two),
                 two,
                 1000 * 60 * 14,
-                false);
+                false,
+                Challenge.MEDIUM);
         challenges[23] = new Challenge(23L,
                 resources.getString(R.string.n_12_minute_two),
                 resources.getString(R.string.d_12_minute_two),
                 two,
                 1000 * 60 * 12,
-                false);
+                false,
+                Challenge.HARD);
         challenges[24] = new Challenge(24L,
                 resources.getString(R.string.n_10_minute_two),
                 resources.getString(R.string.d_10_minute_two),
                 two,
                 1000 * 60 * 10,
-                false);
+                false,
+                Challenge.HARD);
         // 5K challenges
         challenges[25] = new Challenge(25L,
-                resources.getString(R.string.n_60_minute_5k),
-                resources.getString(R.string.d_60_minute_5k),
-                fiveK,
-                1000 * 60 * 60,
-                false);
-        challenges[26] = new Challenge(26L,
                 resources.getString(R.string.n_50_minute_5k),
                 resources.getString(R.string.d_50_minute_5k),
                 fiveK,
                 1000 * 60 * 50,
-                false);
-        challenges[27] = new Challenge(27L,
+                false,
+                Challenge.EASY);
+        challenges[26] = new Challenge(26L,
                 resources.getString(R.string.n_40_minute_5k),
                 resources.getString(R.string.d_40_minute_5k),
                 fiveK,
                 1000 * 60 * 40,
-                false);
-        challenges[28] = new Challenge(28L,
+                false,
+                Challenge.EASY);
+        challenges[27] = new Challenge(27L,
                 resources.getString(R.string.n_30_minute_5k),
                 resources.getString(R.string.d_30_minute_5k),
                 fiveK,
                 1000 * 60 * 30,
-                false);
+                false,
+                Challenge.EASY);
+        challenges[28] = new Challenge(28L,
+                resources.getString(R.string.n_25_minute_5k),
+                resources.getString(R.string.d_25_minute_5k),
+                fiveK,
+                1000 * 60 * 25,
+                false,
+                Challenge.MEDIUM);
         challenges[29] = new Challenge(29L,
                 resources.getString(R.string.n_20_minute_5k),
                 resources.getString(R.string.d_20_minute_5k),
                 fiveK,
                 1000 * 60 * 20,
-                false);
+                false,
+                Challenge.HARD);
         challenges[30] = new Challenge(30L,
                 resources.getString(R.string.n_15_minute_5k),
                 resources.getString(R.string.d_15_minute_5k),
                 fiveK,
                 1000 * 60 * 15,
-                false);
+                false,
+                Challenge.HARD);
 
         // TODO: Remove test challenges
-        challenges[31] = new Challenge(4L,
+        challenges[31] = new Challenge(31L,
                 "Challenge 5",
                 "Run 0.1 miles in 4 minutes",
                 5280 / 10,
                 1000 * 60 * 4,
-                false);
-        challenges[32] = new Challenge(5L,
+                false,
+                Challenge.EASY);
+        challenges[32] = new Challenge(32L,
                 "Challenge 6",
                 "Run 0.02 miles in 10 minutes",
                 5280 / 100,
                 1000 * 60 * 10,
-                false);
+                false,
+                Challenge.EASY);
 
         for (Challenge challenge : challenges) {
             ContentValues cv = new ContentValues();
@@ -287,6 +321,7 @@ public class DbHelper extends SQLiteOpenHelper {
             cv.put(ChallengesEntry.COLUMN_TIME_TO_COMPLETE, challenge.getTimeToComplete());
             cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, 0L);
             cv.put(ChallengesEntry.COLUMN_IS_COMPLETED, challenge.isCompleted());
+            cv.put(ChallengesEntry.COLUMN_CHALLENGE_RATING, challenge.getChallengeRating());
 
             db.insert(ChallengesEntry.CHALLENGE_TABLE_NAME, null, cv);
         }

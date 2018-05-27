@@ -1,5 +1,6 @@
 package com.popularpenguin.runapp.adapter;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -84,19 +85,35 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
         }
 
         void bind(@NonNull Challenge challenge) {
+            int challengeColor = getChallengeColor(challenge);
+            itemView.getRootView().setBackgroundColor(challengeColor);
+
             nameText.setText(challenge.getName());
             descriptionText.setText(challenge.getDescription());
             timeText.setText(challenge.getFastestTimeString());
-            if (challenge.getFastestTime() != 0L) {
-                int colorGreen = itemView.getContext()
-                        .getResources()
-                        .getColor(R.color.green);
-                timeText.setTextColor(colorGreen);
-            }
         }
 
         void clearAnimation() {
             itemView.clearAnimation();
+        }
+
+        int getChallengeColor(@NonNull Challenge challenge) {
+            Resources resources = itemView.getResources();
+
+            switch (challenge.getChallengeRating()) {
+                case Challenge.EASY:
+                    return resources.getColor(R.color.pastelBlue);
+
+                case Challenge.MEDIUM:
+                    return resources.getColor(R.color.cream);
+
+                case Challenge.HARD:
+                    return resources.getColor(R.color.lavaRed);
+
+                default:
+                    throw new IllegalArgumentException("Invalid challenge rating");
+            }
+
         }
 
         @Override

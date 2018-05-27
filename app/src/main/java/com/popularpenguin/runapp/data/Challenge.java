@@ -10,6 +10,10 @@ public class Challenge implements Parcelable {
 
     public static final String CHALLENGE_EXTRA = "challenge";
 
+    public static final int EASY = 1;
+    public static final int MEDIUM = 2;
+    public static final int HARD = 3;
+
     private long id;
     private String name;
     private String description;
@@ -17,13 +21,15 @@ public class Challenge implements Parcelable {
     private long timeToComplete;
     private long fastestTime;
     private boolean isCompleted;
+    private int challengeRating; // 1 = easy, 2 = medium, 3 = hard
 
     public Challenge(long id,
                      String name,
                      String description,
                      long distance,
                      long timeToComplete,
-                     boolean isCompleted) {
+                     boolean isCompleted,
+                     int challengeRating) {
 
         this.id = id;
         this.name = name;
@@ -31,6 +37,7 @@ public class Challenge implements Parcelable {
         this.distance = distance;
         this.timeToComplete = timeToComplete;
         this.isCompleted = isCompleted;
+        this.challengeRating = challengeRating;
     }
 
     private Challenge(Parcel parcel) {
@@ -41,6 +48,7 @@ public class Challenge implements Parcelable {
         timeToComplete = parcel.readLong();
         fastestTime = parcel.readLong();
         isCompleted = parcel.readInt() == 1;
+        challengeRating = parcel.readInt();
     }
 
     public String getFastestTimeString() {
@@ -114,6 +122,14 @@ public class Challenge implements Parcelable {
         isCompleted = completed;
     }
 
+    public int getChallengeRating() {
+        return challengeRating;
+    }
+
+    public void setChallengeRating(int challengeRating) {
+       this.challengeRating = challengeRating;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -128,6 +144,7 @@ public class Challenge implements Parcelable {
         parcel.writeLong(timeToComplete);
         parcel.writeLong(fastestTime);
         parcel.writeInt(isCompleted ? 1: 0);
+        parcel.writeInt(challengeRating);
     }
 
     public static final Creator<Challenge> CREATOR = new Parcelable.Creator<Challenge>() {

@@ -133,17 +133,17 @@
     <string name="d_10_minute_two">Run 2 miles in 10 minutes</string>
 
     <!-- 5k training -->
-    <string name="n_60_minute_5k">Welcome to 5K training!</string>
-    <string name="d_60_minute_5k">Run 5K in 60 minutes</string>
-
-    <string name="n_50_minute_5k">Turning up the heat for #26!</string>
+    <string name="n_50_minute_5k">Welcome to 5K training!</string>
     <string name="d_50_minute_5k">Run 5K in 50 minutes</string>
 
-    <string name="n_40_minute_5k">Run 3.10866 miles in 40 minutes</string>
+    <string name="n_40_minute_5k">Turning up the heat for #26!</string>
     <string name="d_40_minute_5k">Run 5K in 40 minutes</string>
 
-    <string name="n_30_minute_5k">Run 5K in 1800 seconds</string>
-    <string name="d_30_minute_5k">Run 5K in 30 minutes</string>
+    <string name="n_30_minute_5k">Run 3.10686 miles in 30 minutes</string>
+    <string name="d_30_minute_5k">Run 5K in 40 minutes</string>
+
+    <string name="n_25_minute_5k">Run 5K in 25 minutes</string>
+    <string name="d_25_minute_5k">Run 5K in 25 minutes</string>
 
     <string name="n_20_minute_5k">A whole lot tougher... you\'ve got this!</string>
     <string name="d_20_minute_5k">A 5K in under 20 minutes??</string>

@@ -23,6 +23,7 @@ public class RunContract {
         public static final String COLUMN_TIME_TO_COMPLETE = "timeToComplete";
         public static final String COLUMN_FASTEST_TIME = "fastestTime";
         public static final String COLUMN_IS_COMPLETED = "isCompleted";
+        public static final String COLUMN_CHALLENGE_RATING = "challengeRating";
     }
 
     public static final class SessionsEntry implements BaseColumns {
