@@ -23,8 +23,9 @@
     <string name="menu_info">About</string>
     <string name="menu_delete_sessions">Delete All Sessions</string>
 
-    <string name="dialog_about_title">Run Challenge Tracker v 0.9</string>
-    <string name="dialog_about_body">Challenge yourself to beat your best run times!</string>
+    <string name="dialog_about_title">RunTracker Challenge</string>
+    <string name="dialog_about_body">Challenge yourself to beat your best run times!\nKeep the
+        tracker in the foreground while running to ensure your distance is updated properly.</string>
     <string name="dialog_about_close">Close</string>
 
     <string name="dialog_challenge_complete">Congratulations! You have finished this challenge!</string>
@@ -48,4 +49,104 @@
     <string name="content_desc_widget_timer">Timer</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!-- Challenges -->
+    <!-- Mile runs -->
+    <string name="n_12_minute_mile">We start at 0</string>
+    <string name="d_12_minute_mile">Run a 12 minute mile</string>
+
+    <string name="n_11_minute_mile">An easy warm-up</string>
+    <string name="d_11_minute_mile">Run an 11 minute mile</string>
+
+    <string name="n_10_minute_mile">This is challenge 2</string>
+    <string name="d_10_minute_mile">Run a 10 minute mile</string>
+
+    <string name="n_9_minute_mile">Challenge 3 incoming...</string>
+    <string name="d_9_minute_mile">Run a 9 minute mile</string>
+
+    <string name="n_8_minute_mile">Just challenge 4</string>
+    <string name="d_8_minute_mile">Run an 8 minute mile</string>
+
+    <string name="n_7_minute_mile">Getting tougher... #5!</string>
+    <string name="d_7_minute_mile">Run a 7 minute mile</string>
+
+    <string name="n_6_minute_mile">Handling #6? No problem!</string>
+    <string name="d_6_minute_mile">Run a 6 minute mile</string>
+
+    <string name="n_5_minute_mile">Now we\'re talking!</string>
+    <string name="d_5_minute_mile">Run a 5 minute mile</string>
+
+    <string name="n_4_minute_mile">Good luck!</string>
+    <string name="d_4_minute_mile">Do the impossible</string>
+
+    <!-- Half mile runs -->
+    <string name="n_6_minute_half">Time for half mile runs...</string>
+    <string name="d_6_minute_half">Run a 6 minute half mile</string>
+
+    <string name="n_5_minute_half">Challenge 10!</string>
+    <string name="d_5_minute_half">Run a 5 minute half mile</string>
+
+    <string name="n_4_minute_half">#11 :)</string>
+    <string name="d_4_minute_half">Run a 4 minute half mile</string>
+
+    <string name="n_3_minute_half">A 3 minute half mile?</string>
+    <string name="d_3_minute_half">Run a 3 minute half mile</string>
+
+    <string name="n_2_minute_half">2 MINUTE HALF MILE INCOMING</string>
+    <string name="d_2_minute_half">Run a 2 minute half mile</string>
+
+    <!-- Quarter mile sprints -->
+    <string name="n_3_minute_quarter">Challenge 14 and a quarter</string>
+    <string name="d_3_minute_quarter">Run a 3 minute quarter mile</string>
+
+    <string name="n_2_minute_quarter">#15 is a bit tougher</string>
+    <string name="d_2_minute_quarter">Run a 2 minute quarter mile</string>
+
+    <string name="n_1_minute_quarter">Sprint a quarter mile!</string>
+    <string name="d_1_minute_quarter">Run a 1 minute quarter mile</string>
+
+    <!-- 2 mile challenges -->
+    <string name="n_24_minute_two">Now let\'s run a bit longer</string>
+    <string name="d_24_minute_two">Run 2 miles in 24 minutes</string>
+
+    <string name="n_22_minute_two">Should be easy for you!</string>
+    <string name="d_22_minute_two">Run 2 miles in 22 minutes</string>
+
+    <string name="n_20_minute_two">Slowly getting more challenging</string>
+    <string name="d_20_minute_two">Run 2 miles in 20 minutes</string>
+
+    <string name="n_18_minute_two">Challenge 20 locked and loaded</string>
+    <string name="d_18_minute_two">Run 2 miles in 18 minutes</string>
+
+    <string name="n_16_minute_two">Lucky 21</string>
+    <string name="d_16_minute_two">Run 2 miles in 16 minutes</string>
+
+    <string name="n_14_minute_two">Even harder now...</string>
+    <string name="d_14_minute_two">Run 2 miles in 14 minutes</string>
+
+    <string name="n_12_minute_two">Challenge 23 awaits</string>
+    <string name="d_12_minute_two">Run 2 miles in 12 minutes</string>
+
+    <string name="n_10_minute_two">Run like the wind!</string>
+    <string name="d_10_minute_two">Run 2 miles in 10 minutes</string>
+
+    <!-- 5k training -->
+    <string name="n_60_minute_5k">Welcome to 5K training!</string>
+    <string name="d_60_minute_5k">Run 5K in 60 minutes</string>
+
+    <string name="n_50_minute_5k">Turning up the heat for #26!</string>
+    <string name="d_50_minute_5k">Run 5K in 50 minutes</string>
+
+    <string name="n_40_minute_5k">Run 3.10866 miles in 40 minutes</string>
+    <string name="d_40_minute_5k">Run 5K in 40 minutes</string>
+
+    <string name="n_30_minute_5k">Run 5K in 1800 seconds</string>
+    <string name="d_30_minute_5k">Run 5K in 30 minutes</string>
+
+    <string name="n_20_minute_5k">A whole lot tougher... you\'ve got this!</string>
+    <string name="d_20_minute_5k">A 5K in under 20 minutes??</string>
+
+    <string name="n_15_minute_5k">The grand finale!</string>
+    <string name="d_15_minute_5k">Run until you drop</string>
+
 </resources>
