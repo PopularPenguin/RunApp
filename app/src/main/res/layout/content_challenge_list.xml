@@ -2,13 +2,13 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    xmlns:ads="http://schemas.android.com/apk/res-auto">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_view_challenge_list"
@@ -22,7 +22,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_challenge_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/rv_layout_margin"
+        android:layout_marginStart="@dimen/rv_layout_margin"
+        android:elevation="@dimen/rv_elevation"
         android:scrollbars="vertical"
         tools:context="com.popularpenguin.runapp.view.ChallengeListActivity"/>
 

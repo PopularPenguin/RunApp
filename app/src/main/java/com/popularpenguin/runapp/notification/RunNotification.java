@@ -57,7 +57,7 @@ public class RunNotification {
         Notification notification = builder
                 .setContentTitle(resources.getString(R.string.notification_title))
                 .setContentText(resources.getString(R.string.notification_body))
-                .setSmallIcon(R.mipmap.ic_notification_round)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(pendingIntent)
                 .build();
 
