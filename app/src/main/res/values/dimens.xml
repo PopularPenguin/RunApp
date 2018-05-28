@@ -10,14 +10,12 @@
     <dimen name="view_margin">8dp</dimen>
     <dimen name="text_horizontal_margin">16dp</dimen>
     <dimen name="text_description_size">22sp</dimen>
+    <dimen name="text_distance_size">18sp</dimen>
 
     <!-- List Activities -->
     <dimen name="card_margin">4dp</dimen>
     <dimen name="card_corner_radius">6dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
-
-    <!-- Challenge Activity -->
-    <dimen name="text_distance_size">22sp</dimen>
 
     <!-- Fab -->
     <dimen name="fab_margin">16dp</dimen>

@@ -83,10 +83,11 @@ public class ChallengeListActivity extends AppCompatActivity implements
             }
         });
 
-
         getSupportLoaderManager().initLoader(0, null, this);
 
         setAdView();
+
+        checkPermissions();
     }
 
     // TODO: Move location permissions to own class or an abstract parent activity
