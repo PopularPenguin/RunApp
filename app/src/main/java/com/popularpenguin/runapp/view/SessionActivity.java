@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -90,10 +91,12 @@ public class SessionActivity extends AppCompatActivity implements
     private void addMarkers(List<LatLng> path) {
         MarkerOptions startMarker = new MarkerOptions()
                 .title(getString(R.string.session_marker_start))
-                .position(path.get(0));
+                .position(path.get(0))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         MarkerOptions endMarker = new MarkerOptions()
                 .title(getString(R.string.session_marker_end))
-                .position(path.get(path.size() - 1));
+                .position(path.get(path.size() - 1))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
         mGoogleMap.addMarker(startMarker);
         mGoogleMap.addMarker(endMarker);
