@@ -129,7 +129,6 @@ public class SessionListActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(int position) {
-        // TODO: Implement SessionActivity and the Session Info class
         Session session = mSessionList.get(position);
 
         Intent intent = new Intent(this, SessionActivity.class);

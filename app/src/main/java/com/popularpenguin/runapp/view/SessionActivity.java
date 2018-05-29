@@ -47,8 +47,6 @@ public class SessionActivity extends AppCompatActivity implements
         MapService mapService = new MapService(getFragmentManager(), R.id.map_session_fragment);
         mapService.setOnReadyListener(this);
 
-        // TODO: add more views to display data
-
         setViews();
     }
 

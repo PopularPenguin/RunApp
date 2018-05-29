@@ -90,7 +90,6 @@ public class ChallengeListActivity extends AppCompatActivity implements
         checkPermissions();
     }
 
-    // TODO: Move location permissions to own class or an abstract parent activity
     @Override
     protected void onResume() {
         super.onResume();
