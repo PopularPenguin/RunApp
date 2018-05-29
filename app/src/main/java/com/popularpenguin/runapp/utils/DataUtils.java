@@ -20,8 +20,6 @@ import java.util.Locale;
 
 public class DataUtils {
 
-    private static final String TAG = DataUtils.class.getSimpleName();
-
     private DataUtils() {
     } // this class shouldn't be instantiated
 
@@ -34,8 +32,6 @@ public class DataUtils {
      */
     public static Uri insertSession(@NonNull ContentResolver contentResolver,
                                     @NonNull Session session) {
-
-        Log.d(TAG, "Session LatLng: " + session.getPath());
 
         ContentValues cv = new ContentValues();
         cv.put(SessionsEntry.COLUMN_CHALLENGE_ID, session.getChallenge().getId());
@@ -59,8 +55,6 @@ public class DataUtils {
                                          long time) {
 
         String id = String.valueOf(challenge.getId());
-
-        Log.d(TAG, "Fastest time to update is: " + time);
 
         ContentValues cv = new ContentValues();
         cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, time);

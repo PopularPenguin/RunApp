@@ -44,9 +44,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
         MapService.OnReadyListener,
         StopwatchService.StopWatchListener {
 
-    // TODO: Update distance correctly on rotation
-    private static final String TAG = RunTracker.class.getSimpleName();
-
     public static final String CHALLENGE_BUNDLE_KEY = "challenge";
     public static final String TRACKER_BUNDLE_KEY = "trackerData";
 
@@ -156,10 +153,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         isSnackbarShowing = locationBundle.getBoolean(SNACKBAR_KEY, false);
         isSessionFinished = locationBundle.getBoolean(FINISHED_KEY, false);
 
-        Log.d(TAG, "Location service is null?" + (mLocationService == null ? "true" : "false"));
-
         mLocationList = Session.getPathLatLng(path);
-        Log.d(TAG, path);
         if (mLocationService != null) {
             mLocationService.setLocationList(mLocationList);
         }
@@ -219,19 +213,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private void positionMapAtEnd() {
         if (mLocationList == null || mGoogleMap == null || mLocationList.isEmpty()) {
-            if (mLocationList == null) {
-                Log.d(TAG, "location list is null");
-            }
-            if (mGoogleMap == null) {
-                Log.d(TAG, "map is null");
-            }
-            if (mLocationList != null && mLocationList.isEmpty()) {
-                Log.d(TAG, "location list is empty");
-            }
             return;
         }
-
-        Log.d(TAG, "in positionMapAtEnd(). List size = " + mLocationList.size());
 
         int position = mLocationList.size() - 1;
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -320,7 +303,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void onLocationUpdate(Location location, PolylineOptions polyline) {
         mLocationList = mLocationService.getLocationList();
         mTotalDistance = mLocationService.getDistance();
-        Log.d(TAG, "Distance is " + mTotalDistance);
 
         if (mGoogleMap == null) {
             return;
@@ -403,8 +385,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         stopStopWatch();
         stopLocationService();
-
-        Log.d(TAG, "Location list size = " + mLocationService.getLocationList().size());
 
         DataUtils.insertSession(mContext.getContentResolver(), session);
 
@@ -532,7 +512,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private ServiceConnection mLocationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Log.d(TAG, "location service connected");
             LocationService.LocationBinder binder = (LocationService.LocationBinder) iBinder;
             mLocationService = binder.getService();
             mLocationService.connect();
@@ -541,7 +520,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
             if (mLocationList != null) {
                 mLocationService.setLocationList(mLocationList);
                 mLocationService.recalculateDistance();
-                Log.d(TAG, "distance so far: " + mLocationService.getDistance());
                 updateDistance(mLocationService.getDistance());
             }
         }

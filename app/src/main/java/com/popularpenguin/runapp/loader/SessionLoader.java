@@ -18,8 +18,6 @@ import java.util.List;
 
 public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
-    private static final String TAG = SessionLoader.class.getSimpleName();
-
     public SessionLoader(Context context) {
         super(context);
     }
@@ -35,8 +33,6 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
         Cursor cursor = getContext().getContentResolver().query(SessionsEntry.CONTENT_URI,
                 null, null, null, null);
 
-        Log.d(TAG, "Cursor count: " + cursor.getCount());
-
         if (cursor.getCount() == 0) {
             return new ArrayList<>();
         }
@@ -47,9 +43,6 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
         do {
             Challenge challenge = getChallenge(cursor);
-            Log.d(TAG, "id = " + challenge.getId() +
-                ", name = " + challenge.getName() +
-                ", desc = " + challenge.getDescription());
 
             long id = cursor.getLong(cursor.getColumnIndex(SessionsEntry._ID));
             String date = cursor.getString(cursor.getColumnIndex(SessionsEntry.COLUMN_DATE));
@@ -69,7 +62,6 @@ public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
     private Challenge getChallenge(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(SessionsEntry.COLUMN_CHALLENGE_ID));
-        Log.d(TAG, "Challenge id: " + id);
         Cursor challengeCursor = getContext().getContentResolver()
                 .query(ChallengesEntry.CONTENT_URI,
                         null,

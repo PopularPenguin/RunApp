@@ -16,8 +16,6 @@ import java.util.Locale;
 // https://www.android-examples.com/android-create-stopwatch-example-tutorial-in-android-studio/
 public class StopwatchService extends IntentService {
 
-    public static final String TAG = StopwatchService.class.getSimpleName();
-
     public static final String START_TIME_EXTRA = "startTime";
     public static final String END_TIME_EXTRA = "endTime";
 
@@ -73,12 +71,11 @@ public class StopwatchService extends IntentService {
     }
 
     public StopwatchService() {
-        super(TAG);
+        super(StopwatchService.class.getSimpleName());
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleWork()");
         long offset = intent.getLongExtra(START_TIME_EXTRA, 0L);
         endTime = intent.getLongExtra(END_TIME_EXTRA, 1000L);
 

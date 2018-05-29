@@ -31,8 +31,6 @@ import butterknife.ButterKnife;
 public class SessionActivity extends AppCompatActivity implements
     MapService.OnReadyListener {
 
-    private static final String TAG = SessionActivity.class.getSimpleName();
-
     @BindView(R.id.tv_session_description) TextView mDescriptionText;
     @BindView(R.id.tv_session_time) TextView mTimeText;
     @BindView(R.id.fab_session) FloatingActionButton mCenterMapFab;

@@ -36,8 +36,6 @@ public class SessionListActivity extends AppCompatActivity implements
         SessionAdapter.SessionAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Session>> {
 
-    private static final String TAG = SessionListActivity.class.getSimpleName();
-
     @BindView(R.id.app_bar_session_list) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_session_list) CollapsingToolbarLayout mCollapsingToolbar;
     @BindView(R.id.toolbar_session_list) Toolbar mToolbar;
@@ -133,8 +131,6 @@ public class SessionListActivity extends AppCompatActivity implements
     public void onClick(int position) {
         // TODO: Implement SessionActivity and the Session Info class
         Session session = mSessionList.get(position);
-
-        Log.d(TAG, "Session id: " + session.getId());
 
         Intent intent = new Intent(this, SessionActivity.class);
         //intent.putExtra(SessionInfo.SESSION_BUNDLE_KEY, mSessionList.get(position));

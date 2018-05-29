@@ -25,8 +25,6 @@ import butterknife.ButterKnife;
 
 public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionViewHolder> {
 
-    private static final String TAG = SessionAdapter.class.getSimpleName();
-
     public interface SessionAdapterOnClickHandler {
         void onClick(int position);
     }
@@ -69,16 +67,9 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         return mSessionList.size();
     }
 
-    // TODO: Fix this
     public void remove(int position) {
-        Session session = mSessionList.get(position);
-
-        Log.d(TAG, session.getChallenge().getName() + ":" + session.getId());
-
-        Log.d(TAG, "List size before: " + mSessionList.size());
         mSessionList.remove(position);
         notifyItemRemoved(position);
-        Log.d(TAG, "List size after: " + mSessionList.size());
     }
 
     @Override

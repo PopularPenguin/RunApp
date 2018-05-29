@@ -34,8 +34,6 @@ import java.util.List;
 public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = LocationService.class.getSimpleName();
-
     public static final float METERS_TO_FEET = 3.2808399f;
 
     private static final long UPDATE_INTERVAL = 2000L; // update every 2 seconds
@@ -140,8 +138,6 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     }
 
     private synchronized void setClient() {
-        Log.i(TAG, "setClient()");
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -244,14 +240,10 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     }
 
     public boolean isGoalReached() {
-        Log.d(TAG, "distance is " + getDistance());
-
         if (mChallenge == null) {
-            Log.d(TAG, "Challenge is null!");
             return false;
         }
 
-        Log.d(TAG, "is goal reached? " + (getDistance() >= mChallenge.getDistance()));
         return getDistance() >= mChallenge.getDistance();
     }
 

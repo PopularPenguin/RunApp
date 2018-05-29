@@ -14,8 +14,6 @@ import java.util.List;
 
 public class ChallengeLoader extends AsyncTaskLoader<List<Challenge>> {
 
-    public static final String TAG = ChallengeLoader.class.getSimpleName();
-
     public ChallengeLoader(Context context) {
         super(context);
     }
@@ -65,7 +63,6 @@ public class ChallengeLoader extends AsyncTaskLoader<List<Challenge>> {
             challenge.setFastestTime(fastestTime);
             challenges.add(challenge);
 
-            Log.d(TAG, "Fastest time is for " + challenge.getName() + " is: " + fastestTime);
         } while (cursor.moveToNext());
 
         cursor.close();

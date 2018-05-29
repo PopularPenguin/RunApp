@@ -17,8 +17,6 @@ import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 
 public class RunProvider extends ContentProvider {
 
-    public static final String TAG = RunProvider.class.getSimpleName();
-
     public static final int CHALLENGES = 100;
     public static final int CHALLENGE_WITH_ID = 101;
 
@@ -111,7 +109,6 @@ public class RunProvider extends ContentProvider {
         switch (match) {
             case CHALLENGES:
                 id = db.insert(ChallengesEntry.CHALLENGE_TABLE_NAME, null, values);
-                Log.d(TAG, "RunProvider challenge id: " + id);
                 if (id > 0) {
                     returnUri = ContentUris.withAppendedId(ChallengesEntry.CONTENT_URI, id);
                 }
@@ -123,7 +120,6 @@ public class RunProvider extends ContentProvider {
 
             case SESSIONS:
                 id = db.insert(SessionsEntry.SESSION_TABLE_NAME, null, values);
-                Log.d(TAG, "RunProvider session id: " + id);
                 if (id > 0) {
                     returnUri = ContentUris.withAppendedId(SessionsEntry.CONTENT_URI, id);
                 }
@@ -217,7 +213,5 @@ public class RunProvider extends ContentProvider {
         }
 
         return rowsUpdated;
-        // TODO: Update this to update the fastest time for the challenge
-        // where id = challenge.getId()
     }
 }
