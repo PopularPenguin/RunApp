@@ -52,6 +52,8 @@
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
+    <string name="error_location_connection">Can\'t connect to Google Services</string>
+
     <!-- Challenges -->
     <!-- Mile runs -->
     <string name="n_12_minute_mile">We start at 0</string>

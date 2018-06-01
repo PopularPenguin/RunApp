@@ -14,7 +14,6 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -68,11 +67,27 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     }
 
     public void connect() {
+        if (mGoogleApiClient == null) {
+            return;
+        }
+
         mGoogleApiClient.connect();
     }
 
     public void disconnect() {
+        if (mGoogleApiClient == null) {
+            return;
+        }
+
         mGoogleApiClient.disconnect();
+    }
+
+    public boolean isConnected() {
+        if (mGoogleApiClient == null) {
+            return false;
+        }
+
+        return mGoogleApiClient.isConnected();
     }
 
     public List<LatLng> getLocationList() {
@@ -119,12 +134,12 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     @Override
     public void onConnectionSuspended(int i) {
-        // TODO: Implement
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // TODO: Implement
+
     }
 
     @Override

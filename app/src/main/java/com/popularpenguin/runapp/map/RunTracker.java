@@ -57,7 +57,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     public static final float FEET_PER_MILE = 5280.0f;
 
-    private ChallengeActivity mActivity;
     private Context mContext;
 
     private Challenge mChallenge;
@@ -95,7 +94,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         mChallenge = activity.getIntent().getParcelableExtra(CHALLENGE_BUNDLE_KEY);
 
-        mActivity = (ChallengeActivity) activity;
         mContext = activity;
     }
 
@@ -197,11 +195,18 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         button.setOnClickListener(view -> {
             startLocationService();
-            startStopWatch();
 
-            // Once the button has been clicked, remove it
-            mButtonView.setVisibility(View.GONE);
-            isButtonShown = false;
+            if (mLocationService != null && mLocationService.isConnected()) {
+                startStopWatch();
+
+                // Once the button has been clicked, remove it
+                mButtonView.setVisibility(View.GONE);
+                isButtonShown = false;
+            }
+            else {
+                Snackbar.make(view, R.string.error_location_connection, Snackbar.LENGTH_LONG)
+                        .show();
+            }
         });
     }
 
@@ -295,8 +300,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
     public void destroy() {
         stopLocationService();
         stopStopWatch();
-
-        //finishRun(false);
     }
 
     @Override
@@ -342,7 +345,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
         if (time > mChallenge.getTimeToComplete() && !isAlarmPlayed) {
             mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.red));
             isAlarmPlayed = true;
-            playAlarm(R.raw.airhorn, R.string.snackbar_challenge_failed);
+            playAlarm(R.raw.airhorn);
             finishRun();
         } else if (time > mChallenge.getTimeToComplete() * 0.66 &&
                 !isAlarmPlayed) {
@@ -373,7 +376,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
                 mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
 
-            playAlarm(R.raw.applause, R.string.snackbar_challenge_success); // play win sound
+            playAlarm(R.raw.applause); // play win sound
         }
 
 
@@ -399,9 +402,8 @@ public class RunTracker implements LocationService.ConnectionStatus,
     /**
      * Plays a sound
      * @param soundId resource id of sound
-     * @param messageId resource id of the message to display on the snackbar
      */
-    private void playAlarm(int soundId, int messageId) {
+    private void playAlarm(int soundId) {
         mMediaPlayer = MediaPlayer.create(mContext, soundId);
         mMediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mMediaPlayer.setLooping(false);
@@ -430,13 +432,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private void startLocationService() {
         if (!isLocationBound && !isAlarmPlayed  && !isGoalReached) {
             Intent intent = LocationService.getStartIntent(mContext, mChallenge);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                mContext.startService(intent);
-            }
-            else {
-                mContext.startService(intent);
-            }
-            //mContext.startService(intent);
+            mContext.startService(intent);
             mContext.bindService(intent, mLocationServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
