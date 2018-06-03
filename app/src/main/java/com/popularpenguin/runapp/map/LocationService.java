@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,6 +25,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.notification.RunNotification;
 
@@ -134,12 +136,14 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(this,R.string.error_location_suspended, Toast.LENGTH_LONG)
+                .show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this, R.string.error_location_connection, Toast.LENGTH_LONG)
+                .show();
     }
 
     @Override
@@ -196,7 +200,6 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     private PolylineOptions getPolyline() {
         return new PolylineOptions()
                 .geodesic(true)
-                //.addAll(mLocationList)
                 .add(mLocationList.get(mLocationList.size() - 2))
                 .add(mLocationList.get(mLocationList.size() - 1))
                 .color(Color.BLACK)

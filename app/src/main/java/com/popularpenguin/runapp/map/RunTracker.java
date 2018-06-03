@@ -195,18 +195,11 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         button.setOnClickListener(view -> {
             startLocationService();
+            startStopWatch();
 
-            if (mLocationService != null && mLocationService.isConnected()) {
-                startStopWatch();
-
-                // Once the button has been clicked, remove it
-                mButtonView.setVisibility(View.GONE);
-                isButtonShown = false;
-            }
-            else {
-                Snackbar.make(view, R.string.error_location_connection, Snackbar.LENGTH_LONG)
-                        .show();
-            }
+            // Once the button has been clicked, remove it
+            mButtonView.setVisibility(View.GONE);
+            isButtonShown = false;
         });
     }
 

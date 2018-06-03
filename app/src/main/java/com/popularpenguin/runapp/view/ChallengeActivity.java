@@ -7,6 +7,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.map.RunTracker;
 
@@ -66,6 +68,8 @@ public class ChallengeActivity extends AppCompatActivity {
     }
 
     private void setupTracker(Bundle bundle) {
+        checkGooglePlayServices();
+
         mRunTracker = new RunTracker(this, R.id.map_challenge_fragment);
 
         mRunTracker.setDescriptionView(mDescriptionText);
@@ -83,5 +87,22 @@ public class ChallengeActivity extends AppCompatActivity {
         if (mRunTracker.isFinished()) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    // check availability of Google Play Services on user's device
+    // https://stackoverflow.com/questions/31016722/googleplayservicesutil-vs-googleapiavailability
+    private boolean checkGooglePlayServices() {
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int result = api.isGooglePlayServicesAvailable(this);
+        if (result != ConnectionResult.SUCCESS) {
+            if (api.isUserResolvableError(result)) {
+                api.getErrorDialog(this, result, 0)
+                        .show();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

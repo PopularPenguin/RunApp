@@ -25,6 +25,7 @@ public class MapService implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
 
         mOnReadyListener.onMapReady(mGoogleMap);
     }
