@@ -50,7 +50,7 @@ public class StopwatchService extends IntentService {
             }
 
 
-            if (updateTime > endTime + 10000L /* 10 seconds */) {
+            if (updateTime > endTime) {
                 stop();
             }
 
@@ -68,6 +68,10 @@ public class StopwatchService extends IntentService {
         minutes %= 60;
 
         return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public String getTimeString() {
+        return getTimeString(updateTime);
     }
 
     public StopwatchService() {

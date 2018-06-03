@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
@@ -73,6 +74,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private StopwatchService mStopwatchService;
     private long mStartTime;
+    private long mEndTime;
     private boolean isStopwatchBound = false;
 
     private Button mButtonView;
@@ -127,9 +129,16 @@ public class RunTracker implements LocationService.ConnectionStatus,
         bundle.putBoolean(SNACKBAR_KEY, isSnackbarShowing);
 
         if (mStopwatchService != null) {
+            // insert the current time from the stopwatch
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
         }
+        else if (mEndTime > 0L) {
+            // if the challenge is over insert the final time recorded (since the stopwatch could be
+            // null at this point)
+            bundle.putLong(StopwatchService.START_TIME_EXTRA, mEndTime);
+        }
         else {
+            // put the challenge's goal time
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mChallenge.getTimeToComplete());
         }
 
@@ -141,6 +150,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
      */
     public void setBundle(Bundle bundle) {
         Bundle locationBundle = bundle.getBundle(TRACKER_BUNDLE_KEY);
+        Resources resources = mContext.getResources();
 
         String path = locationBundle.getString(PATH_KEY, "");
         mStartTime = locationBundle.getLong(StopwatchService.START_TIME_EXTRA, 0L);
@@ -161,10 +171,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mStopWatchView.setText(DataUtils.getFormattedTime(mStartTime));
 
         if (mStartTime >= mChallenge.getTimeToComplete()) {
-            mStopWatchView.setTextColor(Color.RED);
+            mStopWatchView.setTextColor(resources.getColor(R.color.red));
         }
         else if (mStartTime >= mChallenge.getTimeToComplete() * 0.66) {
-            mStopWatchView.setTextColor(Color.YELLOW);
+            mStopWatchView.setTextColor(resources.getColor(R.color.yellow));
         }
 
         // redisplay snackbar (if showing) after a rotation
@@ -372,6 +382,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             playAlarm(R.raw.applause); // play win sound
         }
 
+        mEndTime = mStopwatchService.getTime();
 
         Session session = new Session(mChallenge,
                 DataUtils.getCurrentDateString(),
