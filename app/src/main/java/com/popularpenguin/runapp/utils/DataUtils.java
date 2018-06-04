@@ -18,6 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Helper methods for various tasks
+ */
 public class DataUtils {
 
     private DataUtils() {
@@ -68,17 +71,5 @@ public class DataUtils {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US);
 
         return formatter.format(date);
-    }
-
-    /** Get formatted time for the list views */
-    public static String getFormattedTime(long time) {
-        int seconds = (int) (time / 1000);
-        int minutes = seconds / 60;
-        int hours = minutes / 60;
-
-        seconds %= 60;
-        minutes %= 60;
-
-        return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
     }
 }

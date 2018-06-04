@@ -57,6 +57,7 @@ public class DbHelper extends SQLiteOpenHelper {
         addChallenges(db);
     }
 
+    // once on Google Play, put new challenges here, move old ones to addChallenges
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + ChallengesEntry.CHALLENGE_TABLE_NAME);
@@ -65,6 +66,7 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // add challenges to the database on a fresh install
     private void addChallenges(SQLiteDatabase db) {
         Resources resources = mContext.getResources();
 
@@ -320,6 +322,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 false,
                 Challenge.HARD);
 
+        // insert each challenge into the database
         for (Challenge challenge : challenges) {
             ContentValues cv = new ContentValues();
             cv.put(ChallengesEntry.COLUMN_NAME, challenge.getName());

@@ -67,11 +67,6 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         return mSessionList.size();
     }
 
-    public void remove(int position) {
-        mSessionList.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public void onViewDetachedFromWindow(@NonNull SessionViewHolder holder) {
         holder.clearAnimation();

@@ -28,6 +28,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Displays a user's stored session from the database on a map
+ */
 public class SessionActivity extends AppCompatActivity implements
     MapService.OnReadyListener {
 
@@ -50,10 +53,14 @@ public class SessionActivity extends AppCompatActivity implements
         setViews();
     }
 
+    /**
+     * Once the map service is ready, update it with the session's path, start and end markers
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         mGoogleMap = map;
 
+        // get the runner's path (serialized)
         String latLng = getIntent().getStringExtra(Session.LAT_LNG_EXTRA);
         List<LatLng> path = Session.getPathLatLng(latLng);
 

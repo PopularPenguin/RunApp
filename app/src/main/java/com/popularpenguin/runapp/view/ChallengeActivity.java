@@ -15,6 +15,9 @@ import com.popularpenguin.runapp.map.RunTracker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity that tracks the user's run, displays, and times it
+ */
 public class ChallengeActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_challenge_description) TextView mDescriptionText;
@@ -67,6 +70,10 @@ public class ChallengeActivity extends AppCompatActivity {
         outState.putBundle(RunTracker.TRACKER_BUNDLE_KEY, mRunTracker.getBundle());
     }
 
+    /**
+     * Initialize the run tracker
+     * @param bundle the saved instance state
+     */
     private void setupTracker(Bundle bundle) {
         checkGooglePlayServices();
 

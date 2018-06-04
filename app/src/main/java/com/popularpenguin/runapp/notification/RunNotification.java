@@ -15,6 +15,10 @@ import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.view.ChallengeActivity;
 
 // https://medium.com/exploring-android/exploring-android-o-notification-channels-94cd274f604c
+
+/**
+ * Class to create the service notification and channel (for Android O+)
+ */
 public class RunNotification {
 
     public static final String CHANNEL_ID = "run_channel";

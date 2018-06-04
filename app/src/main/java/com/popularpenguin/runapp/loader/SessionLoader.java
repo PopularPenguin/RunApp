@@ -16,6 +16,9 @@ import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Load a list of sessions from the database
+ */
 public class SessionLoader extends AsyncTaskLoader<List<Session>> {
 
     public SessionLoader(Context context) {

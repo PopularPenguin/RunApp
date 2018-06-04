@@ -39,6 +39,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Displays a list of challenges to take on, this is the app's entry point
+ */
 public class ChallengeListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Challenge>> {
@@ -136,6 +139,11 @@ public class ChallengeListActivity extends AppCompatActivity implements
         mAdView.loadAd(adRequest);
     }
 
+    /**
+     * Start the Challenge Activity when a list item is selected, check for required permissions
+     * before launching it
+     * @param position position of the list's challenge
+     */
     @Override
     public void onClick(int position) {
         checkPermissions();

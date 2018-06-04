@@ -32,6 +32,7 @@ import com.popularpenguin.runapp.notification.RunNotification;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Class to use Google's Location API */
 public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -68,6 +69,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         super(LocationService.class.getSimpleName());
     }
 
+    // connect to the API
     public void connect() {
         if (mGoogleApiClient == null) {
             return;
@@ -76,6 +78,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         mGoogleApiClient.connect();
     }
 
+    // disconnect from API
     public void disconnect() {
         if (mGoogleApiClient == null) {
             return;
@@ -92,6 +95,10 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return mGoogleApiClient.isConnected();
     }
 
+    /**
+     * Get the list of locations built inside this class
+     * @return List of LatLng objects
+     */
     public List<LatLng> getLocationList() {
         return mLocationList;
     }
@@ -100,6 +107,10 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         mLocationList = locationList;
     }
 
+    /**
+     * Service starts here
+     * @param intent Intent from getStartIntent() which contains a Challenge object to work with
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         setClient();
@@ -114,12 +125,19 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return mBinder;
     }
 
+    /**
+     * Once connected, make a notification and start requesting location updates
+     * @param bundle
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this, R.string.error_location_permissions, Toast.LENGTH_LONG)
+                    .show();
 
             return;
         }
@@ -197,6 +215,10 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     }
 
+    /**
+     * Get the polylines to display in the RunTracker
+     * @return the polylines
+     */
     private PolylineOptions getPolyline() {
         return new PolylineOptions()
                 .geodesic(true)
@@ -214,6 +236,10 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         mTotalDistance = totalDistance;
     }
 
+    /**
+     * Measure the new polyline and update the total distance
+     * @return the new distance run
+     */
     public float updateDistance() {
         if (mLocationList.size() < 2) {
             return 0L;
@@ -233,6 +259,10 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return mTotalDistance;
     }
 
+    /**
+     * Recalculate the distance from all the polylines in the list and set the total distance
+     * @return the total distance run
+     */
     public float recalculateDistance() {
         if (mLocationList.size() < 2) {
             return 0L;
@@ -257,6 +287,9 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return distance;
     }
 
+    /**
+     * @return is the challenge's goal distance met?
+     */
     public boolean isGoalReached() {
         if (mChallenge == null) {
             return false;
@@ -265,10 +298,17 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return getDistance() >= mChallenge.getDistance();
     }
 
+    /**
+     * Notify the service that the run has finished
+     * @param isFinished is the run finished?
+     */
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
     }
 
+    /**
+     * Class to bind the service to the RunTracker
+     */
     public class LocationBinder extends Binder {
         LocationService getService() {
             return LocationService.this;

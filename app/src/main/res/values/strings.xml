@@ -54,6 +54,7 @@
 
     <string name="error_location_connection">Can\'t connect to Google Services</string>
     <string name="error_location_suspended">Location services connection suspended</string>
+    <string name="error_location_permissions">Turn on location permissions</string>
 
     <!-- Challenges -->
     <!-- Mile runs -->

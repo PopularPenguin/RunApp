@@ -31,7 +31,6 @@ public class StopwatchService extends IntentService {
 
     private long startTime, millisTime, timeBuffer, updateTime = 0L;
     private long endTime;
-    private int hours, minutes, seconds, millis;
 
     private String displayText;
 
@@ -41,14 +40,12 @@ public class StopwatchService extends IntentService {
         public void run() {
             millisTime = SystemClock.uptimeMillis() - startTime;
             updateTime = timeBuffer + millisTime;
-            millis = (int) (updateTime % 1000);
 
             displayText = getTimeString(updateTime);
 
             if (listener != null) {
                 listener.onStopwatchUpdate(displayText);
             }
-
 
             if (updateTime > endTime) {
                 stop();
@@ -58,6 +55,11 @@ public class StopwatchService extends IntentService {
         }
     };
 
+    /**
+     * Get a time as a formatted String
+     * @param time time in milliseconds
+     * @return time formatted to hours, minutes, and seconds
+     */
     public static String getTimeString(long time) {
         int hours, minutes, seconds;
         seconds = (int) (time / 1000);
@@ -70,6 +72,10 @@ public class StopwatchService extends IntentService {
         return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
     }
 
+    /**
+     * Get current time as a formatted String
+     * @return time in hours, minutes, and seconds
+     */
     public String getTimeString() {
         return getTimeString(updateTime);
     }
@@ -78,6 +84,10 @@ public class StopwatchService extends IntentService {
         super(StopwatchService.class.getSimpleName());
     }
 
+    /**
+     * Service starts here
+     * @param intent Intent from getIntent()
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         long offset = intent.getLongExtra(START_TIME_EXTRA, 0L);
@@ -85,6 +95,7 @@ public class StopwatchService extends IntentService {
 
         start(offset);
     }
+
 
     @Nullable
     @Override
@@ -112,6 +123,10 @@ public class StopwatchService extends IntentService {
         return updateTime;
     }
 
+    /**
+     * Start the stopwatch at a certain point (0 for a new timer)
+     * @param offset time past 0 to set the stopwatch at
+     */
     public void start(long offset) {
         startTime = SystemClock.uptimeMillis() - offset;
         handler.postDelayed(runnable, 0);
@@ -122,23 +137,17 @@ public class StopwatchService extends IntentService {
         handler.removeCallbacks(runnable);
     }
 
+    /**
+     * Stop the stopwatch
+     */
     public void stop() {
         handler.removeCallbacks(runnable);
         stopSelf();
     }
 
-    public void reset() {
-        millisTime = 0L;
-        startTime = 0L;
-        timeBuffer = 0L;
-        updateTime = 0L;
-        hours = 0;
-        minutes = 0;
-        seconds = 0;
-
-        displayText = "0:00:00";
-    }
-
+    /**
+     * Class to bind the stopwatch service to the RunTracker
+     */
     public class StopWatchBinder extends Binder {
         StopwatchService getService() {
             return StopwatchService.this;

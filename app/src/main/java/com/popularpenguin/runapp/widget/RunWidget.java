@@ -15,6 +15,9 @@ import com.popularpenguin.runapp.map.StopwatchService;
 
 import java.util.Locale;
 
+/**
+ * The widget that displays the last session run after it is completed
+ */
 public class RunWidget extends AppWidgetProvider {
 
     private static final String WIDGET_GOAL_REACHED = "widgetGoalReached";
@@ -42,6 +45,12 @@ public class RunWidget extends AppWidgetProvider {
         return intent;
     }
 
+    /**
+     * Helper method to update the widget when requested
+     * @param context
+     * @param appWidgetManager
+     * @param appWidgetId unique id for a widget (more than one can be displayed at a time)
+     */
     private static void updateAppWidget(Context context,
                                         AppWidgetManager appWidgetManager,
                                         int appWidgetId) {
@@ -94,6 +103,12 @@ public class RunWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
+    /**
+     * Calls the helper method on each available app widget instance
+     * @param context
+     * @param appWidgetManager
+     * @param appWidgetIds
+     */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // update all widgets since it's possible there is more than one active
@@ -102,6 +117,11 @@ public class RunWidget extends AppWidgetProvider {
         }
     }
 
+    /**
+     * Process the intent
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);

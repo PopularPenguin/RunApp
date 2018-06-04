@@ -40,6 +40,10 @@ import com.popularpenguin.runapp.widget.RunWidget;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Class to track a user's run utilizing Google's Location and Map APIs
+ * as well as a stopwatch service to time the run
+ */
 public class RunTracker implements LocationService.ConnectionStatus,
         LocationService.OnLocationChangedListener,
         MapService.OnReadyListener,
@@ -168,7 +172,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
         updateDistance(mTotalDistance);
 
-        mStopWatchView.setText(DataUtils.getFormattedTime(mStartTime));
+        mStopWatchView.setText(StopwatchService.getTimeString(mStartTime));
 
         if (mStartTime >= mChallenge.getTimeToComplete()) {
             mStopWatchView.setTextColor(resources.getColor(R.color.red));
@@ -213,6 +217,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         });
     }
 
+    /**
+     * Sets the floating action button view
+     * @param fab the view
+     */
     public void setFab(FloatingActionButton fab) {
         mCenterMapFab = fab;
         mCenterMapFab.setVisibility(View.INVISIBLE);
@@ -285,6 +293,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mContext.stopService(intent);
     }
 
+    /**
+     * Call from the activity's onStart() callback
+     */
     @Override
     public void start() {
         // only start services from this method if the stopwatch has been running (this should be
@@ -295,16 +306,25 @@ public class RunTracker implements LocationService.ConnectionStatus,
         }
     }
 
+    // Not currently used
     @Override
     public void stop() {
         // ...
     }
 
+    /**
+     * Call from activity's destroy callback
+     */
     public void destroy() {
         stopLocationService();
         stopStopWatch();
     }
 
+    /**
+     * Location Service callback, updates the map
+     * @param location user's current location
+     * @param polyline the polyline to add to the map
+     */
     @Override
     public void onLocationUpdate(Location location, PolylineOptions polyline) {
         mLocationList = mLocationService.getLocationList();
@@ -320,11 +340,19 @@ public class RunTracker implements LocationService.ConnectionStatus,
         updateCamera(location);
     }
 
+    /**
+     * When the map service is ready, get a reference to it
+     * @param map service's map to reference
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         mGoogleMap = map;
     }
 
+    /**
+     * Each stopwatch update set the time TextView and check to see the sessions's status
+     * @param timeString parsed time to display in the TextView
+     */
     @Override
     public void onStopwatchUpdate(String timeString) {
         mStopWatchView.setText(timeString);
@@ -419,6 +447,9 @@ public class RunTracker implements LocationService.ConnectionStatus,
         showSnackbar();
     }
 
+    /**
+     * Helper method to show a snackbar when the session is over
+     */
     private void showSnackbar() {
         int messageId = isGoalReached ? R.string.snackbar_challenge_success :
                 R.string.snackbar_challenge_failed;
@@ -454,6 +485,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mContext.stopService(intent);
     }
 
+    /**
+     * update the marker showing the user's current location on the map
+     * @param location location from the Location Service
+     */
     private void updateMarkerPosition(Location location) {
         if (mCurrentLocationMarker != null) {
             mCurrentLocationMarker.remove();
@@ -468,6 +503,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
         mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
     }
 
+    /**
+     * Update the user's path on the map
+     * @param polyline the polylines to display (from the onLocationUpdate() callback's parameters)
+     */
     private void updatePolylines(PolylineOptions polyline) {
         List<LatLng> list = mLocationService.getLocationList();
 

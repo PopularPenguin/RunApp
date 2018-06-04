@@ -18,12 +18,12 @@ public class Session {
     public static final String TIME_EXTRA = "session_time";
     public static final String FASTEST_TIME_EXTRA = "session_fastest_time";
 
-    private long id;
-    private Challenge challenge;
-    private String date;
-    private long time;
-    private String pathString;
-    private boolean isCompleted;
+    private long id; // id from the database
+    private Challenge challenge; // the challenge associated with this session
+    private String date; // the date and time of the session
+    private long time; // the user's run time
+    private String pathString; // the serialized path of the run to display on the map
+    private boolean isCompleted; // was the challenge successfully completed?
 
     public Session(Challenge challenge,
                    String date,
@@ -66,6 +66,10 @@ public class Session {
         return time;
     }
 
+    /**
+     * Get a formatted date and time to display in the session list
+     * @return formatted String date/time
+     */
     public String getTimeString() {
         if (time == 0L) {
             return "-:--:--";
@@ -85,6 +89,11 @@ public class Session {
         this.time = time;
     }
 
+    /**
+     * Turns a serialized path String into a List of LatLng objects to create map polylines
+     * @param pathString Serialized path
+     * @return list of LatLng objects
+     */
     public static List<LatLng> getPathLatLng(String pathString) {
         if (pathString == null || pathString.isEmpty()) {
             return new ArrayList<>();
@@ -123,6 +132,11 @@ public class Session {
         this.pathString = getPathString(path);
     }
 
+    /**
+     * Serialize the user's run path
+     * @param path a list of LatLng points
+     * @return String representation of the user's path
+     */
     public static String getPathString(List<LatLng> path) {
         if (path == null || path.size() == 0) {
             return null;

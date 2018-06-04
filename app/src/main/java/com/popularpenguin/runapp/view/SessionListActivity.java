@@ -32,6 +32,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Displays a list of recent sessions that the user can review
+ */
 public class SessionListActivity extends AppCompatActivity implements
         SessionAdapter.SessionAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Session>> {

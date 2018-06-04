@@ -12,6 +12,9 @@ import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Load Challenges from the database using a ContentProvider
+ */
 public class ChallengeLoader extends AsyncTaskLoader<List<Challenge>> {
 
     public ChallengeLoader(Context context) {

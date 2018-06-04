@@ -14,13 +14,13 @@ public class Challenge implements Parcelable {
     public static final int MEDIUM = 2;
     public static final int HARD = 3;
 
-    private long id;
-    private String name;
-    private String description;
+    private long id; // id assigned automatically
+    private String name; // challenge's name
+    private String description; // description of the challenge
     private long distance; // distance in feet
-    private long timeToComplete;
-    private long fastestTime;
-    private boolean isCompleted;
+    private long timeToComplete; // goal time
+    private long fastestTime; // user's best time
+    private boolean isCompleted; // has it been completed by the user?
     private int challengeRating; // 1 = easy, 2 = medium, 3 = hard
 
     public Challenge(long id,

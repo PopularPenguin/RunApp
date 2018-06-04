@@ -12,6 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
+/**
+ * Class to access Google's Map API
+ */
 public class MapService implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
