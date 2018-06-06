@@ -91,6 +91,9 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
             nameText.setText(challenge.getName());
             descriptionText.setText(challenge.getDescription());
             timeText.setText(challenge.getFastestTimeString());
+
+            // set the content description dynamically
+            itemView.setContentDescription(challenge.getDescription());
         }
 
         void clearAnimation() {

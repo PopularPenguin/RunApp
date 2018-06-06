@@ -109,6 +109,9 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
             else {
                 timeText.setTextColor(mResources.getColor(R.color.green));
             }
+
+            // set the content description dynamically
+            itemView.setContentDescription(session.getChallenge().getDescription());
         }
 
         void clearAnimation() {
