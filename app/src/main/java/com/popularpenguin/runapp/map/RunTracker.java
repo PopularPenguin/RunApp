@@ -78,7 +78,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
     private StopwatchService mStopwatchService;
     private long mStartTime;
-    private long mEndTime;
     private boolean isStopwatchBound = false;
 
     private Button mButtonView;
@@ -136,10 +135,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
             // insert the current time from the stopwatch
             bundle.putLong(StopwatchService.START_TIME_EXTRA, mStopwatchService.getTime());
         }
-        else if (mEndTime > 0L) {
+        else if (mStartTime > 0L) {
             // if the challenge is over insert the final time recorded (since the stopwatch could be
             // null at this point)
-            bundle.putLong(StopwatchService.START_TIME_EXTRA, mEndTime);
+            bundle.putLong(StopwatchService.START_TIME_EXTRA, mStartTime);
         }
         else {
             // put the challenge's goal time
@@ -409,8 +408,6 @@ public class RunTracker implements LocationService.ConnectionStatus,
 
             playAlarm(R.raw.applause); // play win sound
         }
-
-        mEndTime = mStopwatchService.getTime();
 
         Session session = new Session(mChallenge,
                 DataUtils.getCurrentDateString(),

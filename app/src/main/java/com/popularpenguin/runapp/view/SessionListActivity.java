@@ -1,6 +1,7 @@
 package com.popularpenguin.runapp.view;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -39,6 +40,8 @@ public class SessionListActivity extends AppCompatActivity implements
         SessionAdapter.SessionAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Session>> {
 
+    private static final String SESSION_LIST_RV_EXTRA = "sessionListRecyclerViewExtra";
+
     @BindView(R.id.app_bar_session_list) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_session_list) CollapsingToolbarLayout mCollapsingToolbar;
     @BindView(R.id.toolbar_session_list) Toolbar mToolbar;
@@ -46,6 +49,7 @@ public class SessionListActivity extends AppCompatActivity implements
     @BindView(R.id.ad_view_session_list) AdView mAdView;
 
     private List<Session> mSessionList;
+    private Parcelable mRecyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,19 @@ public class SessionListActivity extends AppCompatActivity implements
         setAdView();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mRecyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(SESSION_LIST_RV_EXTRA, mRecyclerViewState);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        mRecyclerViewState = savedInstanceState.getParcelable(SESSION_LIST_RV_EXTRA);
+    }
+
     private void setRecyclerView() {
         SessionAdapter adapter = new SessionAdapter(mSessionList, getResources(),this);
         mRecyclerView.setAdapter(adapter);
@@ -92,6 +109,7 @@ public class SessionListActivity extends AppCompatActivity implements
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+        layoutManager.onRestoreInstanceState(mRecyclerViewState);
     }
 
     // TODO: Load real ads after submitting project before uploading to Google Play

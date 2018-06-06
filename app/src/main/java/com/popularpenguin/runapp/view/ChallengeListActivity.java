@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,6 +48,8 @@ public class ChallengeListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Challenge>> {
 
+    private static final String CHALLENGE_LIST_RV_EXTRA = "challengeListRecyclerViewExtra";
+
     @BindView(R.id.app_bar_challenge_list) AppBarLayout mAppBar;
     @BindView(R.id.collapsing_toolbar_challenge_list) CollapsingToolbarLayout mCollapsingToolbar;
     @BindView(R.id.toolbar_challenge_list) Toolbar mToolbar;
@@ -53,6 +57,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
     @BindView(R.id.ad_view_challenge_list) AdView mAdView;
 
     private List<Challenge> mChallengeList;
+    private Parcelable mRecyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,19 @@ public class ChallengeListActivity extends AppCompatActivity implements
         checkIfGpsEnabled();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mRecyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(CHALLENGE_LIST_RV_EXTRA, mRecyclerViewState);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        mRecyclerViewState = savedInstanceState.getParcelable(CHALLENGE_LIST_RV_EXTRA);
+    }
+
     private void checkIfGpsEnabled() {
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -129,6 +147,7 @@ public class ChallengeListActivity extends AppCompatActivity implements
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+        layoutManager.onRestoreInstanceState(mRecyclerViewState);
     }
 
     // TODO: Load real ads after submitting project before uploading to Google Play
