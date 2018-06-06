@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 /**
  * Activity that tracks the user's run, displays, and times it
  */
+@SuppressWarnings("WeakerAccess")
 public class ChallengeActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_challenge_description) TextView mDescriptionText;
@@ -98,7 +99,7 @@ public class ChallengeActivity extends AppCompatActivity {
 
     // check availability of Google Play Services on user's device
     // https://stackoverflow.com/questions/31016722/googleplayservicesutil-vs-googleapiavailability
-    private boolean checkGooglePlayServices() {
+    private void checkGooglePlayServices() {
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int result = api.isGooglePlayServicesAvailable(this);
         if (result != ConnectionResult.SUCCESS) {
@@ -107,9 +108,7 @@ public class ChallengeActivity extends AppCompatActivity {
                         .show();
             }
 
-            return false;
         }
 
-        return true;
     }
 }

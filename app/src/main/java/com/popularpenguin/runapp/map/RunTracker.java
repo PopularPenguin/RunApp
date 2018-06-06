@@ -5,19 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,7 +29,6 @@ import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.utils.DataUtils;
-import com.popularpenguin.runapp.view.ChallengeActivity;
 import com.popularpenguin.runapp.widget.RunWidget;
 
 import java.util.List;
@@ -60,16 +54,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private static final String FINISHED_KEY = "isSessionFinished";
     private static final String SNACKBAR_KEY = "isSnackbarShowing";
 
-    public static final float FEET_PER_MILE = 5280.0f;
+    private static final float FEET_PER_MILE = 5280.0f;
 
-    private Context mContext;
-
-    private Challenge mChallenge;
+    private final Context mContext;
+    private final Challenge mChallenge;
 
     private LocationService mLocationService;
     private boolean isLocationBound = false;
-
-    private MapService mMapService;
 
     private GoogleMap mGoogleMap;
     private Marker mCurrentLocationMarker;
@@ -87,15 +78,14 @@ public class RunTracker implements LocationService.ConnectionStatus,
     private FloatingActionButton mCenterMapFab;
     private boolean isButtonShown = true;
 
-    private MediaPlayer mMediaPlayer;
     private boolean isAlarmPlayed = false;
     private boolean isGoalReached = false;
     private boolean isSessionFinished = false;
     private boolean isSnackbarShowing = false;
 
     public RunTracker(AppCompatActivity activity, int resId) {
-        mMapService = new MapService(activity.getFragmentManager(), resId);
-        mMapService.setOnReadyListener(this);
+        MapService mapService = new MapService(activity.getFragmentManager(), resId);
+        mapService.setOnReadyListener(this);
 
         mChallenge = activity.getIntent().getParcelableExtra(CHALLENGE_BUNDLE_KEY);
 
@@ -433,10 +423,10 @@ public class RunTracker implements LocationService.ConnectionStatus,
      * @param soundId resource id of sound
      */
     private void playAlarm(int soundId) {
-        mMediaPlayer = MediaPlayer.create(mContext, soundId);
-        mMediaPlayer.setOnCompletionListener(MediaPlayer::release);
-        mMediaPlayer.setLooping(false);
-        mMediaPlayer.start();
+        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, soundId);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.setLooping(false);
+        mediaPlayer.start();
 
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500L);
@@ -545,7 +535,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     /**
      * Service connection for location updates
      */
-    private ServiceConnection mLocationServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mLocationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             LocationService.LocationBinder binder = (LocationService.LocationBinder) iBinder;
@@ -570,7 +560,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
     /**
      * Service connection for the stopwatch
      */
-    private ServiceConnection mStopwatchServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mStopwatchServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             StopwatchService.StopWatchBinder binder = (StopwatchService.StopWatchBinder) iBinder;

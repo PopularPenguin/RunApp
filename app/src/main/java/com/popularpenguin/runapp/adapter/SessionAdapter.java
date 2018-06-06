@@ -1,10 +1,8 @@
 package com.popularpenguin.runapp.adapter;
 
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
-import com.popularpenguin.runapp.data.RunContract;
 import com.popularpenguin.runapp.data.Session;
 
 import java.util.List;

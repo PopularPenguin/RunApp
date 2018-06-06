@@ -36,6 +36,7 @@ import java.util.List;
 public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    @SuppressWarnings("WeakerAccess")
     public static final float METERS_TO_FEET = 3.2808399f;
 
     private static final long UPDATE_INTERVAL = 2000L; // update every 2 seconds
@@ -52,7 +53,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return new Intent(context, LocationService.class);
     }
 
-    private IBinder mBinder = new LocationBinder();
+    private final IBinder mBinder = new LocationBinder();
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -87,14 +88,6 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         mGoogleApiClient.disconnect();
     }
 
-    public boolean isConnected() {
-        if (mGoogleApiClient == null) {
-            return false;
-        }
-
-        return mGoogleApiClient.isConnected();
-    }
-
     /**
      * Get the list of locations built inside this class
      * @return List of LatLng objects
@@ -127,7 +120,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     /**
      * Once connected, make a notification and start requesting location updates
-     * @param bundle
+     * @param bundle param not used
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -232,17 +225,12 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         return mTotalDistance;
     }
 
-    public void setDistance(float totalDistance) {
-        mTotalDistance = totalDistance;
-    }
-
     /**
      * Measure the new polyline and update the total distance
-     * @return the new distance run
      */
-    public float updateDistance() {
+    private void updateDistance() {
         if (mLocationList.size() < 2) {
-            return 0L;
+            return;
         }
 
         LatLng startPoint = mLocationList.get(mLocationList.size() - 2);
@@ -255,17 +243,14 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
         Location.distanceBetween(startLat, startLong, endLat, endLong, results);
         mTotalDistance += results[0] * METERS_TO_FEET;
-
-        return mTotalDistance;
     }
 
     /**
      * Recalculate the distance from all the polylines in the list and set the total distance
-     * @return the total distance run
      */
-    public float recalculateDistance() {
+    public void recalculateDistance() {
         if (mLocationList.size() < 2) {
-            return 0L;
+            return;
         }
 
         float distance = 0f;
@@ -283,8 +268,6 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         }
 
         mTotalDistance = distance;
-
-        return distance;
     }
 
     /**
@@ -318,6 +301,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     // Interfaces + Listener ///////////////////////////////////////////////////////////////////
     public interface ConnectionStatus {
         void start();
+        @SuppressWarnings("EmptyMethod")
         void stop();
     }
 

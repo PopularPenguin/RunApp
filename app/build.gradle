@@ -1,3 +1,4 @@
+//noinspection GradleCompatible
 apply plugin: 'com.android.application'
 
 android {
@@ -37,6 +38,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${supportLibVersion}"
     implementation "com.android.support:cardview-v7:${supportLibVersion}"
     implementation "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:customtabs:${supportLibVersion}"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     // Google Play APIs

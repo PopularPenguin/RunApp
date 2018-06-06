@@ -2,18 +2,14 @@ package com.popularpenguin.runapp.utils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 import com.popularpenguin.runapp.data.Session;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -33,6 +29,7 @@ public class DataUtils {
      * @param session         the session to insert
      * @return uri of the inserted session in the database
      */
+    @SuppressWarnings("UnusedReturnValue")
     public static Uri insertSession(@NonNull ContentResolver contentResolver,
                                     @NonNull Session session) {
 

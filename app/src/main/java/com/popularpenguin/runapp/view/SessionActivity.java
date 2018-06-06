@@ -1,14 +1,9 @@
 package com.popularpenguin.runapp.view;
 
 import android.graphics.Color;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,6 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Displays a user's stored session from the database on a map
  */
+@SuppressWarnings("WeakerAccess")
 public class SessionActivity extends AppCompatActivity implements
     MapService.OnReadyListener {
 

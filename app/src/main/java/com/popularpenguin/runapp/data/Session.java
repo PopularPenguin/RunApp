@@ -4,12 +4,12 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 /** Data tracked into the session */
+@SuppressWarnings("unused")
 public class Session {
     private static final String TAG = Session.class.getSimpleName();
 

@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -36,6 +34,7 @@ import butterknife.ButterKnife;
 /**
  * Displays a list of recent sessions that the user can review
  */
+@SuppressWarnings("WeakerAccess")
 public class SessionListActivity extends AppCompatActivity implements
         SessionAdapter.SessionAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Session>> {

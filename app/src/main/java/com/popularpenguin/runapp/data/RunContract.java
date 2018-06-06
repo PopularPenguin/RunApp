@@ -3,6 +3,7 @@ package com.popularpenguin.runapp.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+@SuppressWarnings("WeakerAccess")
 public class RunContract {
     public static final String AUTHORITY = "com.popularpenguin.runapp";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);

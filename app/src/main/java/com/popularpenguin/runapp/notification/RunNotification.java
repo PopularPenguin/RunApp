@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.os.Build;
 
 import com.popularpenguin.runapp.R;
-import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.view.ChallengeActivity;
 
 // https://medium.com/exploring-android/exploring-android-o-notification-channels-94cd274f604c
@@ -21,12 +20,12 @@ import com.popularpenguin.runapp.view.ChallengeActivity;
  */
 public class RunNotification {
 
-    public static final String CHANNEL_ID = "run_channel";
-    public static final String CHANNEL_NAME = "Run Challenge Tracker";
+    private static final String CHANNEL_ID = "run_channel";
+    private static final String CHANNEL_NAME = "Run Challenge Tracker";
 
-    private Context mContext;
-    private NotificationManager mNotificationManager;
-    private int mNotificationId = 1;
+    private final Context mContext;
+    private final NotificationManager mNotificationManager;
+    private final int mNotificationId = 1;
 
     public RunNotification(Context context) {
         mContext = context;

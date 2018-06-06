@@ -6,20 +6,16 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class DbHelper extends SQLiteOpenHelper {
+class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "run.db";
     private static final int DB_VERSION = 1;
 
-    private Context mContext;
+    private final Context mContext;
 
     DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -67,13 +67,13 @@
     <string name="n_10_minute_mile">This is challenge 2</string>
     <string name="d_10_minute_mile">Run a 10 minute mile</string>
 
-    <string name="n_9_minute_mile">Challenge 3 incoming...</string>
+    <string name="n_9_minute_mile">Challenge 3 incoming</string>
     <string name="d_9_minute_mile">Run a 9 minute mile</string>
 
     <string name="n_8_minute_mile">Just challenge 4</string>
     <string name="d_8_minute_mile">Run an 8 minute mile</string>
 
-    <string name="n_7_minute_mile">Getting tougher... #5!</string>
+    <string name="n_7_minute_mile">Getting tougher… #5!</string>
     <string name="d_7_minute_mile">Run a 7 minute mile</string>
 
     <string name="n_6_minute_mile">Handling #6? No problem!</string>
@@ -86,7 +86,7 @@
     <string name="d_4_minute_mile">Do the impossible</string>
 
     <!-- Half mile runs -->
-    <string name="n_6_minute_half">Time for half mile runs...</string>
+    <string name="n_6_minute_half">Time for half mile runs…</string>
     <string name="d_6_minute_half">Run a 6 minute half mile</string>
 
     <string name="n_5_minute_half">Challenge 10!</string>
@@ -127,7 +127,7 @@
     <string name="n_16_minute_two">Lucky 21</string>
     <string name="d_16_minute_two">Run 2 miles in 16 minutes</string>
 
-    <string name="n_14_minute_two">Even harder now...</string>
+    <string name="n_14_minute_two">Even harder now…</string>
     <string name="d_14_minute_two">Run 2 miles in 14 minutes</string>
 
     <string name="n_12_minute_two">Challenge 23 awaits</string>

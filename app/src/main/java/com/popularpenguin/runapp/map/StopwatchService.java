@@ -8,12 +8,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.Locale;
 
 /** Stopwatch to track time spent doing a challenge */
 // https://www.android-examples.com/android-create-stopwatch-example-tutorial-in-android-studio/
+@SuppressWarnings("WeakerAccess")
 public class StopwatchService extends IntentService {
 
     public static final String START_TIME_EXTRA = "startTime";
@@ -27,21 +27,19 @@ public class StopwatchService extends IntentService {
         return intent;
     }
 
-    private IBinder mBinder = new StopWatchBinder();
+    private final IBinder mBinder = new StopWatchBinder();
 
     private long startTime, millisTime, timeBuffer, updateTime = 0L;
     private long endTime;
 
-    private String displayText;
-
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
+    private final Handler handler = new Handler();
+    private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
             millisTime = SystemClock.uptimeMillis() - startTime;
             updateTime = timeBuffer + millisTime;
 
-            displayText = getTimeString(updateTime);
+            String displayText = getTimeString(updateTime);
 
             if (listener != null) {
                 listener.onStopwatchUpdate(displayText);
@@ -70,14 +68,6 @@ public class StopwatchService extends IntentService {
         minutes %= 60;
 
         return String.format(Locale.US, "%d:%02d:%02d", hours, minutes, seconds);
-    }
-
-    /**
-     * Get current time as a formatted String
-     * @return time in hours, minutes, and seconds
-     */
-    public String getTimeString() {
-        return getTimeString(updateTime);
     }
 
     public StopwatchService() {

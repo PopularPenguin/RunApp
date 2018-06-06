@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +24,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -35,7 +33,6 @@ import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.loader.ChallengeLoader;
 import com.popularpenguin.runapp.map.RunTracker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +41,7 @@ import butterknife.ButterKnife;
 /**
  * Displays a list of challenges to take on, this is the app's entry point
  */
+@SuppressWarnings("WeakerAccess")
 public class ChallengeListActivity extends AppCompatActivity implements
         ChallengeAdapter.ChallengeAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<List<Challenge>> {

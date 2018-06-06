@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.popularpenguin.runapp.data.Challenge;

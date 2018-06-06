@@ -70,6 +70,7 @@ public class Challenge implements Parcelable {
         return id;
     }
 
+    @SuppressWarnings("unused")
     public void setId(long id) {
         this.id = id;
     }
@@ -78,6 +79,7 @@ public class Challenge implements Parcelable {
         return name;
     }
 
+    @SuppressWarnings("unused")
     public void setName(String name) {
         this.name = name;
     }
@@ -86,6 +88,7 @@ public class Challenge implements Parcelable {
         return description;
     }
 
+    @SuppressWarnings("unused")
     public void setDescription(String description) {
         this.description = description;
     }
@@ -94,6 +97,7 @@ public class Challenge implements Parcelable {
         return distance;
     }
 
+    @SuppressWarnings("unused")
     public void setDistance(long distance) {
         this.distance = distance;
     }
@@ -102,6 +106,7 @@ public class Challenge implements Parcelable {
         return timeToComplete;
     }
 
+    @SuppressWarnings("unused")
     public void setTimeToComplete(long timeToComplete) {
         this.timeToComplete = timeToComplete;
     }
@@ -118,6 +123,7 @@ public class Challenge implements Parcelable {
         return isCompleted;
     }
 
+    @SuppressWarnings("unused")
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
@@ -126,6 +132,7 @@ public class Challenge implements Parcelable {
         return challengeRating;
     }
 
+    @SuppressWarnings("unused")
     public void setChallengeRating(int challengeRating) {
        this.challengeRating = challengeRating;
     }

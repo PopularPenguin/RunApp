@@ -5,12 +5,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.data.Challenge;
-import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.map.StopwatchService;
 
 import java.util.Locale;
@@ -47,8 +45,8 @@ public class RunWidget extends AppWidgetProvider {
 
     /**
      * Helper method to update the widget when requested
-     * @param context
-     * @param appWidgetManager
+     * @param context the context
+     * @param appWidgetManager the widget manager
      * @param appWidgetId unique id for a widget (more than one can be displayed at a time)
      */
     private static void updateAppWidget(Context context,
@@ -95,9 +93,15 @@ public class RunWidget extends AppWidgetProvider {
         }
 
         // set the fastest time's text
-        String fastestTimeString = StopwatchService.getTimeString(sFastestTime);
-        views.setTextViewText(R.id.tv_widget_fastest_time, fastestTimeString);
-        views.setTextColor(R.id.tv_widget_fastest_time, colorGreen);
+        if (sFastestTime == 0) {
+            views.setTextViewText(R.id.tv_widget_fastest_time, "-:--:--");
+            views.setTextColor(R.id.tv_widget_fastest_time, colorRed);
+        }
+        else {
+            String fastestTimeString = StopwatchService.getTimeString(sFastestTime);
+            views.setTextViewText(R.id.tv_widget_fastest_time, fastestTimeString);
+            views.setTextColor(R.id.tv_widget_fastest_time, colorGreen);
+        }
 
         // update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -105,9 +109,9 @@ public class RunWidget extends AppWidgetProvider {
 
     /**
      * Calls the helper method on each available app widget instance
-     * @param context
-     * @param appWidgetManager
-     * @param appWidgetIds
+     * @param context the context
+     * @param appWidgetManager the widget manager
+     * @param appWidgetIds ids of the widgets
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -119,8 +123,8 @@ public class RunWidget extends AppWidgetProvider {
 
     /**
      * Process the intent
-     * @param context
-     * @param intent
+     * @param context the context
+     * @param intent the passed intent from the app
      */
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -139,13 +143,4 @@ public class RunWidget extends AppWidgetProvider {
         }
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
-    }
 }

@@ -10,22 +10,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
 import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 
 public class RunProvider extends ContentProvider {
 
-    public static final int CHALLENGES = 100;
-    public static final int CHALLENGE_WITH_ID = 101;
+    private static final int CHALLENGES = 100;
+    private static final int CHALLENGE_WITH_ID = 101;
 
-    public static final int SESSIONS = 200;
-    public static final int SESSION_WITH_ID = 201;
+    private static final int SESSIONS = 200;
+    private static final int SESSION_WITH_ID = 201;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         matcher.addURI(RunContract.AUTHORITY, RunContract.PATH_CHALLENGES, CHALLENGES);
