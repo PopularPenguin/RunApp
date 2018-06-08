@@ -2,6 +2,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'temp'
+            keyPassword 'udacity'
+            storeFile file('../tempkeystore.jks')
+            storePassword 'udacity'
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.popularpenguin.runapp"
@@ -15,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     buildTypes.each {

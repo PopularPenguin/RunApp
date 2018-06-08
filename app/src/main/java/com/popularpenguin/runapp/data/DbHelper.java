@@ -72,7 +72,7 @@ class DbHelper extends SQLiteOpenHelper {
         int quarter = 1_320;
         int fiveK = 16_404;
 
-        Challenge[] challenges = new Challenge[34];
+        Challenge[] challenges = new Challenge[31];
         challenges[0] = new Challenge(0L,
                 resources.getString(R.string.n_12_minute_mile),
                 resources.getString(R.string.d_12_minute_mile),
@@ -292,29 +292,6 @@ class DbHelper extends SQLiteOpenHelper {
                 resources.getString(R.string.d_15_minute_5k),
                 fiveK,
                 1000 * 60 * 15,
-                false,
-                Challenge.HARD);
-
-        // TODO: Remove test challenges
-        challenges[31] = new Challenge(31L,
-                "Challenge 5",
-                "Run 0.1 miles in 4 minutes",
-                5280 / 10,
-                1000 * 60 * 4,
-                false,
-                Challenge.EASY);
-        challenges[32] = new Challenge(32L,
-                "Challenge 6",
-                "Run 0.02 miles in 10 minutes",
-                5280 / 100,
-                1000 * 60 * 10,
-                false,
-                Challenge.MEDIUM);
-        challenges[33] = new Challenge(33L,
-                "Challenge Impossible",
-                "Run 1 mile in 10 seconds",
-                5280,
-                1000 * 10,
                 false,
                 Challenge.HARD);
 
