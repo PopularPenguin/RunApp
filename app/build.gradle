@@ -20,14 +20,15 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            it.resValue 'string', 'API_KEY', MapsApiKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            resValue 'string', 'API_KEY', MapsReleaseApiKey
         }
-    }
-    buildTypes.each {
-        it.resValue 'string', 'API_KEY', MapsApiKey
     }
     compileOptions {
         targetCompatibility 1.8
