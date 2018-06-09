@@ -40,6 +40,7 @@
         android:id="@+id/fab_session"
         style="@style/Fab"
         android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_fab"/>
+        android:src="@drawable/ic_fab"
+        android:contentDescription="@string/content_desc_map_fab"/>
 
 </FrameLayout>

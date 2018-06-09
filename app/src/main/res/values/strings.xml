@@ -49,6 +49,7 @@
     <string name="content_desc_challenge_list_img">Choose a challenge</string>
     <string name="content_desc_challenge_stopwatch_button">Start stopwatch</string>
     <string name="content_desc_session_list_img">Choose a session</string>
+    <string name="content_desc_map_fab">Center the map</string>
     <string name="content_desc_widget_timer">Timer</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
