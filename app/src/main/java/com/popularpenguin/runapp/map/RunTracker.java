@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.popularpenguin.runapp.R;
+import com.popularpenguin.runapp.data.AppDatabase;
 import com.popularpenguin.runapp.data.Challenge;
 import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.utils.DataUtils;
@@ -392,7 +393,7 @@ public class RunTracker implements LocationService.ConnectionStatus,
             long time = mStopwatchService.getTime();
             long fastestTime = mChallenge.getFastestTime();
             if (fastestTime == 0L || time < fastestTime) {
-                DataUtils.updateFastestTime(mContext.getContentResolver(), mChallenge, time);
+                DataUtils.updateFastestTime(mContext, mChallenge, time);
                 mStopWatchView.setTextColor(mContext.getResources().getColor(R.color.green));
             }
 
@@ -408,7 +409,13 @@ public class RunTracker implements LocationService.ConnectionStatus,
         stopStopWatch();
         stopLocationService();
 
-        DataUtils.insertSession(mContext.getContentResolver(), session);
+        // TODO: Replace with LiveData
+        new Thread() {
+            public void run() {
+                AppDatabase.get(mContext).dao().insertSession(session);
+            }
+        }.start();
+
 
         // update the widget now
         broadcastSession(isGoalReached, session.getTime(), session.getChallenge());

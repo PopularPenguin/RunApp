@@ -1,5 +1,8 @@
 package com.popularpenguin.runapp.data;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -10,21 +13,46 @@ import java.util.Locale;
 
 /** Data tracked into the session */
 @SuppressWarnings("unused")
+@Entity(tableName = "sessions")
 public class Session {
+    @Ignore
     private static final String TAG = Session.class.getSimpleName();
 
+    @Ignore
     public static final String LAT_LNG_EXTRA = "session_lat_lng";
+    @Ignore
     public static final String DESCRIPTION_EXTRA = "session_description";
+    @Ignore
     public static final String TIME_EXTRA = "session_time";
+    @Ignore
     public static final String FASTEST_TIME_EXTRA = "session_fastest_time";
 
+    @PrimaryKey(autoGenerate = true)
     private long id; // id from the database
-    private Challenge challenge; // the challenge associated with this session
+    private long challengeId; // the challenge id associated with this session
+    @Ignore
+    private Challenge challenge; // the challenge
     private String date; // the date and time of the session
     private long time; // the user's run time
     private String pathString; // the serialized path of the run to display on the map
     private boolean isCompleted; // was the challenge successfully completed?
 
+    public Session(long id,
+                   long challengeId,
+                   String date,
+                   long time,
+                   /*List<LatLng>*/ String pathString,
+                   boolean isCompleted) {
+
+        this.id = id;
+        this.challengeId = challengeId;
+        this.date = date;
+        this.time = time;
+        this.pathString = pathString;//getPathString(path);
+        this.isCompleted = isCompleted;
+    }
+
+    @Ignore
     public Session(Challenge challenge,
                    String date,
                    long time,
@@ -52,6 +80,14 @@ public class Session {
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
+    }
+
+    public long getChallengeId() {
+        return challengeId;
+    }
+
+    public void setChallengeId(long challengeId) {
+        this.challengeId = challengeId;
     }
 
     public String getDate() {
@@ -124,8 +160,12 @@ public class Session {
         return locationList;
     }
 
-    public String getPath() {
+    public String getPathString() {
         return pathString;
+    }
+
+    public void setPathString(String pathString) {
+        this.pathString = pathString;
     }
 
     public void setPath(List<LatLng> path) {

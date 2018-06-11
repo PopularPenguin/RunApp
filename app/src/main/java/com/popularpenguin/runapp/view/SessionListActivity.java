@@ -21,6 +21,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.popularpenguin.runapp.R;
 import com.popularpenguin.runapp.adapter.SessionAdapter;
+import com.popularpenguin.runapp.data.AppDatabase;
 import com.popularpenguin.runapp.data.Session;
 import com.popularpenguin.runapp.loader.SessionLoader;
 
@@ -124,7 +125,7 @@ public class SessionListActivity extends AppCompatActivity implements
         Session session = mSessionList.get(position);
 
         Intent intent = new Intent(this, SessionActivity.class);
-        intent.putExtra(Session.LAT_LNG_EXTRA, session.getPath());
+        intent.putExtra(Session.LAT_LNG_EXTRA, session.getPathString());
         intent.putExtra(Session.DESCRIPTION_EXTRA, session.getChallenge().getDescription());
         intent.putExtra(Session.TIME_EXTRA, session.getTimeString());
         intent.putExtra(Session.FASTEST_TIME_EXTRA, session.getChallenge().getFastestTimeString());
@@ -163,7 +164,13 @@ public class SessionListActivity extends AppCompatActivity implements
         new AlertDialog.Builder(this)
                 .setMessage(R.string.dialog_delete)
                 .setPositiveButton(R.string.dialog_delete_positive, (dialog, which) -> {
-                    getContentResolver().delete(SessionsEntry.CONTENT_URI, null, null);
+                    // TODO: Replace with LiveData
+                    new Thread() {
+                        public void run() {
+                            AppDatabase.get(SessionListActivity.this).dao().deleteSessions();
+                        }
+                    }.start();
+
 
                     if (mRecyclerView != null) {
                         mSessionList.clear();

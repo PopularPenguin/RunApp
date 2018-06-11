@@ -1,70 +1,39 @@
 package com.popularpenguin.runapp.data;
 
-import android.content.ContentValues;
+import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import com.popularpenguin.runapp.R;
-import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
-import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 
-class DbHelper extends SQLiteOpenHelper {
+import java.util.ArrayList;
 
-    private static final String DB_NAME = "run.db";
-    private static final int DB_VERSION = 1;
+@Database(entities = {Challenge.class, Session.class}, version = 1, exportSchema = false)
+public abstract class AppDatabase extends RoomDatabase {
 
-    private final Context mContext;
+    private static final Object LOCK = new Object();
 
-    DbHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+    private static AppDatabase db;
 
-        mContext = context;
+    public abstract RunDao dao();
+
+    public static AppDatabase get(Context context) {
+        if (db == null) {
+            synchronized (LOCK) {
+                db = Room.databaseBuilder(context, AppDatabase.class, "db").build();
+                init(db, context.getResources());
+            }
+        }
+
+        return db;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        final String CREATE_CHALLENGES_TABLE = "CREATE TABLE " +
-                ChallengesEntry.CHALLENGE_TABLE_NAME + " (" +
-                ChallengesEntry._ID + " INTEGER PRIMARY KEY UNIQUE, " +
-                ChallengesEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                ChallengesEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
-                ChallengesEntry.COLUMN_DISTANCE + " INTEGER NOT NULL, " +
-                ChallengesEntry.COLUMN_TIME_TO_COMPLETE + " INTEGER NOT NULL, " +
-                ChallengesEntry.COLUMN_FASTEST_TIME + " INTEGER NOT NULL, " +
-                ChallengesEntry.COLUMN_IS_COMPLETED + " INTEGER NOT NULL, " +
-                ChallengesEntry.COLUMN_CHALLENGE_RATING + " INTEGER NOT NULL" +
-                ");";
-
-        final String CREATE_SESSIONS_TABLE = "CREATE TABLE " +
-                SessionsEntry.SESSION_TABLE_NAME + " (" +
-                SessionsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SessionsEntry.COLUMN_CHALLENGE_ID + " INTEGER NOT NULL, " +
-                SessionsEntry.COLUMN_DATE + " TEXT NOT NULL, " +
-                SessionsEntry.COLUMN_PATH + " TEXT, " +
-                SessionsEntry.COLUMN_TIME + " INTEGER NOT NULL, " +
-                SessionsEntry.COLUMN_IS_COMPLETED + " INTEGER NOT NULL" +
-                ");";
-
-        db.execSQL(CREATE_CHALLENGES_TABLE);
-        db.execSQL(CREATE_SESSIONS_TABLE);
-
-        addChallenges(db);
-    }
-
-    // once on Google Play, put new challenges here, move old ones to addChallenges
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + ChallengesEntry.CHALLENGE_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + SessionsEntry.SESSION_TABLE_NAME);
-
-        onCreate(db);
-    }
-
-    // add challenges to the database on a fresh install
-    private void addChallenges(SQLiteDatabase db) {
-        Resources resources = mContext.getResources();
+    private static void init(AppDatabase db, Resources resources) {
+        if (!(db.dao().getChallengeById(0L) == null)) {
+            return;
+        }
 
         int one = 5_280;
         int two = 10_560;
@@ -72,7 +41,7 @@ class DbHelper extends SQLiteOpenHelper {
         int quarter = 1_320;
         int fiveK = 16_404;
 
-        Challenge[] challenges = new Challenge[31];
+        Challenge[] challenges = new Challenge[33];
         challenges[0] = new Challenge(0L,
                 resources.getString(R.string.n_12_minute_mile),
                 resources.getString(R.string.d_12_minute_mile),
@@ -294,19 +263,22 @@ class DbHelper extends SQLiteOpenHelper {
                 1000 * 60 * 15,
                 false,
                 Challenge.HARD);
+        // TODO: Remove test challenges
+        challenges[31] = new Challenge(31L,
+                "Testing",
+                "Do a mile in 10 seconds",
+                one,
+                1000 * 10,
+                false,
+                Challenge.HARD);
+        challenges[32] = new Challenge(32L,
+                "Easy test",
+                "Do .02 miles in 10 minutes",
+                5280 / 50,
+                1000 * 60 * 10,
+                false,
+                Challenge.EASY);
 
-        // insert each challenge into the database
-        for (Challenge challenge : challenges) {
-            ContentValues cv = new ContentValues();
-            cv.put(ChallengesEntry.COLUMN_NAME, challenge.getName());
-            cv.put(ChallengesEntry.COLUMN_DESCRIPTION, challenge.getDescription());
-            cv.put(ChallengesEntry.COLUMN_DISTANCE, challenge.getDistance());
-            cv.put(ChallengesEntry.COLUMN_TIME_TO_COMPLETE, challenge.getTimeToComplete());
-            cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, 0L);
-            cv.put(ChallengesEntry.COLUMN_IS_COMPLETED, challenge.isCompleted());
-            cv.put(ChallengesEntry.COLUMN_CHALLENGE_RATING, challenge.getChallengeRating());
-
-            db.insert(ChallengesEntry.CHALLENGE_TABLE_NAME, null, cv);
-        }
+        db.dao().insertChallenges(challenges);
     }
 }

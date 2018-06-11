@@ -1,19 +1,28 @@
 package com.popularpenguin.runapp.data;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Locale;
 
 /** Describes the challenge */
+@Entity(tableName = "challenges")
 public class Challenge implements Parcelable {
 
+    @Ignore
     public static final String CHALLENGE_EXTRA = "challenge";
 
+    @Ignore
     public static final int EASY = 1;
+    @Ignore
     public static final int MEDIUM = 2;
+    @Ignore
     public static final int HARD = 3;
 
+    @PrimaryKey
     private long id; // id assigned automatically
     private String name; // challenge's name
     private String description; // description of the challenge
@@ -40,6 +49,7 @@ public class Challenge implements Parcelable {
         this.challengeRating = challengeRating;
     }
 
+    @Ignore
     private Challenge(Parcel parcel) {
         id = parcel.readLong();
         name = parcel.readString();

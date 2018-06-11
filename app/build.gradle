@@ -38,6 +38,7 @@ android {
 
 ext {
     googlePlayVersion = '15.0.1'
+    roomVersion = '1.1.0'
     supportLibVersion = '27.1.1'
 }
 
@@ -59,6 +60,12 @@ dependencies {
     // Butterknife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // Room
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    implementation "android.arch.lifecycle:runtime:$roomVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$roomVersion"
 
     // Test dependencies
     testImplementation 'junit:junit:4.12'

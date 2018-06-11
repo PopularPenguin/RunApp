@@ -20,10 +20,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <provider
-            android:name=".data.RunProvider"
-            android:authorities="com.popularpenguin.runapp"
-            android:exported="false"/>
 
         <receiver android:name=".widget.RunWidget">
             <intent-filter>

@@ -2,12 +2,12 @@ package com.popularpenguin.runapp.utils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.popularpenguin.runapp.data.AppDatabase;
 import com.popularpenguin.runapp.data.Challenge;
-import com.popularpenguin.runapp.data.RunContract.ChallengesEntry;
-import com.popularpenguin.runapp.data.RunContract.SessionsEntry;
 import com.popularpenguin.runapp.data.Session;
 
 import java.text.SimpleDateFormat;
@@ -22,44 +22,28 @@ public class DataUtils {
     private DataUtils() {
     } // this class shouldn't be instantiated
 
-    /**
-     * Insert a session into the session table in the database
-     *
-     * @param contentResolver app's content resolver
-     * @param session         the session to insert
-     * @return uri of the inserted session in the database
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public static Uri insertSession(@NonNull ContentResolver contentResolver,
-                                    @NonNull Session session) {
 
-        ContentValues cv = new ContentValues();
-        cv.put(SessionsEntry.COLUMN_CHALLENGE_ID, session.getChallenge().getId());
-        cv.put(SessionsEntry.COLUMN_DATE, session.getDate());
-        cv.put(SessionsEntry.COLUMN_TIME, session.getTime());
-        cv.put(SessionsEntry.COLUMN_PATH, session.getPath());
-        cv.put(SessionsEntry.COLUMN_IS_COMPLETED, session.isCompleted());
-
-        return contentResolver.insert(SessionsEntry.CONTENT_URI, cv);
-    }
 
     /**
      * Updates the fastest time for a challenge in the database
      *
-     * @param contentResolver the app's content resolver
+     * @param context         the app's context
      * @param challenge       an instance of the challenge
      * @param time            the time to set as fastest
      */
-    public static void updateFastestTime(@NonNull ContentResolver contentResolver,
+    public static void updateFastestTime(@NonNull Context context,
                                          @NonNull Challenge challenge,
                                          long time) {
 
-        String id = String.valueOf(challenge.getId());
+        challenge.setFastestTime(time);
 
-        ContentValues cv = new ContentValues();
-        cv.put(ChallengesEntry.COLUMN_FASTEST_TIME, time);
+        // TODO: Replace
+        new Thread() {
+            public void run() {
+                AppDatabase.get(context).dao().insertChallenge(challenge);
+            }
+        }.start();
 
-        contentResolver.update(ChallengesEntry.CONTENT_URI, cv, "_id=?", new String[]{id});
     }
 
     /** Get the current system time as a date */
